@@ -1,7 +1,7 @@
 import { SignInButton, SignUpButton } from "@clerk/nextjs";
 
 import { Button } from "@ui/button";
-import { appName, appDescription } from "@lib/const";
+import siteConfig from "@/config/site";
 
 const HomePage = () => {
     return (
@@ -12,9 +12,9 @@ const HomePage = () => {
                     {/* App info */}
                     <div className="flex flex-col gap-4">
                         <div className="flex flex-col gap-4">
-                            <h1 className="h1">{appName}</h1>
+                            <h1 className="h1">{siteConfig.name}</h1>
                             <p className="p text-xl text-muted-foreground">
-                                {appDescription}
+                                {siteConfig.description}
                             </p>
                         </div>
                         <div className="flex flex-row gap-4">

@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { SignUp } from "@clerk/nextjs";
 
-import { appName } from "@/lib/const";
+import siteConfig from "@/config/site";
 
 export const metadata: Metadata = {
-    title: `Register | ${appName}`,
+    title: `Register | ${siteConfig.name}`,
     description: "Register for a MovieMate account",
 };
 

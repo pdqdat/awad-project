@@ -1,54 +1,52 @@
-import { Clapperboard } from "lucide-react";
 import {
     UserButton,
     SignInButton,
+    SignUpButton,
     SignedIn,
     SignedOut,
 } from "@clerk/nextjs";
 import Link from "next/link";
 
-import { appName } from "@lib/const";
-import { NavLink } from "@comp/nav-link";
+import siteConfig from "@/config/site";
 import { Button } from "@ui/button";
+import MobileNav from "@comp/mobile-nav";
+import MainNav from "@comp/main-nav";
 
 const Header = async () => {
     return (
-        <header className="flex border-b bg-secondary py-2">
-            <nav className="container flex items-center gap-6 font-medium">
-                <Link href="/">
-                    <div className="mr-auto flex items-center gap-2 font-semibold">
-                        <Clapperboard className="size-8" />
-                        <span className="sr-only text-lg font-semibold md:not-sr-only">
-                            {appName}
-                        </span>
-                    </div>
-                </Link>
-                <NavLink href="/movie">Movie</NavLink>
-                <NavLink href="/cast">Cast</NavLink>
-                <SignedIn>
-                    <NavLink href="/chat">Chat</NavLink>
-                </SignedIn>
-                <SignedOut>
-                    <div className="ml-auto flex gap-4">
+        <header className="z-40 w-full bg-background">
+            <div className="container relative mx-auto flex min-h-20 flex-row items-center gap-4 lg:grid lg:grid-cols-3">
+                <MainNav />
+                <MobileNav />
+                <div className="flex lg:justify-center">
+                    <Link href="/" className="text-xl font-bold">
+                        {siteConfig.name}
+                    </Link>
+                </div>
+                <div className="flex w-full justify-end gap-4">
+                    <SignedOut>
                         <SignInButton>
-                            <Button size="sm" variant="ringHover">
-                                Sign in
-                            </Button>
+                            <Button variant="outline">Sign in</Button>
                         </SignInButton>
-                    </div>
-                </SignedOut>
-                <SignedIn>
-                    <div className="ml-auto flex size-8">
-                        <UserButton
-                            appearance={{
-                                elements: {
-                                    userButtonAvatarBox: "size-full",
-                                },
-                            }}
-                        />
-                    </div>
-                </SignedIn>
-            </nav>
+                        <SignUpButton>
+                            <Button variant="ringHover">
+                                Create account
+                            </Button>
+                        </SignUpButton>
+                    </SignedOut>
+                    <SignedIn>
+                        <div className="ml-auto flex size-9">
+                            <UserButton
+                                appearance={{
+                                    elements: {
+                                        userButtonAvatarBox: "size-full",
+                                    },
+                                }}
+                            />
+                        </div>
+                    </SignedIn>
+                </div>
+            </div>
         </header>
     );
 };

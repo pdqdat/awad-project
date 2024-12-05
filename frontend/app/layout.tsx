@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 
 import "@/app/globals.css";
-import { appName, appDescription } from "@/lib/const";
+import siteConfig from "@/config/site";
 
 export const metadata: Metadata = {
-    title: `${appName}`,
-    description: `${appDescription}`,
+    title: siteConfig.name,
+    description: siteConfig.description,
+    keywords: ["Movies", "AI", "TMDB", "Recommend", "Recommendations"],
 };
 
 export default function RootLayout({
