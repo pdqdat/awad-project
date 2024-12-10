@@ -14,7 +14,7 @@ import MainNav from "@comp/main-nav";
 
 const Header = async () => {
     return (
-        <header className="z-40 w-full bg-background">
+        <header className="w-full bg-background">
             <div className="container relative mx-auto flex min-h-20 flex-row items-center gap-4 lg:grid lg:grid-cols-3">
                 <MainNav />
                 <MobileNav />

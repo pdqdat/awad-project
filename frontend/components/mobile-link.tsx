@@ -1,7 +1,7 @@
 import Link, { LinkProps } from "next/link";
 import { MoveRight } from "lucide-react";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@lib/utils";
 
 interface MobileLinkProps extends LinkProps {
     onOpenChange?: (open: boolean) => void;

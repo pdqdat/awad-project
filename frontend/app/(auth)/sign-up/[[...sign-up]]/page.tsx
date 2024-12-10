@@ -4,8 +4,8 @@ import { SignUp } from "@clerk/nextjs";
 import siteConfig from "@/config/site";
 
 export const metadata: Metadata = {
-    title: `Register | ${siteConfig.name}`,
-    description: "Register for a MovieMate account",
+    title: "Sign Up",
+    description: `Create a new ${siteConfig.name} account`,
 };
 
 const RegisterPage = () => {
