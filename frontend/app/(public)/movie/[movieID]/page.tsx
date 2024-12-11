@@ -4,7 +4,7 @@ import Image from "next/image";
 import { fetchMovieDetail } from "@lib/actions";
 import { getTmdbImageUrl, tmdbPosterSizes } from "@/config/tmdb";
 import { dateFormatter } from "@lib/utils";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@ui/badge";
 
 export const metadata: Metadata = {
     title: "Movie Detail",

@@ -1,5 +1,7 @@
 import MoviesRow from "@comp/movies-row";
 import { fetchTrendingMovies } from "@lib/actions";
+import FancyHeading from "@comp/fancy-heading";
+import { Separator } from "@ui/separator";
 
 const TrendingMoviesSection = async () => {
     const weeklyTrendingMoviesResponse = await fetchTrendingMovies("week", 1);
@@ -11,16 +13,17 @@ const TrendingMoviesSection = async () => {
     return (
         <div className="bg-muted py-8">
             <div className="container">
-                <h2 className="mb-4 text-2xl font-semibold text-primary">
+                <h3 className="h3 mb-4 font-semibold text-primary">
                     Trending Movies
-                </h2>
-                <h4>This week</h4>
+                </h3>
+                <FancyHeading>This week</FancyHeading>
                 {weeklyTrendingMovies ? (
                     <MoviesRow movies={weeklyTrendingMovies.slice(0, 5)} />
                 ) : (
                     <p>Error fetching weekly trending movies</p>
                 )}
-                <h4>Today</h4>
+                <Separator className="my-4" />
+                <FancyHeading>Today</FancyHeading>
                 {dailyTrendingMovies ? (
                     <MoviesRow movies={dailyTrendingMovies.slice(0, 5)} />
                 ) : (

@@ -1,11 +1,11 @@
-import Hero from "@comp/hero";
 import TrendingMoviesSection from "@comp/trending-movies-section";
+import SearchSection from "@comp/search-section";
 
 const HomePage = () => {
     return (
         <>
+            <SearchSection />
             <TrendingMoviesSection />
-            <Hero />
         </>
     );
 };

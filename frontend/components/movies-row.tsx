@@ -1,15 +1,11 @@
 import { Movie } from "@/types";
 import MovieCard from "@comp/movie-card";
 
-interface MoviesRowProps {
-    movies: Movie[];
-}
-
-const MoviesRow = ({ movies }: MoviesRowProps) => {
+const MoviesRow = ({ movies }: { movies: Movie[] }) => {
     return (
-        <div className="flex space-x-2 my-4">
+        <div className="my-4 grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {movies.map((movie) => (
-                <MovieCard movie={movie} key={movie.id}/>
+                <MovieCard movie={movie} key={movie.id} />
             ))}
         </div>
     );

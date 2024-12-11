@@ -1,13 +1,9 @@
 import { Movie } from "@/types";
 import MovieCard from "@comp/movie-card";
 
-interface MoviesGridProps {
-    movies: Movie[];
-}
-
-const MoviesGrid = ({ movies }: MoviesGridProps) => {
+const MoviesGrid = ({ movies }: { movies: Movie[] }) => {
     return (
-        <div className="grid grid-cols-5 gap-2">
+        <div className="grid grid-cols-2 gap-2 gap-x-2 gap-y-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {movies.map((movie) => (
                 <MovieCard movie={movie} key={movie.id} />
             ))}

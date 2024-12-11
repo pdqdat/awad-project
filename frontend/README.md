@@ -10,6 +10,7 @@ Configure the environment variables:
 
 ```.env.development
 CLERK_SECRET_KEY=
+TMDB_ACCESS_TOKEN=
 
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up

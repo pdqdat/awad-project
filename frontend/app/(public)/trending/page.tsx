@@ -14,13 +14,10 @@ const TrendingPage = async ({
 }) => {
     const { page, time } = await searchParams;
 
-    const { results: movies } = await fetchTrendingMovies(
-        "week",
-        1,
-    );
+    const { results: movies } = await fetchTrendingMovies("week", 1);
 
     return (
-        <div>
+        <div className="py-8">
             {movies ? (
                 <div className="container">
                     {page && <div>Page param: {page}</div>}

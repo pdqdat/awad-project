@@ -11,6 +11,7 @@ import siteConfig from "@/config/site";
 import { Button } from "@ui/button";
 import MobileNav from "@comp/mobile-nav";
 import MainNav from "@comp/main-nav";
+import SearchBox from "@comp/search-box";
 
 const Header = async () => {
     return (
@@ -19,19 +20,18 @@ const Header = async () => {
                 <MainNav />
                 <MobileNav />
                 <div className="flex lg:justify-center">
-                    <Link href="/" className="text-xl font-bold">
+                    <Link href="/" className="text-xl font-bold lg:text-2xl">
                         {siteConfig.name}
                     </Link>
                 </div>
                 <div className="flex w-full justify-end gap-4">
+                    <SearchBox />
                     <SignedOut>
                         <SignInButton>
                             <Button variant="outline">Sign in</Button>
                         </SignInButton>
                         <SignUpButton>
-                            <Button variant="ringHover">
-                                Create account
-                            </Button>
+                            <Button variant="ringHover">Create account</Button>
                         </SignUpButton>
                     </SignedOut>
                     <SignedIn>

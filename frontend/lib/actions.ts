@@ -1,6 +1,15 @@
 "use server";
 
-import { Movie, MovieDetail } from "@/types";
+import { tmdbApiBaseUrl } from "@/config/tmdb";
+import { Movie, MovieDetail, MovieSearchResult } from "@/types";
+
+const getRequestOptions = {
+    method: "GET",
+    headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
+    },
+};
 
 export const fetchTrendingMovies = async (
     timeWindow: "week" | "day" = "week",
@@ -11,23 +20,15 @@ export const fetchTrendingMovies = async (
     totalPages: number;
     totalResults: number;
 }> => {
-    const options = {
-        method: "GET",
-        headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
-        },
-    };
-
     try {
         const res = await fetch(
-            `https://api.themoviedb.org/3/trending/movie/${timeWindow}?language=en-US&page=${page}`,
-            options,
+            `${tmdbApiBaseUrl}/trending/movie/${timeWindow}?language=en-US&page=${page}`,
+            getRequestOptions,
         );
         const data = await res.json();
 
         return {
-            results: data.results as Movie[],
+            results: data.results,
             page: data.page,
             totalPages: data.total_pages,
             totalResults: data.total_results,
@@ -41,18 +42,10 @@ export const fetchTrendingMovies = async (
 export const fetchMovieDetail = async (
     movieID: string,
 ): Promise<MovieDetail> => {
-    const options = {
-        method: "GET",
-        headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
-        },
-    };
-
     try {
         const res = await fetch(
-            `https://api.themoviedb.org/3/movie/${movieID}?language=en-US`,
-            options,
+            `${tmdbApiBaseUrl}/movie/${movieID}?language=en-US`,
+            getRequestOptions,
         );
         const data = await res.json();
 
@@ -60,5 +53,34 @@ export const fetchMovieDetail = async (
     } catch (error) {
         console.error("Error fetching movie detail: ", error);
         throw new Error("Error fetching movie detail");
+    }
+};
+
+export const searchMovies = async (
+    query: string,
+    includeAdult: boolean = false,
+    page: number = 1,
+): Promise<{
+    results: MovieSearchResult[];
+    page: number;
+    totalPages: number;
+    totalResults: number;
+}> => {
+    try {
+        const res = await fetch(
+            `${tmdbApiBaseUrl}/search/movie?query=${query}&include_adult=${includeAdult}&language=en-US&page=${page}`,
+            getRequestOptions,
+        );
+        const data = await res.json();
+
+        return {
+            results: data.results,
+            page: data.page,
+            totalPages: data.total_pages,
+            totalResults: data.total_results,
+        };
+    } catch (error) {
+        console.error("Error searching movies: ", error);
+        throw new Error("Error searching movies");
     }
 };
