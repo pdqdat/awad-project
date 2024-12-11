@@ -11,27 +11,27 @@ import siteConfig from "@/config/site";
 import { Button } from "@ui/button";
 import MobileNav from "@comp/mobile-nav";
 import MainNav from "@comp/main-nav";
+import SearchBox from "@comp/search-box";
 
 const Header = async () => {
     return (
-        <header className="z-40 w-full bg-background">
+        <header className="w-full bg-background">
             <div className="container relative mx-auto flex min-h-20 flex-row items-center gap-4 lg:grid lg:grid-cols-3">
                 <MainNav />
                 <MobileNav />
                 <div className="flex lg:justify-center">
-                    <Link href="/" className="text-xl font-bold">
+                    <Link href="/" className="text-xl font-bold lg:text-2xl">
                         {siteConfig.name}
                     </Link>
                 </div>
                 <div className="flex w-full justify-end gap-4">
+                    <SearchBox />
                     <SignedOut>
                         <SignInButton>
                             <Button variant="outline">Sign in</Button>
                         </SignInButton>
                         <SignUpButton>
-                            <Button variant="ringHover">
-                                Create account
-                            </Button>
+                            <Button variant="ringHover">Create account</Button>
                         </SignUpButton>
                     </SignedOut>
                     <SignedIn>

@@ -22,7 +22,6 @@
             "@comp/*": ["./components/*"],
             "@ui/*": ["./components/ui/*"],
             "@hooks/*": ["./hooks/*"],
-            "@utils/*": ["./lib/utils/*"],
             "@lib/*": ["./lib/*"]
         }
     },

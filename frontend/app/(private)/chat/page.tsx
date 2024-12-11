@@ -4,7 +4,9 @@ import siteConfig from "@/config/site";
 import { Textarea } from "@ui/textarea";
 
 export const metadata: Metadata = {
-    title: `Chat with ${siteConfig.name}`,
+    title: {
+        absolute: `Chat with ${siteConfig.name}`,
+    },
     description: "Chat with our AI to get personalized movie recommendations",
 };
 

@@ -5,7 +5,10 @@ import "@/app/globals.css";
 import siteConfig from "@/config/site";
 
 export const metadata: Metadata = {
-    title: siteConfig.name,
+    title: {
+        template: "%s - " + siteConfig.name,
+        default: siteConfig.name,
+    },
     description: siteConfig.description,
     keywords: ["Movies", "AI", "TMDB", "Recommend", "Recommendations"],
 };

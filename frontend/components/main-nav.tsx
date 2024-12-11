@@ -1,9 +1,6 @@
 import Link from "next/link";
 import { MoveRight } from "lucide-react";
-import {
-    SignInButton,
-    SignedOut,
-} from "@clerk/nextjs";
+import { SignInButton, SignedOut } from "@clerk/nextjs";
 
 import {
     NavigationMenu,
@@ -16,6 +13,7 @@ import {
 } from "@ui/navigation-menu";
 import { navigationItems } from "@lib/navigation-items";
 import { Button } from "@ui/button";
+import { cn } from "@lib/utils";
 
 const MainNav = () => {
     return (
@@ -27,14 +25,17 @@ const MainNav = () => {
                             {item.href ? (
                                 <Link href={item.href} legacyBehavior passHref>
                                     <NavigationMenuLink
-                                        className={navigationMenuTriggerStyle()}
+                                        className={cn(
+                                            navigationMenuTriggerStyle(),
+                                            "text-base",
+                                        )}
                                     >
                                         {item.title}
                                     </NavigationMenuLink>
                                 </Link>
                             ) : (
                                 <>
-                                    <NavigationMenuTrigger className="text-sm font-medium">
+                                    <NavigationMenuTrigger className="text-base font-medium">
                                         {item.title}
                                     </NavigationMenuTrigger>
                                     <NavigationMenuContent className="!w-[450px] p-4">
