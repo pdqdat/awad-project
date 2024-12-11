@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { Star } from "lucide-react";
 
 import { fetchMovieDetail } from "@lib/actions";
 import { getTmdbImageUrl, tmdbPosterSizes } from "@/config/tmdb";
-import { dateFormatter } from "@lib/utils";
 import { Badge } from "@ui/badge";
 
 export const metadata: Metadata = {
@@ -25,57 +25,54 @@ const MovieDetailPage = async ({
 
     return (
         <div>
-
-            {/* <div className="bg-gray-900 text-white min-h-screen"> */}
             <div className="container mx-auto px-4 py-8">
-                {/* Header Section */}
-                <div className="flex flex-col md:flex-row items-center md:items-start">
+                <div className="flex flex-col items-center md:flex-row md:items-start">
                     {/* Poster */}
                     <Image
                         src={getTmdbImageUrl(
                             tmdbPosterSizes.w500,
-                            movieDetail.poster_path
+                            movieDetail.poster_path,
                         )}
                         alt={movieDetail.title}
                         width={342}
                         height={513}
-                        className="rounded-lg shadow-md mb-6 md:mb-0 md:mr-8"
+                        className="mb-6 rounded-lg shadow-md md:mb-0 md:mr-8"
                     />
-
-                    {/* Movie Info */}
+                    {/* Movie info */}
                     <div className="flex-1">
-                        <h1 className="text-4xl font-bold mb-4">{movieDetail.title}</h1>
-                        <p className="text-gray-400 text-sm mb-4">
-                            Release Date: {dateFormatter(movieDetail.release_date)}
+                        <h1 className="mb-4 text-4xl font-bold">
+                            {movieDetail.title}
+                        </h1>
+                        <p className="mb-4 text-muted-foreground">
+                            {new Date(movieDetail.release_date).getFullYear()}
                         </p>
-                        <div className="flex flex-wrap gap-2 mb-4">
+                        <div className="mb-4 flex flex-wrap gap-2">
                             {movieDetail.genres.map((genre) => (
                                 <Badge
                                     key={genre.id}
-                                    className="bg-gray-800 text-gray-300 border border-gray-700 px-2 py-1 rounded"
+                                    variant="secondary"
+                                    className="text-sm"
                                 >
                                     {genre.name}
                                 </Badge>
                             ))}
                         </div>
-                        <p className="text-lg mb-6">{movieDetail.overview}</p>
-
-                        <div className="flex items-center">
-                            <p className="text-lg font-semibold mr-2">
-                                Rating: {movieDetail.vote_average}
+                        <div className="group mb-4 flex items-center">
+                            <Star className="group-hover:animate-wiggle mr-1 text-yellow-500" />
+                            <p className="mr-2 text-lg font-semibold">
+                                <span className="transition-colors group-hover:text-yellow-500">
+                                    {movieDetail.vote_average}
+                                </span>{" "}
+                                / 10{" "}
+                                <span className="font-normal text-muted-foreground">
+                                    ({movieDetail.vote_count} votes)
+                                </span>
                             </p>
-                            <span className="text-gray-400 text-sm">
-                                ({movieDetail.vote_count} votes)
-                            </span>
                         </div>
+                        <p>{movieDetail.overview}</p>
                     </div>
                 </div>
             </div>
-            {/* </div> */}
-
-            
-            
-            
         </div>
     );
 };
