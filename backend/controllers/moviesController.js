@@ -65,24 +65,51 @@ exports.searchMovies = async (req, res) => {
 
 
 exports.filterMovies = async (req, res) => {
-    const { genre, rating, releaseDate } = req.query;
+    const { genre, minRating, maxRating, releaseDate, page = 1, limit = 10 } = req.query;
     let filterCriteria = {};
 
+    // Parse page and limit
+    const currentPage = parseInt(page);
+    const pageSize = parseInt(limit);
+    const skip = (currentPage - 1) * pageSize;
+
+    // Filter by genre if specified
     if (genre) {
-        filterCriteria.genres = { $in: [genre] }; 
+        filterCriteria.genres = { $in: [genre] };
     }
-    if (rating) {
-        filterCriteria.vote_average = { $gte: parseFloat(rating) }; 
+
+    // Filter by rating range
+    if (minRating || maxRating) {
+        filterCriteria.vote_average = {};
+        if (minRating) {
+            filterCriteria.vote_average.$gte = parseFloat(minRating);
+        }
+        if (maxRating) {
+            filterCriteria.vote_average.$lte = parseFloat(maxRating);
+        }
     }
+
+    // Filter by release date if specified
     if (releaseDate) {
-        filterCriteria.release_date = { $gte: new Date(releaseDate) }; 
+        filterCriteria.release_date = { $gte: new Date(releaseDate) };
     }
 
     try {
-        const movies = await Movie.find(filterCriteria);
-        res.json(movies);
+        const totalMovies = await Movie.countDocuments(filterCriteria);
+        const movies = await Movie.find(filterCriteria)
+                                  .skip(skip)
+                                  .limit(pageSize);
+
+        res.json({
+            total: totalMovies,
+            page: currentPage,
+            limit: pageSize,
+            totalPages: Math.ceil(totalMovies / pageSize),
+            data: movies
+        });
     } catch (error) {
         res.status(500).send(error.toString());
     }   
 };
+
 
