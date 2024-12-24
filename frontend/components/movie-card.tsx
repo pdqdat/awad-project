@@ -12,7 +12,7 @@ const MovieCard = ({ movie }: MovieCardProps) => {
     return (
         <div className="space-y-2">
             <Link href={`/movie/${movie.id}`}>
-                <div className="overflow-hidden rounded-md">
+                <div className="overflow-hidden rounded-xl">
                     <Image
                         src={getTmdbImageUrl(
                             tmdbPosterSizes.w342,

@@ -8,7 +8,10 @@ const MoviesList = ({ movies }: { movies: MovieSearchResult[] }) => {
     return (
         <ul className="space-y-2">
             {movies.map((movie) => (
-                <li key={movie.id} className="flex rounded-md border">
+                <li
+                    key={movie.id}
+                    className="overflow-hidden rounded-xl border"
+                >
                     <Link href={`/movie/${movie.id}`} className="flex gap-2">
                         <div className="aspect-[3/4] overflow-hidden">
                             <Image
@@ -23,14 +26,13 @@ const MoviesList = ({ movies }: { movies: MovieSearchResult[] }) => {
                                 className="aspect-[3/4] object-cover transition-all hover:scale-105"
                             />
                         </div>
-                        <div className="flex flex-col p-2">
+                        <div className="flex p-2">
                             <div className="text-lg">
-                                <span className="font-semibold">
+                                <span className="text-wrap font-semibold">
                                     {movie.title}
                                 </span>{" "}
                                 ({new Date(movie.release_date).getFullYear()})
                             </div>
-                            {/* TODO: Display movie genres */}
                         </div>
                     </Link>
                 </li>

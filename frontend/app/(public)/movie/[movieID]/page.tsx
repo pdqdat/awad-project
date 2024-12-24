@@ -36,7 +36,7 @@ const MovieDetailPage = async ({
                         alt={movieDetail.title}
                         width={342}
                         height={513}
-                        className="mb-6 rounded-lg shadow-md md:mb-0 md:mr-8"
+                        className="mb-6 rounded-xl shadow-md md:mb-0 md:mr-8"
                     />
                     {/* Movie info */}
                     <div className="flex-1">

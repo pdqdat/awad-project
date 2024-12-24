@@ -10,6 +10,8 @@ A movie recommendation system that recommends movies based on the user's prefere
 
 -   Next.js
 -   Clerk
+-   Express.js
+-   MongoDB
 
 ## How to run
 

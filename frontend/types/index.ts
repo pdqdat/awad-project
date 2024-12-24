@@ -68,3 +68,5 @@ export interface MovieDetail {
 }
 
 export type MovieSearchResult = Omit<Movie, "media_type">;
+
+export type TmdbGenre = Record<"value" | "name", string>;

@@ -20,9 +20,10 @@ import {
     PaginationLink,
     PaginationNext,
     PaginationPrevious,
+    PaginationEllipsis,
 } from "@ui/pagination";
 
-const MAX_VISIBLE_PAGES = 10;
+const MAX_VISIBLE_PAGES = 5;
 
 const PaginationControls = ({
     currentPage,
@@ -59,7 +60,11 @@ const PaginationControls = ({
                 </PaginationItem>,
             );
             if (startPage > 2) {
-                paginationItems.push(<span key="start-ellipsis">...</span>);
+                paginationItems.push(
+                    <PaginationItem key="start-ellipsis">
+                        <PaginationEllipsis />
+                    </PaginationItem>,
+                );
             }
         }
 
@@ -78,7 +83,11 @@ const PaginationControls = ({
 
         if (endPage < totalPages) {
             if (endPage < totalPages - 1) {
-                paginationItems.push(<span key="end-ellipsis">...</span>);
+                paginationItems.push(
+                    <PaginationItem key="end-ellipsis">
+                        <PaginationEllipsis />
+                    </PaginationItem>,
+                );
             }
             paginationItems.push(
                 <PaginationItem key={totalPages}>

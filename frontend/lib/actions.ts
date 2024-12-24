@@ -84,3 +84,22 @@ export const searchMovies = async (
         throw new Error("Error searching movies");
     }
 };
+
+export const fetchGenres = async (): Promise<{
+    genres: { id: number; name: string }[];
+}> => {
+    try {
+        const res = await fetch(
+            `${tmdbApiBaseUrl}/genre/movie/list?language=en-US`,
+            getRequestOptions,
+        );
+        const data = await res.json();
+
+        return {
+            genres: data.genres,
+        };
+    } catch (error) {
+        console.error("Error fetching genres: ", error);
+        throw new Error("Error fetching genres");
+    }
+};
