@@ -1,7 +1,7 @@
 "use server";
 
 import { tmdbApiBaseUrl } from "@/config/tmdb";
-import { Movie, MovieDetail, MovieSearchResult, CastDetail } from "@/types";
+import { Movie, MovieDetail, MovieSearchResult, CastDetail, PersonDetail } from "@/types";
 
 const getRequestOptions = {
     method: "GET",
@@ -85,13 +85,34 @@ export const searchMovies = async (
     }
 };
 
-export const fetchCastDetail = async (
+// export const fetchCastDetail = async (
+//     castID: string,
+// ): Promise<CastDetail> => {
+//     try {
+//         const res = await fetch(
+//             `${tmdbApiBaseUrl}/person/${castID}?language=en-US`,
+//             getRequestOptions,
+//         );
+//         const data = await res.json();
+
+//         console.log(data);
+
+//         return data;
+//     } catch (error) {
+//         console.error("Error fetching cast detail: ", error);
+//         throw new Error("Error fetching cast detail");
+//     }
+// };
+
+export const fetchPersonDetail = async (
     castID: string,
-): Promise<CastDetail> => {
+): Promise<PersonDetail> => {
     try {
         const res = await fetch(
-            `${tmdbApiBaseUrl}/person/${castID}?language=en-US`,
-            getRequestOptions,
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/cast/${castID}`,
+            // getRequestOptions,
+            {method: "GET",}
+
         );
         const data = await res.json();
 
