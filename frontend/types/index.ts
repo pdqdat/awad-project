@@ -67,4 +67,21 @@ export interface MovieDetail {
     vote_count: number;
 }
 
+export interface CastDetail {
+    adult: boolean;
+    also_known_as: string[];
+    biography: string;
+    birthday: string;
+    deathday: string | null;
+    gender: number;
+    homepage: string;
+    id: number;
+    imdb_id: string;
+    known_for_department: string;
+    name: string;
+    place_of_birth: string;
+    popularity: number;
+    profile_path: string;
+}
+
 export type MovieSearchResult = Omit<Movie, "media_type">;
