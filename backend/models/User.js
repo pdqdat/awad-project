@@ -6,5 +6,5 @@ const userSchema = new mongoose.Schema({
     lastName: String,
 }, { timestamps: true });
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema,'user');
 export default User;
