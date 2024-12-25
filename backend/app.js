@@ -4,6 +4,10 @@ const movieRoutes = require('./routes/moviesRoutes');
 const trendingRoutes = require('./routes/moviesTrendingRoutes');
 const movieOfCateRoutes = require('./routes/moviesOfCateRoutes.js');
 const castRoutes = require('./routes/castRoute.js');
+const userRoutes = require('./routes/userRoutes.js'); 
+import webhookRoutes from './routes/webhookRoutes.js';
+
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,6 +25,9 @@ app.use('/api', movieRoutes);
 app.use('/api', trendingRoutes);
 app.use('/api', movieOfCateRoutes);
 app.use('/api', castRoutes);
+app.use('/api', userRoutes); 
+app.use('/api', webhookRoutes);
+
 
 // Handle 404 - Not Found
 app.use((req, res, next) => {

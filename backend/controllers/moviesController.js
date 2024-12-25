@@ -1,5 +1,18 @@
 const Movie = require('../models/Movies');
 
+const Genre = require('../models/Genres');
+
+exports.getAllGenres = async (req, res) => {
+    try {
+        const genres = await Genre.find({});
+        res.json(genres);
+    } catch (error) {
+        console.error('Failed to retrieve genres:', error);
+        res.status(500).send('Server error while retrieving genres');
+    }
+};
+
+
 exports.getAllMovies = async (req, res) => {
   const { all } = req.query;
 
