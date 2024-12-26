@@ -16,7 +16,7 @@ const SearchPage = async ({
 }: {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) => {
-    const { q, page, genre } = await searchParams;
+    const { q, page, genre, minRating, maxRating } = await searchParams;
     if (!q) {
         return (
             <div className="min-h-72 py-8 lg:min-h-[30rem]">
@@ -50,6 +50,8 @@ const SearchPage = async ({
                                     <span>{genre}</span>
                                 )
                             ) : null}
+                            {minRating && <div>Min rating: {minRating}</div>}
+                            {maxRating && <div>Max rating: {maxRating}</div>}
                         </div>
                         <div className="col-span-4 mb-4 lg:mb-0 xl:col-span-3">
                             <MainFilter />

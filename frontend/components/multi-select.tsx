@@ -9,134 +9,46 @@ import { Badge } from "@ui/badge";
 import { Command, CommandGroup, CommandItem, CommandList } from "@ui/command";
 import { ScrollArea } from "@ui/scroll-area";
 import { TmdbGenre } from "@/types";
-
-const genres = [
-    {
-        id: 28,
-        name: "Action",
-        value: "action",
-    },
-    {
-        id: 12,
-        name: "Adventure",
-        value: "adventure",
-    },
-    {
-        id: 16,
-        name: "Animation",
-        value: "animation",
-    },
-    {
-        id: 35,
-        name: "Comedy",
-        value: "comedy",
-    },
-    {
-        id: 80,
-        name: "Crime",
-        value: "crime",
-    },
-    {
-        id: 99,
-        name: "Documentary",
-        value: "documentary",
-    },
-    {
-        id: 18,
-        name: "Drama",
-        value: "drama",
-    },
-    {
-        id: 10751,
-        name: "Family",
-        value: "family",
-    },
-    {
-        id: 14,
-        name: "Fantasy",
-        value: "fantasy",
-    },
-    {
-        id: 36,
-        name: "History",
-        value: "history",
-    },
-    {
-        id: 27,
-        name: "Horror",
-        value: "horror",
-    },
-    {
-        id: 10402,
-        name: "Music",
-        value: "music",
-    },
-    {
-        id: 9648,
-        name: "Mystery",
-        value: "mystery",
-    },
-    {
-        id: 10749,
-        name: "Romance",
-        value: "romance",
-    },
-    {
-        id: 878,
-        name: "Science Fiction",
-        value: "science+fiction",
-    },
-    {
-        id: 10770,
-        name: "TV Movie",
-        value: "tv+movie",
-    },
-    {
-        id: 53,
-        name: "Thriller",
-        value: "thriller",
-    },
-    {
-        id: 10752,
-        name: "War",
-        value: "war",
-    },
-    {
-        id: 37,
-        name: "Western",
-        value: "western",
-    },
-];
+import { genres } from "@/config/tmdb";
 
 const MultiSelect = ({
     onSelectionChange,
-    clearSelection,
 }: {
     onSelectionChange: (selected: string[]) => void;
-    clearSelection: boolean;
 }) => {
+    // Get the genre params from the URL
     const searchParams = useSearchParams();
     const genreParams = searchParams.getAll("genre") || [];
 
+    // Initialize the selected genres with the genres from the URL
     const initialSelectedGenres = genreParams.length
         ? genres.filter((genre) => genreParams.includes(genre.value))
         : [];
 
-    const inputRef = React.useRef<HTMLInputElement>(null);
-    const [open, setOpen] = React.useState(false);
+    // State to store the selected genres with default values from the URL or an empty array
     const [selected, setSelected] = React.useState<TmdbGenre[]>(
         initialSelectedGenres,
     );
+
+    // State to store the open state of the drawer
+    const [open, setOpen] = React.useState(false);
+    // A ref to the input field
+    const inputRef = React.useRef<HTMLInputElement>(null);
+    // State to store the input value
     const [inputValue, setInputValue] = React.useState("");
 
     const handleUnselect = React.useCallback((genre: TmdbGenre) => {
+        // Remove the genre from the selected genres
         setSelected((prev) => prev.filter((s) => s.value !== genre.value));
     }, []);
 
+    // Handle the keydown event on the input field to remove the last selected genre when the input is empty
     const handleKeyDown = React.useCallback(
         (e: React.KeyboardEvent<HTMLDivElement>) => {
             const input = inputRef.current;
             if (input) {
+                // Handle the Backspace and Delete key events
+                // to remove the last selected genre when the input is empty
                 if (e.key === "Delete" || e.key === "Backspace") {
                     if (input.value === "") {
                         setSelected((prev) => {
@@ -147,6 +59,7 @@ const MultiSelect = ({
                     }
                 }
 
+                // Handle the Escape key event to blur the input field
                 // This is not a default behavior of the <input /> field
                 if (e.key === "Escape") {
                     input.blur();
@@ -156,17 +69,23 @@ const MultiSelect = ({
         [],
     );
 
+    // Filter the genres that are not selected
     const selectables = genres.filter((genre) => !selected.includes(genre));
 
+    // Call the onSelectionChange function to send data 
+    // to the `MainFilter` parent when the selected genres change
     React.useEffect(() => {
         onSelectionChange(selected.map((genre) => genre.value));
     }, [selected, onSelectionChange]);
 
+    // Update the selected genres when the URL changes
     React.useEffect(() => {
-        if (clearSelection) {
-            setSelected([]);
-        }
-    }, [clearSelection]);
+        const genreParams = searchParams.getAll("genre") || [];
+        const updatedSelectedGenres = genreParams.length
+            ? genres.filter((genre) => genreParams.includes(genre.value))
+            : [];
+        setSelected(updatedSelectedGenres);
+    }, [searchParams]);
 
     return (
         <Command

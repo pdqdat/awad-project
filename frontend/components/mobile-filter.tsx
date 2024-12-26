@@ -13,6 +13,7 @@ import {
 } from "@ui/drawer";
 import { Button } from "@ui/button";
 import { Separator } from "@ui/separator";
+import { Label } from "@ui/label";
 // import MultiSelect from "@comp/multi-select";
 
 const MobileFilter = () => {
@@ -55,11 +56,11 @@ const MobileFilter = () => {
                         </DrawerHeader>
                         <div className="p-4">
                             {/* <MultiSelect /> */}
-                            Multi select here
+                            <Label className="text-base">Genres</Label>
                             <Separator className="my-2" />
-                            Rating
+                            <Label className="text-base">Rating</Label>
                             <Separator className="my-2" />
-                            Release date
+                            <Label className="text-base">Release date</Label>
                         </div>
                         <DrawerFooter>
                             <Button onClick={handleApplyFilter}>
