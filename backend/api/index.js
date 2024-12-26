@@ -16,12 +16,19 @@ const PORT = process.env.PORT || 3000;
 
 const cors = require('cors');
 app.use(cors());
-app.use(express.json());
-
 
 // Connect to the database
 connectDB();
 
+
+
+app.use((req, res, next) => {
+    if (req.path === '/api/webhook') {
+        next(); // Skip JSON parsing for webhook route
+    } else {
+        express.json()(req, res, next); // Apply JSON parsing for all other routes
+    }
+});
 
 // Define routes
 app.use('/api', movieRoutes);
@@ -29,6 +36,7 @@ app.use('/api', trendingRoutes);
 app.use('/api', movieOfCateRoutes);
 app.use('/api', castRoutes);
 app.use('/api', userRoutes); 
+
 app.use('/api', webhookRoutes);
 
 app.get('/debug-secret', (req, res) => {

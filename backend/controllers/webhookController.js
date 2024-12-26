@@ -5,23 +5,41 @@ const handleClerkWebhook = async (req, res) => {
     try {
         const secret = process.env.CLERK_WEBHOOK_SECRET_KEY;
         if (!secret) {
-            throw new Error("CLERK_WEBHOOK_SECRET_KEY is not set");
+            throw new Error("CLERK_WEBHOOK_SECRET_KEY is not set in the environment variables.");
         }
 
-        const wh = new Webhook(secret);
-        const evt = wh.verify(req.body.toString(), req.headers);
+        // Initialize the Webhook with the secret key
+        const webhook = new Webhook(secret);
+
+        // Verify the webhook payload and extract the event data
+        const payloadString = req.body;  // Convert Buffer to string
+        const evt = webhook.verify(payloadString, req.headers);
+        
+        console.log('Event type:', evt.type);
+        console.log('Received event:', evt);
 
         if (evt.type === 'user.created') {
-            const { id, first_name: firstName, last_name: lastName } = evt.data;
-            const newUser = new User({ clerkUserId: id, firstName, lastName });
+            const { id, ...attributes } = evt.data;
+            const firstName = attributes.first_name;
+            const lastName = attributes.last_name;
+
+            // Create a new user and save to the database
+            const newUser = new User({
+                clerkUserId: id,
+                firstName: firstName,  // Adjust these fields based on actual data structure
+                lastName: lastName
+            });
+
             await newUser.save();
             console.log('User saved to database:', newUser);
-        }
 
-        res.status(200).json({ success: true, message: 'Webhook received and processed' });
+            res.status(200).json({ success: true, message: 'User created and saved successfully' });
+        } else {
+            res.status(200).json({ success: true, message: 'Received webhook, but no action needed' });
+        }
     } catch (err) {
-        console.error('Error handling webhook:', err);
-        res.status(400).json({ success: false, message: err.message });
+        console.error('Error handling webhook:', err.message);
+        res.status(400).json({ success: false, message: 'Webhook processing failed: ' + err.message });
     }
 };
 
