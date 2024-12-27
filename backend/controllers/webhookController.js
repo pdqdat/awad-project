@@ -18,24 +18,39 @@ const handleClerkWebhook = async (req, res) => {
         console.log('Event type:', evt.type);
         console.log('Received event:', evt);
 
-        if (evt.type === 'user.created') {
-            const { id, ...attributes } = evt.data;
-            const firstName = attributes.first_name;
-            const lastName = attributes.last_name;
+        switch (evt.type) {
+            case 'user.created':
+                const { id, ...attributes } = evt.data;
+                const newUser = new User({
+                    clerkUserId: id,
+                    firstName: attributes.first_name,
+                    lastName: attributes.last_name
+                });
+                await newUser.save();
+                console.log('User saved to database:', newUser);
+                res.status(200).json({ success: true, message: 'User created and saved successfully' });
+                break;
+            
+            case 'user.deleted':
+                const deletedUser = await User.findOneAndDelete({ clerkUserId: evt.data.id });
+                console.log('User deleted from database:', deletedUser);
+                res.status(200).json({ success: true, message: 'User deleted successfully' });
+                break;
 
-            // Create a new user and save to the database
-            const newUser = new User({
-                clerkUserId: id,
-                firstName: firstName,  // Adjust these fields based on actual data structure
-                lastName: lastName
-            });
+            case 'user.updated':
+                const updatedUser = await User.findOneAndUpdate(
+                    { clerkUserId: evt.data.id },
+                    { $set: { firstName: evt.data.first_name, lastName: evt.data.last_name } },
+                    { new: true }
+                );
+                console.log('User updated in database:', updatedUser);
+                res.status(200).json({ success: true, message: 'User updated successfully' });
+                break;
 
-            await newUser.save();
-            console.log('User saved to database:', newUser);
-
-            res.status(200).json({ success: true, message: 'User created and saved successfully' });
-        } else {
-            res.status(200).json({ success: true, message: 'Received webhook, but no action needed' });
+            // Add more case blocks for other event types as necessary
+            default:
+                res.status(200).json({ success: true, message: 'Received webhook, but no action needed' });
+                break;
         }
     } catch (err) {
         console.error('Error handling webhook:', err.message);
