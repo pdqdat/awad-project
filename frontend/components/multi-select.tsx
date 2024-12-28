@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useState, useRef, useCallback, KeyboardEvent, useEffect } from "react";
 import { X } from "lucide-react";
 import { Command as CommandPrimitive } from "cmdk";
 import { useSearchParams } from "next/navigation";
@@ -25,61 +25,59 @@ const MultiSelect = ({
         ? genres.filter((genre) => genreParams.includes(genre.value))
         : [];
 
-    // State to store the selected genres with default values from the URL or an empty array
-    const [selected, setSelected] = React.useState<TmdbGenre[]>(
+    // State to store the selected genres with default values from the URL
+    // If there are no genres in the URL, the default value is an empty array
+    const [selected, setSelected] = useState<TmdbGenre[]>(
         initialSelectedGenres,
     );
 
     // State to store the open state of the drawer
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
     // A ref to the input field
-    const inputRef = React.useRef<HTMLInputElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
     // State to store the input value
-    const [inputValue, setInputValue] = React.useState("");
+    const [inputValue, setInputValue] = useState("");
 
-    const handleUnselect = React.useCallback((genre: TmdbGenre) => {
+    const handleUnselect = useCallback((genre: TmdbGenre) => {
         // Remove the genre from the selected genres
         setSelected((prev) => prev.filter((s) => s.value !== genre.value));
     }, []);
 
     // Handle the keydown event on the input field to remove the last selected genre when the input is empty
-    const handleKeyDown = React.useCallback(
-        (e: React.KeyboardEvent<HTMLDivElement>) => {
-            const input = inputRef.current;
-            if (input) {
-                // Handle the Backspace and Delete key events
-                // to remove the last selected genre when the input is empty
-                if (e.key === "Delete" || e.key === "Backspace") {
-                    if (input.value === "") {
-                        setSelected((prev) => {
-                            const newSelected = [...prev];
-                            newSelected.pop();
-                            return newSelected;
-                        });
-                    }
-                }
-
-                // Handle the Escape key event to blur the input field
-                // This is not a default behavior of the <input /> field
-                if (e.key === "Escape") {
-                    input.blur();
+    const handleKeyDown = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
+        const input = inputRef.current;
+        if (input) {
+            // Handle the Backspace and Delete key events
+            // to remove the last selected genre when the input is empty
+            if (e.key === "Delete" || e.key === "Backspace") {
+                if (input.value === "") {
+                    setSelected((prev) => {
+                        const newSelected = [...prev];
+                        newSelected.pop();
+                        return newSelected;
+                    });
                 }
             }
-        },
-        [],
-    );
+
+            // Handle the Escape key event to blur the input field
+            // This is not a default behavior of the <input /> field
+            if (e.key === "Escape") {
+                input.blur();
+            }
+        }
+    }, []);
 
     // Filter the genres that are not selected
     const selectables = genres.filter((genre) => !selected.includes(genre));
 
-    // Call the onSelectionChange function to send data 
+    // Call the onSelectionChange function to send data
     // to the `MainFilter` parent when the selected genres change
-    React.useEffect(() => {
+    useEffect(() => {
         onSelectionChange(selected.map((genre) => genre.value));
     }, [selected, onSelectionChange]);
 
     // Update the selected genres when the URL changes
-    React.useEffect(() => {
+    useEffect(() => {
         const genreParams = searchParams.getAll("genre") || [];
         const updatedSelectedGenres = genreParams.length
             ? genres.filter((genre) => genreParams.includes(genre.value))

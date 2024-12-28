@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { format } from "date-fns";
 
 import { Card, CardHeader, CardFooter, CardTitle, CardContent } from "@ui/card";
 import { Button } from "@ui/button";
 import MultiSelect from "@comp/multi-select";
 import { Separator } from "@ui/separator";
 import { Label } from "@ui/label";
-
 import RatingRangeSlider from "@comp/rating-range-slider";
 import DateRangePicker from "@comp/date-range-picker";
 
@@ -18,17 +18,25 @@ const MainFilter = () => {
     // State to store the rating values
     const [ratingValues, setRatingValues] = useState([0, 10]);
 
+    // const [from, setFrom] = useState<Date>();
+    // const [to, setTo] = useState<Date>();
+    const [dateRange, setDateRange] = useState<[Date | undefined, Date]>([
+        undefined,
+        new Date(),
+    ]);
+
     // Get the router object
     const router = useRouter();
     // Get the search params from the URL
     const searchParams = useSearchParams();
 
-    // Check if the apply button should be disabled 
+    // Check if the apply button should be disabled
     // based on the selected genres and rating values
     const applyBtnDisabled =
         selectedGenres.length === 0 &&
         ratingValues[0] === 0 &&
-        ratingValues[1] === 10;
+        ratingValues[1] === 10 &&
+        dateRange[0] === undefined;
 
     // Check if there are other params in the URL other than "q" (search query)
     const hasOtherParams = (() => {
@@ -55,14 +63,20 @@ const MainFilter = () => {
         // Add the selected genres to the new URL
         selectedGenres.forEach((genre) => params.append("genre", genre));
 
-        // If the min rating is not 0, add it to the new URL
-        if (ratingValues[0] !== 0) {
+        // If either min or max rating is changed from default, add both to the new URL
+        if (ratingValues[0] !== 0 || ratingValues[1] !== 10) {
             params.append("minRating", ratingValues[0].toString());
+            params.append("maxRating", ratingValues[1].toString());
         }
 
-        // If the max rating is not 10, add it to the new URL
-        if (ratingValues[1] !== 10) {
-            params.append("maxRating", ratingValues[1].toString());
+        // If the "from" date is changed, add both "from" and "to" date to the new URL
+        if (
+            dateRange[0] !== undefined
+        ) {
+            if (dateRange[0]) {
+                params.append("from", format(dateRange[0], "yyyy-MM-dd"));
+            }
+            params.append("to", format(dateRange[1], "yyyy-MM-dd"));
         }
 
         // Push the new URL to the router
@@ -88,29 +102,19 @@ const MainFilter = () => {
         <Card className="hidden lg:sticky lg:top-4 lg:block">
             <CardHeader>
                 <CardTitle className="text-xl">Filters</CardTitle>
-                <div>
-                    {selectedGenres.length > 0 &&
-                        selectedGenres.map((genre) => (
-                            <span key={genre} className="mr-2">
-                                {genre}
-                            </span>
-                        ))}
-                </div>
-                <div>
-                    {ratingValues[0]} - {ratingValues[1]}
-                </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex flex-col gap-2">
                 <Label className="text-base">Genres</Label>
                 <MultiSelect onSelectionChange={setSelectedGenres} />
-                <Separator className="my-2" />
+                <Separator />
                 <Label className="text-base">Rating</Label>
-                <div className="w-full py-7">
+                <div className="w-full pb-3 pt-7">
                     <RatingRangeSlider onRangeChange={setRatingValues} />
                 </div>
-                <Separator className="my-2" />
+                <Separator />
                 <Label className="text-base">Release date</Label>
-                <DateRangePicker />
+                <DateRangePicker onRangeChange={setDateRange} />
+                <Separator className="mt-4" />
             </CardContent>
             <CardFooter className="flex flex-col gap-2">
                 <Button

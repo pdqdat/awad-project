@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { format } from "date-fns";
 
 import { searchMovies } from "@lib/actions";
 import siteConfig from "@/config/site";
@@ -16,7 +17,8 @@ const SearchPage = async ({
 }: {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) => {
-    const { q, page, genre, minRating, maxRating } = await searchParams;
+    const { q, page, genre, minRating, maxRating, from, to } =
+        await searchParams;
     if (!q) {
         return (
             <div className="min-h-72 py-8 lg:min-h-[30rem]">
@@ -40,18 +42,32 @@ const SearchPage = async ({
                     <div className="gap-4 lg:grid lg:grid-cols-12">
                         <div className="col-span-12">
                             {genre ? (
-                                Array.isArray(genre) ? (
-                                    genre.map((g, index) => (
-                                        <span key={index} className="mr-2">
-                                            {g}
-                                        </span>
-                                    ))
-                                ) : (
-                                    <span>{genre}</span>
-                                )
+                                <div>
+                                    Genre(s):{" "}
+                                    {Array.isArray(genre) ? (
+                                        genre.map((g, index) => (
+                                            <span key={index} className="mr-2">
+                                                {g}
+                                            </span>
+                                        ))
+                                    ) : (
+                                        <span>{genre}</span>
+                                    )}
+                                </div>
                             ) : null}
                             {minRating && <div>Min rating: {minRating}</div>}
                             {maxRating && <div>Max rating: {maxRating}</div>}
+                            {from && (
+                                <div>
+                                    From:{" "}
+                                    {format(new Date(from as string), "PPP")}
+                                </div>
+                            )}
+                            {to && (
+                                <div>
+                                    To: {format(new Date(to as string), "PPP")}
+                                </div>
+                            )}
                         </div>
                         <div className="col-span-4 mb-4 lg:mb-0 xl:col-span-3">
                             <MainFilter />
