@@ -1,17 +1,12 @@
-// routes/user.js
 const express = require('express');
+const { createList, addMovieToList } = require('../controllers/movieListController');
+const { rateMovie } = require('../controllers/movieRatingController');
+
 const router = express.Router();
-const userListController = require('../controllers/userListController');
-const userRatingController = require('../controllers/userRatingController');
 
-// User lists
-router.post('/lists', userListController.createList);
-router.put('/lists/:id', userListController.updateList);
-router.delete('/lists/:id', userListController.deleteList);
-router.get('/lists', userListController.getAllLists);
 
-// User ratings
-router.post('/ratings', userRatingController.rateMovie);
-router.get('/ratings', userRatingController.getUserRatings);
+router.post('/list/create', createList);
+router.put('/list/addMovie', addMovieToList);
+router.post('/rate', rateMovie);
 
 module.exports = router;

@@ -37,7 +37,7 @@ const movieSchema = new mongoose.Schema({
     iso_3166_1: String,
     name: String
   }],
-  release_date: Date,
+  release_date: String,
   revenue: Number,
   runtime: Number,
   spoken_languages: [{

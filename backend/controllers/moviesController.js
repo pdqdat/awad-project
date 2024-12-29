@@ -78,20 +78,26 @@ exports.searchMovies = async (req, res) => {
 
 
 exports.filterMovies = async (req, res) => {
-    const { genre, minRating, maxRating, releaseDate, page = 1, limit = 10 } = req.query;
+    const {
+        genre,
+        minRating,
+        maxRating,
+        startDate, // Ensure this is formatted as "YYYY-MM-DD"
+        endDate,   // Ensure this is formatted as "YYYY-MM-DD"
+        page = 1,
+        limit = 10
+    } = req.query;
+
     let filterCriteria = {};
 
-    // Parse page and limit
     const currentPage = parseInt(page);
     const pageSize = parseInt(limit);
     const skip = (currentPage - 1) * pageSize;
 
-    // Filter by genre if specified
     if (genre) {
         filterCriteria.genres = { $in: [genre] };
     }
 
-    // Filter by rating range
     if (minRating || maxRating) {
         filterCriteria.vote_average = {};
         if (minRating) {
@@ -102,16 +108,22 @@ exports.filterMovies = async (req, res) => {
         }
     }
 
-    // Filter by release date if specified
-    if (releaseDate) {
-        filterCriteria.release_date = { $gte: new Date(releaseDate) };
+    if (startDate && endDate) {
+        // Compare dates as strings
+        filterCriteria.release_date = {
+            $gte: startDate,
+            $lte: endDate
+        };
     }
 
     try {
+        // console.log('Filter criteria:', filterCriteria);
         const totalMovies = await Movie.countDocuments(filterCriteria);
         const movies = await Movie.find(filterCriteria)
                                   .skip(skip)
                                   .limit(pageSize);
+
+        // console.log('Filtered movies:', movies);
 
         res.json({
             total: totalMovies,
@@ -121,8 +133,7 @@ exports.filterMovies = async (req, res) => {
             data: movies
         });
     } catch (error) {
-        res.status(500).send(error.toString());
-    }   
+        console.error('Error retrieving filtered movies:', error);
+        res.status(500).send('Error in fetching movies: ' + error.toString());
+    }
 };
-
-
