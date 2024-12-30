@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Star } from "lucide-react";
+import { Star, ChevronRight } from "lucide-react";
+import Link from "next/link";
 
+import { Button } from "@ui/button";
 import { fetchMovieDetail } from "@lib/actions";
 import { getTmdbImageUrl, tmdbPosterSizes } from "@/config/tmdb";
 import { Badge } from "@ui/badge";
@@ -25,7 +27,7 @@ const MovieDetailPage = async ({
 
     return (
         <div>
-            <div className="container mx-auto px-4 py-8">
+            <div className="container mx-auto py-8">
                 <div className="flex flex-col items-center md:flex-row md:items-start">
                     {/* Poster */}
                     <Image
@@ -58,7 +60,7 @@ const MovieDetailPage = async ({
                             ))}
                         </div>
                         <div className="group mb-4 flex items-center">
-                            <Star className="group-hover:animate-wiggle mr-1 text-yellow-500" />
+                            <Star className="mr-1 text-yellow-500 group-hover:animate-wiggle" />
                             <p className="mr-2 text-lg font-semibold">
                                 <span className="transition-colors group-hover:text-yellow-500">
                                     {movieDetail.vote_average}
@@ -70,6 +72,12 @@ const MovieDetailPage = async ({
                             </p>
                         </div>
                         <p>{movieDetail.overview}</p>
+                        <Button variant="secondary" asChild>
+                            <Link href={`/movie/${movieID}/review`}>
+                                Go to review
+                                <ChevronRight />
+                            </Link>
+                        </Button>
                     </div>
                 </div>
             </div>
