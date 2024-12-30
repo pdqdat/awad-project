@@ -11,6 +11,34 @@ const getRequestOptions = {
     },
 };
 
+// export const fetchTrendingMovies = async (
+//     timeWindow: "week" | "day" = "week",
+//     page: number = 1,
+// ): Promise<{
+//     results: Movie[];
+//     page: number;
+//     totalPages: number;
+//     totalResults: number;
+// }> => {
+//     try {
+//         const res = await fetch(
+//             `${tmdbApiBaseUrl}/trending/movie/${timeWindow}?language=en-US&page=${page}`,
+//             getRequestOptions,
+//         );
+//         const data = await res.json();
+
+//         return {
+//             results: data.results,
+//             page: data.page,
+//             totalPages: data.total_pages,
+//             totalResults: data.total_results,
+//         };
+//     } catch (error) {
+//         console.error("Error fetching trending movies: ", error);
+//         throw new Error("Error fetching trending movies");
+//     }
+// };
+
 export const fetchTrendingMovies = async (
     timeWindow: "week" | "day" = "week",
     page: number = 1,
@@ -23,6 +51,7 @@ export const fetchTrendingMovies = async (
     try {
         const res = await fetch(
             `${tmdbApiBaseUrl}/trending/movie/${timeWindow}?language=en-US&page=${page}`,
+            // `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/trending/${timeWindow}?page=${page}&limit=10`,
             getRequestOptions,
         );
         const data = await res.json();
@@ -36,6 +65,33 @@ export const fetchTrendingMovies = async (
     } catch (error) {
         console.error("Error fetching trending movies: ", error);
         throw new Error("Error fetching trending movies");
+    }
+};
+
+export const fetchPopularMovies = async (
+    page: number = 1,
+): Promise<{
+    data: Movie[];
+    page: number;
+    totalPages: number;
+    total: number;
+}> => {
+    try {
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/movies/cate/popular?page=${page}&limit=10`,
+            getRequestOptions,
+        );
+        const data = await res.json();
+
+        return {
+            data: data.data,
+            page: data.page,
+            totalPages: data.totalPages,
+            total: data.total,
+        };
+    } catch (error) {
+        console.error("Error fetching popular movies: ", error);
+        throw new Error("Error fetching popular movies");
     }
 };
 
