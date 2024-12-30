@@ -4,9 +4,11 @@ import { Star, ChevronRight } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@ui/button";
-import { fetchMovieDetail } from "@lib/actions";
+import { fetchMovieDetail, fetchSimilarMovies } from "@lib/actions";
 import { getTmdbImageUrl, tmdbPosterSizes } from "@/config/tmdb";
 import { Badge } from "@ui/badge";
+import MoviesRow from "@/components/movies-row";
+import CastRow from "@/components/cast-row";
 
 export const metadata: Metadata = {
     title: "Movie Detail",
@@ -20,6 +22,8 @@ const MovieDetailPage = async ({
 }) => {
     const { movieID } = await params;
     const movieDetail = await fetchMovieDetail(movieID);
+    const similarMovies = await fetchSimilarMovies(movieID);
+
 
     if (!movieDetail) {
         return <div>Error fetching movie detail</div>;
@@ -80,6 +84,26 @@ const MovieDetailPage = async ({
                         </Button>
                     </div>
                 </div>
+
+                <div className="mt-8">
+                    <h2 className="text-xl font-semibold">Top Billed Cast</h2>
+                </div>
+                    
+                <CastRow casts={movieDetail.credits.cast.slice(0,5)} />
+
+                <Button variant="secondary" asChild>
+                    <Link href={`/movie/${movieID}/cast`}>
+                        Full Cast 
+                        <ChevronRight />
+                    </Link>
+                </Button>
+
+                <div className="mt-8">
+                    <h2 className="text-xl font-semibold">Known For</h2>
+                </div>
+                    
+                <MoviesRow movies={similarMovies.data} />
+                
             </div>
         </div>
     );

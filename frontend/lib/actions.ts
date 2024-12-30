@@ -1,7 +1,7 @@
 "use server";
 
 import { tmdbApiBaseUrl } from "@/config/tmdb";
-import { Movie, MovieDetail, MovieSearchResult, CastDetail, PersonDetail } from "@/types";
+import { Movie, MovieDetail, MovieSearchResult, PersonDetail } from "@/types";
 
 const getRequestOptions = {
     method: "GET",
@@ -127,7 +127,8 @@ export const fetchMovieDetail = async (
 ): Promise<MovieDetail> => {
     try {
         const res = await fetch(
-            `${tmdbApiBaseUrl}/movie/${movieID}?language=en-US`,
+            // `${tmdbApiBaseUrl}/movie/${movieID}?language=en-US`,
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/movies/${movieID}`,
             getRequestOptions,
         );
         const data = await res.json();

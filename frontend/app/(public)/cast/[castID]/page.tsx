@@ -18,6 +18,8 @@ const CastDetailPage = async ({
     const { castID } = await params;
     const castDetail = await fetchPersonDetail(castID);
 
+    console.log(castDetail);
+
     if (!castDetail) {
         return <div>Error fetching cast detail</div>;
     }
@@ -100,12 +102,10 @@ const CastDetailPage = async ({
                     )}
 
                     <div className="mt-6">
-                        <h2 className="text-xl font-semibold">Also Known As</h2>
+                        <h2 className="text-xl font-semibold">Known For</h2>
                     </div>
                     
-
-                    <MoviesRowDBLocal movies={castDetail.movie_credits.cast}
-                    />
+                    <MoviesRowDBLocal movies={castDetail.movie_credits} />
 
                 </div>
             </div>
