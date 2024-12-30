@@ -72,13 +72,31 @@ const movieSchema = new mongoose.Schema({
         }]
     },
     index: {sparse: true}
-}
+},
+
+similar_movies: [{
+  tmdb_id: Number,
+  title: String,
+  adult: Boolean,
+  backdrop_path: String,
+  genre_ids: [Number],
+  original_language: String,
+  original_title: String,
+  overview: String,
+  popularity: Number,
+  poster_path: String,
+  release_date: Date,
+  video: Boolean,
+  vote_average: Number,
+  vote_count: Number
+}]
 
 });
 movieSchema.index({ 'title': 'text', 'credits.cast.name': 'text' });
 
 
-const Movie = mongoose.model('Movie', movieSchema, 'movies');
+const getModelForCollection = (collectionName) => {
+  return mongoose.model('Movie', movieSchema, collectionName);
+};
 
-
-module.exports = Movie;
+module.exports = getModelForCollection;

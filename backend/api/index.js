@@ -2,7 +2,6 @@ const express = require('express');
 const connectDB = require('../config/db.js');
 const movieRoutes = require('../routes/moviesRoutes.js');
 const trendingRoutes = require('../routes/moviesTrendingRoutes.js');
-const movieOfCateRoutes = require('../routes/moviesOfCateRoutes.js');
 const castRoutes = require('../routes/castRoute.js');
 const userRoutes = require('../routes/userRoutes.js'); 
 const webhookRoutes = require('../routes/webhookRoutes.js');
@@ -38,7 +37,6 @@ app.use((req, res, next) => {
 // Define routes
 app.use('/api', movieRoutes);
 app.use('/api', trendingRoutes);
-app.use('/api', movieOfCateRoutes);
 app.use('/api', castRoutes);
 app.use('/api',ClerkExpressRequireAuth(), userRoutes); 
 app.use('/api', webhookRoutes);

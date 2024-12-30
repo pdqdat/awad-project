@@ -1,6 +1,62 @@
-const Movie = require('../models/Movies');
+
+const getModelForCollection = require('../models/Movies');
+const Movie = getModelForCollection('movies');
+const MovieSimilar= getModelForCollection('similar');
 
 const Genre = require('../models/Genres');
+
+function capitalizeWords(string) {
+  return string.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+}
+
+function buildFilterCriteria({ genres, minRating, maxRating, startDate, endDate }) {
+  let filterCriteria = {};
+
+  if (genres) {
+      if (typeof genres === 'string') {
+          genres = genres.split(',').map(genre => capitalizeWords(genre.trim()));
+      } else if (Array.isArray(genres)) {
+          genres = genres.map(genre => capitalizeWords(genre.trim()));
+      }
+      filterCriteria['genres.name'] = { $all: genres };
+  }
+  if (minRating) {
+    filterCriteria.vote_average = { ...(filterCriteria.vote_average || {}), $gte: parseFloat(minRating) };
+  }
+
+  if (maxRating) {
+    filterCriteria.vote_average = { ...(filterCriteria.vote_average || {}), $lte: parseFloat(maxRating) };
+  }
+
+  if (startDate && endDate) {
+    filterCriteria.release_date = { $gte: startDate, $lte: endDate };
+  } else if (startDate) {
+    filterCriteria.release_date = { $gte: startDate };
+  } else if (endDate) {
+    filterCriteria.release_date = { $lte: endDate };
+  }
+
+  return filterCriteria;
+}
+
+const applyFiltersAndPagination = async (baseCriteria, page, limit) => {
+  const currentPage = parseInt(page);
+  const pageSize = parseInt(limit);
+  const skip = (currentPage - 1) * pageSize;
+
+  const totalItems = await Movie.countDocuments(baseCriteria);
+  const items = await Movie.find(baseCriteria).skip(skip).limit(pageSize);
+
+
+  return {
+      total: totalItems,
+      page: currentPage,
+      limit: pageSize,
+      totalPages: Math.ceil(totalItems / pageSize),
+      data: items
+  };
+};
+
 
 exports.getAllGenres = async (req, res) => {
     try {
@@ -11,7 +67,6 @@ exports.getAllGenres = async (req, res) => {
         res.status(500).send('Server error while retrieving genres');
     }
 };
-
 
 exports.getAllMovies = async (req, res) => {
   const { all } = req.query;
@@ -62,78 +117,93 @@ exports.getMovieById = async (req, res) => {
 };
 
 exports.searchMovies = async (req, res) => {
-  const { query } = req.query; 
+  const { query, page = 1, limit = 10, ...filters } = req.query;
+  const baseCriteria = {
+      $or: [
+          { title: { $regex: query, $options: 'i' } },
+          { 'credits.cast.name': { $regex: query, $options: 'i' } }
+      ],
+      ...buildFilterCriteria(filters)
+  };
+
   try {
-      const movies = await Movie.find({
-          $or: [
-              { title: { $regex: query, $options: 'i' } },
-              { 'credits.cast.name': { $regex: query, $options: 'i' } }
-          ]
-      });
-      res.json(movies);
+      const result = await applyFiltersAndPagination(baseCriteria, page, limit);
+      res.json(result);
+      // console.log("Search Criteria:", baseCriteria); // Debug log
   } catch (error) {
-      res.status(500).send(error.toString());
+      res.status(500).send(`Error in searching movies with pagination: ${error}`);
   }
 };
 
 
-exports.filterMovies = async (req, res) => {
-    const {
-        genre,
-        minRating,
-        maxRating,
-        startDate, // Ensure this is formatted as "YYYY-MM-DD"
-        endDate,   // Ensure this is formatted as "YYYY-MM-DD"
-        page = 1,
-        limit = 10
-    } = req.query;
 
-    let filterCriteria = {};
+exports.getUpcomingMovies = async (req, res) => {
+  const { page = 1, limit = 10, ...filters } = req.query;
+  const baseCriteria = { categories: 'upcoming', ...buildFilterCriteria(filters) };
 
-    const currentPage = parseInt(page);
-    const pageSize = parseInt(limit);
-    const skip = (currentPage - 1) * pageSize;
+  try {
+      const result = await applyFiltersAndPagination(baseCriteria, page, limit);
+      res.json(result);
+  } catch (error) {
+      res.status(500).send(`Error fetching popular movies with filters: ${error}`);
+  }
+};
 
-    if (genre) {
-        filterCriteria.genres = { $in: [genre] };
-    }
 
-    if (minRating || maxRating) {
-        filterCriteria.vote_average = {};
-        if (minRating) {
-            filterCriteria.vote_average.$gte = parseFloat(minRating);
-        }
-        if (maxRating) {
-            filterCriteria.vote_average.$lte = parseFloat(maxRating);
-        }
-    }
 
-    if (startDate && endDate) {
-        // Compare dates as strings
-        filterCriteria.release_date = {
-            $gte: startDate,
-            $lte: endDate
-        };
-    }
-
+  exports.getTopRatedMovies = async (req, res) => {
+    const { page = 1, limit = 10, ...filters } = req.query;
+    const baseCriteria = { categories: 'top_rated', ...buildFilterCriteria(filters) };
+  
     try {
-        // console.log('Filter criteria:', filterCriteria);
-        const totalMovies = await Movie.countDocuments(filterCriteria);
-        const movies = await Movie.find(filterCriteria)
-                                  .skip(skip)
-                                  .limit(pageSize);
-
-        // console.log('Filtered movies:', movies);
-
-        res.json({
-            total: totalMovies,
-            page: currentPage,
-            limit: pageSize,
-            totalPages: Math.ceil(totalMovies / pageSize),
-            data: movies
-        });
+        const result = await applyFiltersAndPagination(baseCriteria, page, limit);
+        res.json(result);
     } catch (error) {
-        console.error('Error retrieving filtered movies:', error);
-        res.status(500).send('Error in fetching movies: ' + error.toString());
+        res.status(500).send(`Error fetching popular movies with filters: ${error}`);
     }
+  };
+  
+
+exports.getPopularMovies = async (req, res) => {
+  const { page = 1, limit = 10, ...filters } = req.query;
+  const baseCriteria = { categories: 'popular', ...buildFilterCriteria(filters) };
+
+  try {
+      const result = await applyFiltersAndPagination(baseCriteria, page, limit);
+      res.json(result);
+  } catch (error) {
+      res.status(500).send(`Error fetching popular movies with filters: ${error}`);
+  }
+};
+
+
+
+exports.getNowPlayingMovies = async (req, res) => {
+  const { page = 1, limit = 10, ...filters } = req.query;
+  const baseCriteria = { categories: 'now_playing', ...buildFilterCriteria(filters) };
+
+  try {
+      const result = await applyFiltersAndPagination(baseCriteria, page, limit);
+      res.json(result);
+  } catch (error) {
+      res.status(500).send(`Error fetching popular movies with filters: ${error}`);
+  }
+};
+
+
+
+exports.getSimilarMovies = async (req, res) => {
+  try {
+      console.log("tmdb_id:", req.params.tmdb_id);
+      const movie = await MovieSimilar.findOne({ tmdb_id: req.params.tmdb_id });
+      // console.log("Movie found:", movie);
+      if (movie && movie.similar_movies) {
+          res.json(movie.similar_movies);
+      } else {
+          res.status(404).send('Similar movies not found');
+      }
+  } catch (error) {
+      console.error('Error retrieving similar movies:', error);
+      res.status(500).send(error.toString());
+  }
 };
