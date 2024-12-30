@@ -95,6 +95,33 @@ export const fetchPopularMovies = async (
     }
 };
 
+export const fetchTopRatedMovies = async (
+    page: number = 1,
+): Promise<{
+    data: Movie[];
+    page: number;
+    totalPages: number;
+    total: number;
+}> => {
+    try {
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/movies/cate/toprated?page=${page}&limit=10`,
+            getRequestOptions,
+        );
+        const data = await res.json();
+
+        return {
+            data: data.data,
+            page: data.page,
+            totalPages: data.totalPages,
+            total: data.total,
+        };
+    } catch (error) {
+        console.error("Error fetching top rated movies: ", error);
+        throw new Error("Error fetching top rated movies");
+    }
+};
+
 export const fetchMovieDetail = async (
     movieID: string,
 ): Promise<MovieDetail> => {

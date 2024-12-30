@@ -12,7 +12,7 @@ const PopularPage = async ({
 }: {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) => {
-    const { page, time } = await searchParams;
+    const { page } = await searchParams;
 
     const { data: movies } = await fetchPopularMovies(1);
 
@@ -21,7 +21,6 @@ const PopularPage = async ({
             {movies ? (
                 <div className="container">
                     {page && <div>Page param: {page}</div>}
-                    {/* {time && <div>Time param: {time}</div>} */}
                     <MoviesGrid movies={movies} />
                 </div>
             ) : (
