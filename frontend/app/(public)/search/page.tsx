@@ -31,44 +31,26 @@ const SearchPage = async ({
     }
     const pageParam = page ? parseInt(page as string) : 1;
 
-    const response = await searchMovies(q as string, false, pageParam);
-    const { results: movies, totalPages } = response;
+    const response = await searchMovies(
+        q as string,
+        pageParam,
+        genre as string | string[],
+        Array.isArray(minRating) ? minRating[0] : minRating,
+        Array.isArray(maxRating) ? maxRating[0] : maxRating,
+        from as string,
+        to as string,
+    );
+    const { data: movies, totalPages, total } = response;
 
     return (
         <div className="min-h-72 py-8 lg:min-h-[30rem]">
             <div className="container">
-                <h1 className="h3 mb-8">Search results for &quot;{q}&quot;</h1>
+                <h1 className="h3 mb-8">
+                    {total} search result{total <= 1 ? "" : "s"} for &quot;{q}
+                    &quot;
+                </h1>
                 {movies ? (
                     <div className="gap-4 lg:grid lg:grid-cols-12">
-                        <div className="col-span-12">
-                            {genre ? (
-                                <div>
-                                    Genre(s):{" "}
-                                    {Array.isArray(genre) ? (
-                                        genre.map((g, index) => (
-                                            <span key={index} className="mr-2">
-                                                {g}
-                                            </span>
-                                        ))
-                                    ) : (
-                                        <span>{genre}</span>
-                                    )}
-                                </div>
-                            ) : null}
-                            {minRating && <div>Min rating: {minRating}</div>}
-                            {maxRating && <div>Max rating: {maxRating}</div>}
-                            {from && (
-                                <div>
-                                    From:{" "}
-                                    {format(new Date(from as string), "PPP")}
-                                </div>
-                            )}
-                            {to && (
-                                <div>
-                                    To: {format(new Date(to as string), "PPP")}
-                                </div>
-                            )}
-                        </div>
                         <div className="col-span-4 mb-4 lg:mb-0 xl:col-span-3">
                             <MainFilter />
                             <MobileFilter />

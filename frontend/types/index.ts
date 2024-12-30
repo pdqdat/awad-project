@@ -84,6 +84,6 @@ export interface CastDetail {
     profile_path: string;
 }
 
-export type MovieSearchResult = Omit<Movie, "media_type">;
+export type MovieSearchResult = Omit<Movie, "media_type"> & { genres: Genre[] };
 
 export type TmdbGenre = Record<"value" | "name", string>;

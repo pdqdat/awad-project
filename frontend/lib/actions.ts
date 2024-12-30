@@ -2,6 +2,7 @@
 
 import { tmdbApiBaseUrl } from "@/config/tmdb";
 import { Movie, MovieDetail, MovieSearchResult, CastDetail } from "@/types";
+import { customEncodeURIComponent } from "@lib/utils";
 
 const getRequestOptions = {
     method: "GET",
@@ -58,26 +59,58 @@ export const fetchMovieDetail = async (
 
 export const searchMovies = async (
     query: string,
-    includeAdult: boolean = false,
     page: number = 1,
+    genres: string | string[] | undefined,
+    minRating: string | undefined,
+    maxRating: string | undefined,
+    startDate: string | undefined,
+    endDate: string | undefined,
 ): Promise<{
-    results: MovieSearchResult[];
+    data: MovieSearchResult[];
     page: number;
     totalPages: number;
-    totalResults: number;
+    total: number;
+    limit: number;
 }> => {
     try {
+        const params = new URLSearchParams({
+            query: query,
+            page: page.toString(),
+        });
+
+        // If genres is an array, append each genre to the URL
+        // Else, append the single genre to the URL
+        if (Array.isArray(genres)) {
+            genres.forEach((genre) => params.append("genres", genre));
+        } else if (genres !== undefined) {
+            params.append("genres", genres);
+        }
+        // Append the rest of the query parameters if they exist
+        if (minRating !== undefined) {
+            params.append("minRating", minRating);
+        }
+        if (maxRating !== undefined) {
+            params.append("maxRating", maxRating);
+        }
+        if (startDate !== undefined) {
+            params.append("startDate", startDate);
+        }
+        if (endDate !== undefined) {
+            params.append("endDate", endDate);
+        }
+
         const res = await fetch(
-            `${tmdbApiBaseUrl}/search/movie?query=${query}&include_adult=${includeAdult}&language=en-US&page=${page}`,
-            getRequestOptions,
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/search?${params.toString()}`,
+            { method: "GET" },
         );
         const data = await res.json();
 
         return {
-            results: data.results,
+            data: data.data,
             page: data.page,
-            totalPages: data.total_pages,
-            totalResults: data.total_results,
+            totalPages: data.totalPages,
+            total: data.total,
+            limit: data.limit,
         };
     } catch (error) {
         console.error("Error searching movies: ", error);
@@ -85,9 +118,7 @@ export const searchMovies = async (
     }
 };
 
-export const fetchCastDetail = async (
-    castID: string,
-): Promise<CastDetail> => {
+export const fetchCastDetail = async (castID: string): Promise<CastDetail> => {
     try {
         const res = await fetch(
             `${tmdbApiBaseUrl}/person/${castID}?language=en-US`,
