@@ -99,7 +99,7 @@ const MovieDetailPage = async ({
                 </Button>
 
                 <div className="mt-8">
-                    <h2 className="text-xl font-semibold">Known For</h2>
+                    <h2 className="text-xl font-semibold">Recommendations</h2>
                 </div>
                     
                 <MoviesRow movies={similarMovies.data} />

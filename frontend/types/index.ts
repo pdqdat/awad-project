@@ -65,10 +65,10 @@ export interface MovieDetail {
     video: boolean;
     vote_average: number;
     vote_count: number;
-    credits: MovieCredits;
+    credits: CastCredits;
 }
 
-export interface MovieCredits {
+export interface CastCredits {
     cast: CastDetail[];
     id: number
 }
