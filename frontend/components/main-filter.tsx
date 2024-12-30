@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { format } from "date-fns";
+import { format, compareAsc } from "date-fns";
 
 import { Card, CardHeader, CardFooter, CardTitle, CardContent } from "@ui/card";
 import { Button } from "@ui/button";
@@ -70,13 +70,18 @@ const MainFilter = () => {
         }
 
         // If the "from" date is changed, add both "from" and "to" date to the new URL
-        if (
-            dateRange[0] !== undefined
-        ) {
-            if (dateRange[0]) {
-                params.append("from", format(dateRange[0], "yyyy-MM-dd"));
+        if (dateRange[0] !== undefined) {
+            let [fromDate, toDate] = dateRange;
+        
+            // If the "from" date is after the "to" date, swap the dates
+            if (fromDate && toDate && compareAsc(fromDate, toDate) === 1) {
+                [fromDate, toDate] = [toDate, fromDate];
             }
-            params.append("to", format(dateRange[1], "yyyy-MM-dd"));
+        
+            if (fromDate) {
+                params.append("from", format(fromDate, "yyyy-MM-dd"));
+            }
+            params.append("to", format(toDate, "yyyy-MM-dd"));
         }
 
         // Push the new URL to the router

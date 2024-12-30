@@ -6,16 +6,16 @@ import { CalendarIcon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 
 import { Button } from "@ui/button";
-import { Calendar } from "@ui/calendar-new";
+import { Calendar } from "@ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@ui/popover";
 import { cn } from "@lib/utils";
 import { Label } from "@ui/label";
 
-export default function DatePicker({
+const DateRangePicker = ({
     onRangeChange,
 }: {
     onRangeChange: (values: [Date | undefined, Date]) => void;
-}) {
+}) => {
     const searchParams = useSearchParams();
 
     // Get the "from" and "to" date values from the URL
@@ -120,4 +120,6 @@ export default function DatePicker({
             </div>
         </>
     );
-}
+};
+
+export default DateRangePicker;

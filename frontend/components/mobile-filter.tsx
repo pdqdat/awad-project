@@ -20,7 +20,8 @@ const MobileFilter = () => {
     const [open, setOpen] = useState(false);
     const [filterBtn, setFilterBtn] = useState(false);
 
-    // Display the filter button when user scrolls down
+    // Display the filter button at the lower right bottom of the screen
+    // when user scrolls down
     useEffect(() => {
         const handleScroll = () => {
             const scrollTop =

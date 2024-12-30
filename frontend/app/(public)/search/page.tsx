@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { searchMovies } from "@lib/actions";
 import siteConfig from "@/config/site";
 import MoviesList from "@comp/movies-list";
-import PaginationControls from "@comp/pagination-controls";
+import PaginationControls from "@comp/pagination-controls-client";
 import MobileFilter from "@comp/mobile-filter";
 import MainFilter from "@comp/main-filter";
 
@@ -32,7 +32,7 @@ const SearchPage = async ({
     const pageParam = page ? parseInt(page as string) : 1;
 
     const response = await searchMovies(q as string, false, pageParam);
-    const { results: movies, page: currentPage, totalPages } = response;
+    const { results: movies, totalPages } = response;
 
     return (
         <div className="min-h-72 py-8 lg:min-h-[30rem]">
@@ -76,9 +76,7 @@ const SearchPage = async ({
                         <div className="col-span-8 xl:col-span-9">
                             <MoviesList movies={movies} />
                             <PaginationControls
-                                currentPage={currentPage}
                                 totalPages={totalPages}
-                                query={q}
                                 className="mt-8"
                             />
                         </div>

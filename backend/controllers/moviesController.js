@@ -1,68 +1,63 @@
-const Movie = require('../models/Movies');
+const Movie = require("../models/Movies");
 
 exports.getAllMovies = async (req, res) => {
-  const { all } = req.query;
+    const { all } = req.query;
 
-  if (all === 'true') {
-      try {
-          const movies = await Movie.find({});
-          res.json(movies);
-      } catch (error) {
-          res.status(500).send(error.message);
-      }
-  } else {
-      const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 10;
-      const skip = (page - 1) * limit;
+    if (all === "true") {
+        try {
+            const movies = await Movie.find({});
+            res.json(movies);
+        } catch (error) {
+            res.status(500).send(error.message);
+        }
+    } else {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
 
-      try {
-          const movies = await Movie.find({})
-                                    .skip(skip)
-                                    .limit(limit);
-          const totalMovies = await Movie.countDocuments({});
-          res.json({
-              total: totalMovies,
-              page,
-              limit,
-              totalPages: Math.ceil(totalMovies / limit),
-              data: movies
-          });
-      } catch (error) {
-          res.status(500).send(error.message);
-      }
-  }
+        try {
+            const movies = await Movie.find({}).skip(skip).limit(limit);
+            const totalMovies = await Movie.countDocuments({});
+            res.json({
+                total: totalMovies,
+                page,
+                limit,
+                totalPages: Math.ceil(totalMovies / limit),
+                data: movies,
+            });
+        } catch (error) {
+            res.status(500).send(error.message);
+        }
+    }
 };
 
-
-
 exports.getMovieById = async (req, res) => {
-  try {
-    const movie = await Movie.findOne({ tmdb_id: req.params.tmdb_id });
-    if (movie) {
-      res.json(movie);
-    } else {
-      res.status(404).send('Movie not found');
+    try {
+        const movie = await Movie.findOne({ tmdb_id: req.params.tmdb_id });
+        if (movie) {
+            res.json(movie);
+        } else {
+            res.status(404).send("Movie not found");
+        }
+    } catch (error) {
+        res.status(500).send(error.toString());
     }
-  } catch (error) {
-    res.status(500).send(error.toString());
-  }
 };
 
 exports.searchMovies = async (req, res) => {
-  const { query } = req.query; 
-  try {
-      const movies = await Movie.find({
-          $or: [
-              { title: { $regex: query, $options: 'i' } },
-              { 'credits.cast.name': { $regex: query, $options: 'i' } }
-          ]
-      });
-      res.json(movies);
-  } catch (error) {
-      res.status(500).send(error.toString());
-  }
+    const { query } = req.query;
+    try {
+        const movies = await Movie.find({
+            $or: [
+                { title: { $regex: query, $options: "i" } },
+                { "credits.cast.name": { $regex: query, $options: "i" } },
+            ],
+        });
+        res.json(movies);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
 };
-
 
 exports.filterMovies = async (req, res) => {
     const { genre, minRating, maxRating, releaseDate, page = 1, limit = 10 } = req.query;
@@ -96,20 +91,16 @@ exports.filterMovies = async (req, res) => {
 
     try {
         const totalMovies = await Movie.countDocuments(filterCriteria);
-        const movies = await Movie.find(filterCriteria)
-                                  .skip(skip)
-                                  .limit(pageSize);
+        const movies = await Movie.find(filterCriteria).skip(skip).limit(pageSize);
 
         res.json({
             total: totalMovies,
             page: currentPage,
             limit: pageSize,
             totalPages: Math.ceil(totalMovies / pageSize),
-            data: movies
+            data: movies,
         });
     } catch (error) {
         res.status(500).send(error.toString());
-    }   
+    }
 };
-
-
