@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import MoviesGrid from "@comp/movies-grid";
-import { fetchTopRatedMovies, fetchPopularMovies } from "@lib/actions";
+import { fetchTopRatedMovies } from "@lib/actions";
 
 export const metadata: Metadata = {
     title: "Top Rated Movies",
@@ -14,7 +14,7 @@ const TopRatedPage = async ({
 }) => {
     const { page } = await searchParams;
 
-    const { data: movies } = await fetchTopRatedMovies(1);
+    const { data: movies } = await fetchTopRatedMovies(page ? parseInt(page as string) : 1);
 
     return (
         <div className="py-8">

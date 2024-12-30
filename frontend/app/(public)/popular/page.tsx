@@ -14,7 +14,7 @@ const PopularPage = async ({
 }) => {
     const { page } = await searchParams;
 
-    const { data: movies } = await fetchPopularMovies(1);
+    const { data: movies } = await fetchPopularMovies(page ? parseInt(page as string) : 1);
 
     return (
         <div className="py-8">
