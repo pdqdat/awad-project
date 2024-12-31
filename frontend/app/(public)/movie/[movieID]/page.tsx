@@ -7,12 +7,27 @@ import { Button } from "@ui/button";
 import { fetchMovieDetail, fetchSimilarMovies } from "@lib/actions";
 import { getTmdbImageUrl, tmdbPosterSizes } from "@/config/tmdb";
 import { Badge } from "@ui/badge";
-import MoviesRow from "@/components/movies-row";
-import CastRow from "@/components/cast-row";
+import MoviesRow from "@comp/movies-row";
+import CastRow from "@comp/cast-row";
 
-export const metadata: Metadata = {
-    title: "Movie Detail",
-    description: `Movie description`,
+export const generateMetadata = async ({
+    params,
+}: {
+    params: Promise<{ movieID: string }>;
+}): Promise<Metadata> => {
+    const { movieID } = await params;
+    const movieDetail = await fetchMovieDetail(movieID);
+
+    if (!movieDetail) {
+        return {
+            title: "Movie not found",
+        };
+    }
+
+    return {
+        title: `${movieDetail.title} (${new Date(movieDetail.release_date).getFullYear()})`,
+        description: movieDetail.overview,
+    };
 };
 
 const MovieDetailPage = async ({
@@ -22,8 +37,12 @@ const MovieDetailPage = async ({
 }) => {
     const { movieID } = await params;
     const movieDetail = await fetchMovieDetail(movieID);
-    const similarMovies = await fetchSimilarMovies(movieID);
 
+    if (!movieDetail) {
+        return <div className="container">Error fetching movie detail</div>;
+    }
+
+    const similarMovies = await fetchSimilarMovies(movieID);
 
     if (!movieDetail) {
         return <div>Error fetching movie detail</div>;
@@ -47,16 +66,20 @@ const MovieDetailPage = async ({
                     {/* Movie info */}
                     <div className="flex-1">
                         <h1 className="mb-4 text-4xl font-bold">
-                            {movieDetail.title}
+                            {movieDetail.title}{" "}
+                            <span className="font-normal text-muted-foreground">
+                                (
+                                {new Date(
+                                    movieDetail.release_date,
+                                ).getFullYear()}
+                                )
+                            </span>
                         </h1>
-                        <p className="mb-4 text-muted-foreground">
-                            {new Date(movieDetail.release_date).getFullYear()}
-                        </p>
                         <div className="mb-4 flex flex-wrap gap-2">
                             {movieDetail.genres.map((genre) => (
                                 <Badge
                                     key={genre.id}
-                                    variant="secondary"
+                                    variant="outline"
                                     className="text-sm"
                                 >
                                     {genre.name}
@@ -86,14 +109,14 @@ const MovieDetailPage = async ({
                 </div>
 
                 <div className="mt-8">
-                    <h2 className="text-xl font-semibold">Top Billed Cast</h2>
+                    <h2 className="text-xl font-semibold">Top Cast</h2>
                 </div>
-                    
-                <CastRow casts={movieDetail.credits.cast.slice(0,5)} />
+
+                <CastRow casts={movieDetail.credits.cast.slice(0, 5)} />
 
                 <Button variant="secondary" asChild>
                     <Link href={`/movie/${movieID}/cast`}>
-                        Full Cast 
+                        Full Cast
                         <ChevronRight />
                     </Link>
                 </Button>
@@ -101,9 +124,8 @@ const MovieDetailPage = async ({
                 <div className="mt-8">
                     <h2 className="text-xl font-semibold">Recommendations</h2>
                 </div>
-                    
+
                 <MoviesRow movies={similarMovies.data} />
-                
             </div>
         </div>
     );

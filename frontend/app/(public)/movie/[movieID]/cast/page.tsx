@@ -3,11 +3,27 @@ import { ChevronLeft } from "lucide-react";
 import type { Metadata } from "next";
 
 import { Button } from "@ui/button";
-import { fetchMovieDetail } from "@/lib/actions";
-import CastRow from "@/components/cast-row";
+import { fetchMovieDetail } from "@lib/actions";
+import CastRow from "@comp/cast-row";
 
-export const metadata: Metadata = {
-    title: "Reviews for movie ...",
+export const generateMetadata = async ({
+    params,
+}: {
+    params: Promise<{ movieID: string }>;
+}): Promise<Metadata> => {
+    const { movieID } = await params;
+    const movieDetail = await fetchMovieDetail(movieID);
+
+    if (!movieDetail) {
+        return {
+            title: "Movie not found",
+        };
+    }
+
+    return {
+        title: `${movieDetail.title} - Cast`,
+        description: movieDetail.overview,
+    };
 };
 
 const CastPage = async ({
@@ -18,7 +34,10 @@ const CastPage = async ({
     const { movieID } = await params;
     const movieDetail = await fetchMovieDetail(movieID);
 
-    
+    if(!movieDetail) {
+        return <div className="container">Error fetching movie detail</div>;
+    }
+
     return (
         <div>
             <div className="container py-8">
@@ -28,11 +47,6 @@ const CastPage = async ({
                         Back to movie detail page
                     </Link>
                 </Button>
-
-                <div className="mt-6">
-                    <h2 className="text-xl font-semibold">Top Billed Cast</h2>
-                </div>
-                    
                 <CastRow casts={movieDetail.credits.cast} />
             </div>
         </div>

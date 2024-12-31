@@ -6,9 +6,18 @@ import MoviesList from "@comp/movies-list";
 import PaginationControls from "@comp/pagination-controls-client";
 import MobileFilter from "@comp/mobile-filter";
 import MainFilter from "@comp/main-filter";
+import PageHeading from "@comp/page-heading";
 
-export const metadata: Metadata = {
-    title: "Search",
+export const generateMetadata = async ({
+    searchParams,
+}: {
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}): Promise<Metadata> => {
+    const { q } = await searchParams;
+
+    return {
+        title: `"${q}"`,
+    };
 };
 
 const SearchPage = async ({
@@ -44,11 +53,10 @@ const SearchPage = async ({
     return (
         <div className="min-h-72 py-8 lg:min-h-[30rem]">
             <div className="container">
-                <h1 className="h3 mb-8">
+                <PageHeading>
                     {total} result{total <= 1 ? "" : "s"} for &quot;{q}
                     &quot;
-                </h1>
-                {genre&&<h1>{genre}</h1>}
+                </PageHeading>
                 {movies ? (
                     <div className="gap-4 lg:grid lg:grid-cols-12">
                         <div className="col-span-4 mb-4 lg:mb-0 xl:col-span-3">

@@ -3,9 +3,20 @@ import { ChevronLeft } from "lucide-react";
 import type { Metadata } from "next";
 
 import { Button } from "@ui/button";
+import { fetchMovieDetail } from "@lib/actions";
 
-export const metadata: Metadata = {
-    title: "Reviews for movie ...",
+export const generateMetadata = async ({
+    params,
+}: {
+    params: Promise<{ movieID: string }>;
+}): Promise<Metadata> => {
+    const { movieID } = await params;
+    const movieDetail = await fetchMovieDetail(movieID);
+
+    return {
+        title: `${movieDetail.title} - Review`,
+        description: movieDetail.overview,
+    };
 };
 
 const MovieReviewPage = async ({

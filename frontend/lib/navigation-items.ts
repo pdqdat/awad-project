@@ -23,7 +23,7 @@ export const navigationItems = [
         ],
     },
     {
-        title: "Your lists",
+        title: "Lists",
         href: "/list",
     },
 ];

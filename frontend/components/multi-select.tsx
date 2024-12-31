@@ -9,7 +9,7 @@ import { Badge } from "@ui/badge";
 import { Command, CommandGroup, CommandItem, CommandList } from "@ui/command";
 import { ScrollArea } from "@ui/scroll-area";
 import { TmdbGenre } from "@/types";
-import { genres } from "@/config/tmdb";
+import { genres } from "@/config/movie";
 
 const MultiSelect = ({
     onSelectionChange,

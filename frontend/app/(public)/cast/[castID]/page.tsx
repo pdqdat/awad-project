@@ -3,11 +3,26 @@ import Image from "next/image";
 
 import { fetchPersonDetail } from "@lib/actions";
 import { getTmdbImageUrl, tmdbPosterSizes } from "@/config/tmdb";
-import MoviesRowDBLocal from "@/components/movies-row-dblocal";
+// import MoviesRowDBLocal from "@/components/movies-row-dblocal";
 
-export const metadata: Metadata = {
-    title: "Cast Detail",
-    description: "Cast detail page",
+export const generateMetadata = async ({
+    params,
+}: {
+    params: Promise<{ castID: string }>;
+}): Promise<Metadata> => {
+    const { castID } = await params;
+    const castDetail = await fetchPersonDetail(castID);
+
+    if (!castDetail) {
+        return {
+            title: "Cast not found",
+        };
+    }
+
+    return {
+        title: `${castDetail.name}`,
+        description: castDetail.biography,
+    };
 };
 
 const CastDetailPage = async ({
@@ -18,7 +33,9 @@ const CastDetailPage = async ({
     const { castID } = await params;
     const castDetail = await fetchPersonDetail(castID);
 
-    console.log(castDetail);
+    if (!castDetail) {
+        return <div className="container">Error fetching cast detail</div>;
+    }
 
     if (!castDetail) {
         return <div>Error fetching cast detail</div>;
@@ -29,7 +46,10 @@ const CastDetailPage = async ({
             <div className="flex flex-col items-center md:flex-row md:items-start">
                 {/* Profile Image */}
                 <Image
-                    src={getTmdbImageUrl(tmdbPosterSizes.w500, castDetail.profile_path)}
+                    src={getTmdbImageUrl(
+                        tmdbPosterSizes.w500,
+                        castDetail.profile_path,
+                    )}
                     alt={castDetail.name}
                     width={342}
                     height={513}
@@ -37,20 +57,22 @@ const CastDetailPage = async ({
                 />
                 {/* Cast Info */}
                 <div className="flex-1">
-                    <h1 className="mb-4 text-4xl font-bold">{castDetail.name}</h1>
+                    <h1 className="mb-4 text-4xl font-bold">
+                        {castDetail.name}
+                    </h1>
 
                     <div className="mt-4">
                         <h2 className="text-xl font-semibold">Biography</h2>
                         <p>{castDetail.biography}</p>
                     </div>
 
-                    <div className="mt-4">
-                    </div>
+                    <div className="mt-4"></div>
 
-                    <div className="text-gray-700 space-y-2">
+                    <div className="space-y-2 text-gray-700">
                         {castDetail.known_for_department && (
                             <p>
-                                <strong>Known For:</strong> {castDetail.known_for_department}
+                                <strong>Known For:</strong>{" "}
+                                {castDetail.known_for_department}
                             </p>
                         )}
                         {castDetail.birthday && (
@@ -65,7 +87,8 @@ const CastDetailPage = async ({
                         )}
                         {castDetail.place_of_birth && (
                             <p>
-                                <strong>Place of Birth:</strong> {castDetail.place_of_birth}
+                                <strong>Place of Birth:</strong>{" "}
+                                {castDetail.place_of_birth}
                             </p>
                         )}
                         <p>
@@ -73,8 +96,8 @@ const CastDetailPage = async ({
                             {castDetail.gender === 1
                                 ? "Female"
                                 : castDetail.gender === 2
-                                ? "Male"
-                                : "Unknown"}
+                                  ? "Male"
+                                  : "Unknown"}
                         </p>
                         {castDetail.homepage && (
                             <p>
@@ -92,8 +115,10 @@ const CastDetailPage = async ({
                     </div>
                     {castDetail.also_known_as?.length > 0 && (
                         <div className="mt-4">
-                            <h2 className="text-xl font-semibold">Also Known As</h2>
-                            <ul className="list-disc list-inside">
+                            <h2 className="text-xl font-semibold">
+                                Also Known As
+                            </h2>
+                            <ul className="list-inside list-disc">
                                 {castDetail.also_known_as.map((aka) => (
                                     <li key={aka}>{aka}</li>
                                 ))}
@@ -104,9 +129,9 @@ const CastDetailPage = async ({
                     <div className="mt-6">
                         <h2 className="text-xl font-semibold">Known For</h2>
                     </div>
-                    
-                    <MoviesRowDBLocal movies={castDetail.movie_credits} />
 
+                    {/* TODO: fix this shit */}
+                    {/* <MoviesRowDBLocal movies={castDetail.movie_credits} /> */}
                 </div>
             </div>
         </div>
