@@ -13,11 +13,14 @@ function buildFilterCriteria({ genres, minRating, maxRating, startDate, endDate 
   let filterCriteria = {};
 
   if (genres) {
+      // console.log("chua decode",genres)
+      genres = decodeURIComponent(genres).replace(/\+/g, ' ');
+      // console.log("decode",genres)
       if (typeof genres === 'string') {
           genres = genres.split(',').map(genre => capitalizeWords(genre.trim()));
       } else if (Array.isArray(genres)) {
           genres = genres.map(genre => capitalizeWords(genre.trim()));
-      }
+      } 
       filterCriteria['genres.name'] = { $all: genres };
   }
   if (minRating) {

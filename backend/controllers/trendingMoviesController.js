@@ -22,6 +22,7 @@ async function buildFilterCriteria({ genres, minRating, maxRating, startDate, en
 
   if (genres) {
     let genreNames = genres;
+    genres = decodeURIComponent(genres).replace(/\+/g, ' ');
     if (typeof genres === 'string') {
       genreNames = genres.split(',').map(genre => capitalizeWords(genre.trim()));
     } else if (Array.isArray(genres)) {
