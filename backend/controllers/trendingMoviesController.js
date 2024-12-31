@@ -72,9 +72,9 @@ async function applyFiltersAndPagination(model, filterCriteria, page, limit) {
 
 exports.getTrendingMoviesDay = async (req, res) => {
   const { page = 1, limit = 10, ...filters } = req.query;
-  const filterCriteria = buildFilterCriteria(filters);
 
   try {
+    const filterCriteria = await buildFilterCriteria(filters);
     const result = await applyFiltersAndPagination(MoviesTrendingDays, filterCriteria, page, limit);
     res.json(result);
   } catch (error) {
