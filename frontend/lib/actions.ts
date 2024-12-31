@@ -2,7 +2,6 @@
 
 import { tmdbApiBaseUrl } from "@/config/tmdb";
 import { Movie, MovieDetail, MovieSearchResult, CastDetail } from "@/types";
-import { customEncodeURIComponent } from "@lib/utils";
 
 const getRequestOptions = {
     method: "GET",
@@ -10,6 +9,44 @@ const getRequestOptions = {
         accept: "application/json",
         Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
     },
+};
+
+const generateQueryParams = (
+    query: string,
+    page: number = 1,
+    genres: string | string[] | undefined,
+    minRating: string | undefined,
+    maxRating: string | undefined,
+    startDate: string | undefined,
+    endDate: string | undefined,
+) => {
+    const params = new URLSearchParams({
+        query: query,
+        page: page.toString(),
+    });
+
+    // If genres is an array, append each genre to the URL
+    // Else, append the single genre to the URL
+    if (Array.isArray(genres)) {
+        genres.forEach((genre) => params.append("genres", genre));
+    } else if (genres !== undefined) {
+        params.append("genres", genres);
+    }
+    // Append the rest of the query parameters if they exist
+    if (minRating !== undefined) {
+        params.append("minRating", minRating);
+    }
+    if (maxRating !== undefined) {
+        params.append("maxRating", maxRating);
+    }
+    if (startDate !== undefined) {
+        params.append("startDate", startDate);
+    }
+    if (endDate !== undefined) {
+        params.append("endDate", endDate);
+    }
+
+    return params;
 };
 
 export const fetchTrendingMovies = async (
@@ -73,31 +110,15 @@ export const searchMovies = async (
     limit: number;
 }> => {
     try {
-        const params = new URLSearchParams({
-            query: query,
-            page: page.toString(),
-        });
-
-        // If genres is an array, append each genre to the URL
-        // Else, append the single genre to the URL
-        if (Array.isArray(genres)) {
-            genres.forEach((genre) => params.append("genres", genre));
-        } else if (genres !== undefined) {
-            params.append("genres", genres);
-        }
-        // Append the rest of the query parameters if they exist
-        if (minRating !== undefined) {
-            params.append("minRating", minRating);
-        }
-        if (maxRating !== undefined) {
-            params.append("maxRating", maxRating);
-        }
-        if (startDate !== undefined) {
-            params.append("startDate", startDate);
-        }
-        if (endDate !== undefined) {
-            params.append("endDate", endDate);
-        }
+        const params = generateQueryParams(
+            query,
+            page,
+            genres,
+            minRating,
+            maxRating,
+            startDate,
+            endDate,
+        );
 
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/search?${params.toString()}`,

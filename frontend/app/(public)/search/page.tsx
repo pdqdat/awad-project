@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { format } from "date-fns";
 
 import { searchMovies } from "@lib/actions";
 import siteConfig from "@/config/site";
@@ -46,9 +45,10 @@ const SearchPage = async ({
         <div className="min-h-72 py-8 lg:min-h-[30rem]">
             <div className="container">
                 <h1 className="h3 mb-8">
-                    {total} search result{total <= 1 ? "" : "s"} for &quot;{q}
+                    {total} result{total <= 1 ? "" : "s"} for &quot;{q}
                     &quot;
                 </h1>
+                {genre&&<h1>{genre}</h1>}
                 {movies ? (
                     <div className="gap-4 lg:grid lg:grid-cols-12">
                         <div className="col-span-4 mb-4 lg:mb-0 xl:col-span-3">
