@@ -14,7 +14,7 @@ const TrendingPage = async ({
 }) => {
     const { page, time } = await searchParams;
 
-    const { results: movies } = await fetchTrendingMovies("week", 1);
+    const { data: movies } = await fetchTrendingMovies("week", page ? parseInt(page as string) : 1);
 
     return (
         <div className="py-8">

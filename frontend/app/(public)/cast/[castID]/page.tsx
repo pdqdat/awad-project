@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 
-import { fetchCastDetail } from "@lib/actions";
+import { fetchPersonDetail } from "@lib/actions";
 import { getTmdbImageUrl, tmdbPosterSizes } from "@/config/tmdb";
+import MoviesRowDBLocal from "@/components/movies-row-dblocal";
 
 export const metadata: Metadata = {
     title: "Cast Detail",
@@ -15,7 +16,9 @@ const CastDetailPage = async ({
     params: Promise<{ castID: string }>;
 }) => {
     const { castID } = await params;
-    const castDetail = await fetchCastDetail(castID);
+    const castDetail = await fetchPersonDetail(castID);
+
+    console.log(castDetail);
 
     if (!castDetail) {
         return <div>Error fetching cast detail</div>;
@@ -40,7 +43,7 @@ const CastDetailPage = async ({
                         <h2 className="text-xl font-semibold">Biography</h2>
                         <p>{castDetail.biography}</p>
                     </div>
-                    
+
                     <div className="mt-4">
                     </div>
 
@@ -97,6 +100,12 @@ const CastDetailPage = async ({
                             </ul>
                         </div>
                     )}
+
+                    <div className="mt-6">
+                        <h2 className="text-xl font-semibold">Known For</h2>
+                    </div>
+                    
+                    <MoviesRowDBLocal movies={castDetail.movie_credits} />
 
                 </div>
             </div>

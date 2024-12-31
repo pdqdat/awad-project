@@ -1,7 +1,7 @@
 "use server";
 
 import { tmdbApiBaseUrl } from "@/config/tmdb";
-import { Movie, MovieDetail, MovieSearchResult, CastDetail } from "@/types";
+import { Movie, MovieDetail, MovieSearchResult, PersonDetail } from "@/types";
 
 const getRequestOptions = {
     method: "GET",
@@ -49,31 +49,114 @@ const generateQueryParams = (
     return params;
 };
 
+// export const fetchTrendingMovies = async (
+//     timeWindow: "week" | "day" = "week",
+//     page: number = 1,
+// ): Promise<{
+//     results: Movie[];
+//     page: number;
+//     totalPages: number;
+//     totalResults: number;
+// }> => {
+//     try {
+//         const res = await fetch(
+//             `${tmdbApiBaseUrl}/trending/movie/${timeWindow}?language=en-US&page=${page}`,
+//             getRequestOptions,
+//         );
+//         const data = await res.json();
+
+//         return {
+//             results: data.results,
+//             page: data.page,
+//             totalPages: data.total_pages,
+//             totalResults: data.total_results,
+//         };
+//     } catch (error) {
+//         console.error("Error fetching trending movies: ", error);
+//         throw new Error("Error fetching trending movies");
+//     }
+// };
+
 export const fetchTrendingMovies = async (
     timeWindow: "week" | "day" = "week",
     page: number = 1,
 ): Promise<{
-    results: Movie[];
+    data: Movie[];
     page: number;
     totalPages: number;
-    totalResults: number;
+    total: number;
 }> => {
     try {
         const res = await fetch(
-            `${tmdbApiBaseUrl}/trending/movie/${timeWindow}?language=en-US&page=${page}`,
+            // `${tmdbApiBaseUrl}/trending/movie/${timeWindow}?language=en-US&page=${page}`,
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/trending/${timeWindow}?page=${page}&limit=10`,
             getRequestOptions,
         );
         const data = await res.json();
 
         return {
-            results: data.results,
+            data: data.data,
             page: data.page,
             totalPages: data.total_pages,
-            totalResults: data.total_results,
+            total: data.total,
         };
     } catch (error) {
         console.error("Error fetching trending movies: ", error);
         throw new Error("Error fetching trending movies");
+    }
+};
+
+export const fetchPopularMovies = async (
+    page: number = 1,
+): Promise<{
+    data: Movie[];
+    page: number;
+    totalPages: number;
+    total: number;
+}> => {
+    try {
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/movies/cate/popular?page=${page}&limit=10`,
+            getRequestOptions,
+        );
+        const data = await res.json();
+
+        return {
+            data: data.data,
+            page: data.page,
+            totalPages: data.totalPages,
+            total: data.total,
+        };
+    } catch (error) {
+        console.error("Error fetching popular movies: ", error);
+        throw new Error("Error fetching popular movies");
+    }
+};
+
+export const fetchTopRatedMovies = async (
+    page: number = 1,
+): Promise<{
+    data: Movie[];
+    page: number;
+    totalPages: number;
+    total: number;
+}> => {
+    try {
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/movies/cate/toprated?page=${page}&limit=10`,
+            getRequestOptions,
+        );
+        const data = await res.json();
+
+        return {
+            data: data.data,
+            page: data.page,
+            totalPages: data.totalPages,
+            total: data.total,
+        };
+    } catch (error) {
+        console.error("Error fetching top rated movies: ", error);
+        throw new Error("Error fetching top rated movies");
     }
 };
 
@@ -82,7 +165,8 @@ export const fetchMovieDetail = async (
 ): Promise<MovieDetail> => {
     try {
         const res = await fetch(
-            `${tmdbApiBaseUrl}/movie/${movieID}?language=en-US`,
+            // `${tmdbApiBaseUrl}/movie/${movieID}?language=en-US`,
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/movies/${movieID}`,
             getRequestOptions,
         );
         const data = await res.json();
@@ -91,6 +175,27 @@ export const fetchMovieDetail = async (
     } catch (error) {
         console.error("Error fetching movie detail: ", error);
         throw new Error("Error fetching movie detail");
+    }
+};
+
+export const fetchSimilarMovies = async (
+    movieID: string,
+): Promise<{
+    data: Movie[];
+}> => {
+    try {
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/movies/${movieID}/similar`,
+            getRequestOptions,
+        );
+        const data = await res.json();
+
+        return {
+            data: data,
+        };
+    } catch (error) {
+        console.error("Error fetching similar movies: ", error);
+        throw new Error("Error fetching similar movies");
     }
 };
 
@@ -139,11 +244,34 @@ export const searchMovies = async (
     }
 };
 
-export const fetchCastDetail = async (castID: string): Promise<CastDetail> => {
+// export const fetchCastDetail = async (
+//     castID: string,
+// ): Promise<CastDetail> => {
+//     try {
+//         const res = await fetch(
+//             `${tmdbApiBaseUrl}/person/${castID}?language=en-US`,
+//             getRequestOptions,
+//         );
+//         const data = await res.json();
+
+//         console.log(data);
+
+//         return data;
+//     } catch (error) {
+//         console.error("Error fetching cast detail: ", error);
+//         throw new Error("Error fetching cast detail");
+//     }
+// };
+
+export const fetchPersonDetail = async (
+    castID: string,
+): Promise<PersonDetail> => {
     try {
         const res = await fetch(
-            `${tmdbApiBaseUrl}/person/${castID}?language=en-US`,
-            getRequestOptions,
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/cast/${castID}`,
+            // getRequestOptions,
+            {method: "GET",}
+
         );
         const data = await res.json();
 
