@@ -3,7 +3,7 @@ import Image from "next/image";
 
 import { fetchPersonDetail } from "@lib/actions";
 import { getTmdbImageUrl, tmdbPosterSizes } from "@/config/tmdb";
-// import MoviesRowDBLocal from "@/components/movies-row-dblocal";
+import MoviesRowDBLocal from "@/components/movies-row-dblocal";
 
 export const generateMetadata = async ({
     params,
@@ -131,7 +131,7 @@ const CastDetailPage = async ({
                     </div>
 
                     {/* TODO: fix this shit */}
-                    {/* <MoviesRowDBLocal movies={castDetail.movie_credits} /> */}
+                    <MoviesRowDBLocal movies={castDetail.movie_credits} />
                 </div>
             </div>
         </div>

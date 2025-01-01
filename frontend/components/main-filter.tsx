@@ -72,12 +72,12 @@ const MainFilter = () => {
         // If the "from" date is changed, add both "from" and "to" date to the new URL
         if (dateRange[0] !== undefined) {
             let [fromDate, toDate] = dateRange;
-        
+
             // If the "from" date is after the "to" date, swap the dates
             if (fromDate && toDate && compareAsc(fromDate, toDate) === 1) {
                 [fromDate, toDate] = [toDate, fromDate];
             }
-        
+
             if (fromDate) {
                 params.append("from", format(fromDate, "yyyy-MM-dd"));
             }

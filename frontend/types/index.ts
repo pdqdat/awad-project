@@ -109,7 +109,7 @@ export interface MovieCredits {
     credit_id: string;
     order: number;
 }
-
+ 
 export interface PersonDetail {
     _id: string;
     tmdb_id: number;

@@ -7,9 +7,8 @@ const TrendingMoviesSection = async () => {
     const weeklyTrendingMoviesResponse = await fetchTrendingMovies("week", 1);
     const weeklyTrendingMovies = weeklyTrendingMoviesResponse.data;
 
-    // TODO: Uncomment this when the API is fixed
-    // const dailyTrendingMoviesResponse = await fetchTrendingMovies("day", 1);
-    // const dailyTrendingMovies = dailyTrendingMoviesResponse.data;
+    const dailyTrendingMoviesResponse = await fetchTrendingMovies("day", 1);
+    const dailyTrendingMovies = dailyTrendingMoviesResponse.data;
 
     return (
         <div className="bg-muted py-8">
@@ -25,11 +24,11 @@ const TrendingMoviesSection = async () => {
                 )}
                 <Separator className="my-4" />
                 <FancyHeading>Today</FancyHeading>
-                {/* {dailyTrendingMovies ? (
+                {dailyTrendingMovies ? (
                     <MoviesRow movies={dailyTrendingMovies.slice(0, 5)} />
                 ) : (
                     <p>Error fetching daily trending movies</p>
-                )} */}
+                )}
             </div>
         </div>
     );

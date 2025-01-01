@@ -13,6 +13,12 @@ export const generateMetadata = async ({
     const { movieID } = await params;
     const movieDetail = await fetchMovieDetail(movieID);
 
+    if (!movieDetail) {
+        return {
+            title: "Movie not found",
+        };
+    }
+
     return {
         title: `${movieDetail.title} - Review`,
         description: movieDetail.overview,

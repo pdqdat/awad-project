@@ -13,6 +13,7 @@ const getRequestOptions = {
     },
 };
 
+// TODO: make the query parameters optional
 const generateQueryParams = (
     query: string,
     page: number = 1,
