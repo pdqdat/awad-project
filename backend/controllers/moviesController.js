@@ -5,6 +5,42 @@ const MovieSimilar= getModelForCollection('similar');
 
 const Genre = require('../models/Genres');
 
+const axios = require('axios');
+
+function ensureProperlyEncoded(str) {
+  try {
+    // Giải mã để kiểm tra xem đã được encode chưa
+    const decoded = decodeURIComponent(str);
+    // Nếu giải mã thành công mà không có lỗi, và chuỗi giải mã khác chuỗi ban đầu, nghĩa là đã encode
+    return decoded === str ? encodeURIComponent(str) : str;
+  } catch (e) {
+    // Nếu có lỗi trong quá trình giải mã, nghĩa là chuỗi có thể chưa được encode hoặc đã được encode không đúng
+    return encodeURIComponent(str);
+  }
+}
+
+async function retrieveFromLLM(query, amount = 5, threshold = 0.5) {
+  const apiUrl = 'https://awd-llm.azurewebsites.net/retriever/';
+  const encodedQuery = encodeURIComponent(query);
+
+  try {
+    // Tạo URL đầy đủ với các tham số bao gồm query
+    const fullUrl = `${apiUrl}?gemini_api_key=${encodeURIComponent(process.env.GEMINI_API_KEY)}&collection_name=movies&query=${encodedQuery}&amount=${amount}&threshold=${threshold}`;
+
+    console.log('LLM API Request:', fullUrl); // Ghi log URL đầy đủ để kiểm tra
+
+    const response = await axios.get(fullUrl); // Gửi yêu cầu GET đến API
+
+    // console.log('LLM Response:', response.data); // Log phản hồi từ API
+
+    return response.data.data.result; // Trả về mảng các ID tài liệu
+  } catch (error) {
+    console.error('LLM API error:', error.response ? error.response.data : error);
+    throw new Error('Error retrieving data from LLM');
+  }
+}
+
+
 function capitalizeWords(string) {
   return string.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 }
@@ -119,25 +155,65 @@ exports.getMovieById = async (req, res) => {
   }
 };
 
+// exports.searchMovies = async (req, res) => {
+//   const { query, page = 1, limit = 10, ...filters } = req.query;
+//   const baseCriteria = {
+//       $or: [
+//           { title: { $regex: query, $options: 'i' } },
+//           { 'credits.cast.name': { $regex: query, $options: 'i' } }
+//       ],
+//       ...buildFilterCriteria(filters)
+//   };
+
+//   try {
+//       const result = await applyFiltersAndPagination(baseCriteria, page, limit);
+//       res.json(result);
+//       // console.log("Search Criteria:", baseCriteria); // Debug log
+//   } catch (error) {
+//       res.status(500).send(`Error in searching movies with pagination: ${error}`);
+//   }
+// };
+
 exports.searchMovies = async (req, res) => {
   const { query, page = 1, limit = 10, ...filters } = req.query;
-  const baseCriteria = {
-      $or: [
+  const filterCriteria = buildFilterCriteria(filters);
+  const llmResults = await retrieveFromLLM(query);
+
+  // Traditional database search criteria
+  const dbSearchCriteria = {
+       $or: [
           { title: { $regex: query, $options: 'i' } },
           { 'credits.cast.name': { $regex: query, $options: 'i' } }
       ],
-      ...buildFilterCriteria(filters)
+    ...filterCriteria 
   };
 
-  try {
-      const result = await applyFiltersAndPagination(baseCriteria, page, limit);
-      res.json(result);
-      // console.log("Search Criteria:", baseCriteria); // Debug log
-  } catch (error) {
-      res.status(500).send(`Error in searching movies with pagination: ${error}`);
-  }
-};
+  const resultsFromDB = await Movie.find(dbSearchCriteria).limit(limit).skip((page - 1) * limit);
+  const resultsFromLLM = llmResults.length ? await Movie.find({ _id: { $in: llmResults }, ...filterCriteria }).limit(limit) : [];
 
+
+  console.log("db",resultsFromDB.length)
+  console.log("LLM",resultsFromLLM.length)
+
+
+  // Combine results and eliminate duplicates
+  const combinedResults = [...resultsFromDB, ...resultsFromLLM].reduce((acc, current) => {
+    const x = acc.find(item => item._id.toString() === current._id.toString());
+    if (!x) {
+      return acc.concat([current]);
+    } else {
+      return acc;
+    }
+  }, []);
+
+  res.json({
+    total: combinedResults.length,
+    page,
+    limit,
+    totalPages: Math.ceil(combinedResults.length / limit),
+    data: combinedResults
+  });
+};
 
 
 exports.getUpcomingMovies = async (req, res) => {
