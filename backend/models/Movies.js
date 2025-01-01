@@ -1,5 +1,25 @@
 const mongoose = require('mongoose');
 
+
+const trailerSchema = new mongoose.Schema({
+  iso_639_1: String,
+  iso_3166_1: String,
+  name: String,
+  key: String,
+  site: {
+      type: String,
+      enum: ['YouTube', 'Vimeo', 'Dailymotion'], // Include other sites as needed
+  },
+  size: Number,
+  type: {
+      type: String,
+      enum: ['Trailer', 'Teaser', 'Clip'] // Specify other types if necessary
+  },
+  official: Boolean,
+  published_at: Date,
+  id: String
+});
+
 const movieSchema = new mongoose.Schema({
   tmdb_id: {
     type: Number,
@@ -89,7 +109,8 @@ similar_movies: [{
   video: Boolean,
   vote_average: Number,
   vote_count: Number
-}]
+}], 
+trailers: [trailerSchema]  // Adding the trailer subdocument array
 
 });
 movieSchema.index({ 'title': 'text', 'credits.cast.name': 'text' });
