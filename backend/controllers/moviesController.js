@@ -108,71 +108,48 @@ exports.getAllGenres = async (req, res) => {
 };
 
 exports.getAllMovies = async (req, res) => {
-  const { all } = req.query;
+    const { all } = req.query;
 
-  if (all === 'true') {
-      try {
-          const movies = await Movie.find({});
-          res.json(movies);
-      } catch (error) {
-          res.status(500).send(error.message);
-      }
-  } else {
-      const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 10;
-      const skip = (page - 1) * limit;
+    if (all === "true") {
+        try {
+            const movies = await Movie.find({});
+            res.json(movies);
+        } catch (error) {
+            res.status(500).send(error.message);
+        }
+    } else {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
 
-      try {
-          const movies = await Movie.find({})
-                                    .skip(skip)
-                                    .limit(limit);
-          const totalMovies = await Movie.countDocuments({});
-          res.json({
-              total: totalMovies,
-              page,
-              limit,
-              totalPages: Math.ceil(totalMovies / limit),
-              data: movies
-          });
-      } catch (error) {
-          res.status(500).send(error.message);
-      }
-  }
+        try {
+            const movies = await Movie.find({}).skip(skip).limit(limit);
+            const totalMovies = await Movie.countDocuments({});
+            res.json({
+                total: totalMovies,
+                page,
+                limit,
+                totalPages: Math.ceil(totalMovies / limit),
+                data: movies,
+            });
+        } catch (error) {
+            res.status(500).send(error.message);
+        }
+    }
 };
-
-
 
 exports.getMovieById = async (req, res) => {
-  try {
-    const movie = await Movie.findOne({ tmdb_id: req.params.tmdb_id });
-    if (movie) {
-      res.json(movie);
-    } else {
-      res.status(404).send('Movie not found');
+    try {
+        const movie = await Movie.findOne({ tmdb_id: req.params.tmdb_id });
+        if (movie) {
+            res.json(movie);
+        } else {
+            res.status(404).send("Movie not found");
+        }
+    } catch (error) {
+        res.status(500).send(error.toString());
     }
-  } catch (error) {
-    res.status(500).send(error.toString());
-  }
 };
-
-// exports.searchMovies = async (req, res) => {
-//   const { query, page = 1, limit = 10, ...filters } = req.query;
-//   const baseCriteria = {
-//       $or: [
-//           { title: { $regex: query, $options: 'i' } },
-//           { 'credits.cast.name': { $regex: query, $options: 'i' } }
-//       ],
-//       ...buildFilterCriteria(filters)
-//   };
-
-//   try {
-//       const result = await applyFiltersAndPagination(baseCriteria, page, limit);
-//       res.json(result);
-//       // console.log("Search Criteria:", baseCriteria); // Debug log
-//   } catch (error) {
-//       res.status(500).send(`Error in searching movies with pagination: ${error}`);
-//   }
-// };
 
 exports.searchMovies = async (req, res) => {
   const { query, page = 1, limit = 10, ...filters } = req.query;
@@ -238,51 +215,52 @@ exports.getUpcomingMovies = async (req, res) => {
         const result = await applyFiltersAndPagination(baseCriteria, page, limit);
         res.json(result);
     } catch (error) {
-        res.status(500).send(`Error fetching popular movies with filters: ${error}`);
+        res.status(500).send(error.toString());
     }
-  };
-  
-
-exports.getPopularMovies = async (req, res) => {
-  const { page = 1, limit = 10, ...filters } = req.query;
-  const baseCriteria = { categories: 'popular', ...buildFilterCriteria(filters) };
-
-  try {
-      const result = await applyFiltersAndPagination(baseCriteria, page, limit);
-      res.json(result);
-  } catch (error) {
-      res.status(500).send(`Error fetching popular movies with filters: ${error}`);
-  }
 };
 
+exports.filterMovies = async (req, res) => {
+    const { genre, minRating, maxRating, releaseDate, page = 1, limit = 10 } = req.query;
+    let filterCriteria = {};
 
+    // Parse page and limit
+    const currentPage = parseInt(page);
+    const pageSize = parseInt(limit);
+    const skip = (currentPage - 1) * pageSize;
 
-exports.getNowPlayingMovies = async (req, res) => {
-  const { page = 1, limit = 10, ...filters } = req.query;
-  const baseCriteria = { categories: 'now_playing', ...buildFilterCriteria(filters) };
+    // Filter by genre if specified
+    if (genre) {
+        filterCriteria.genres = { $in: [genre] };
+    }
 
-  try {
-      const result = await applyFiltersAndPagination(baseCriteria, page, limit);
-      res.json(result);
-  } catch (error) {
-      res.status(500).send(`Error fetching popular movies with filters: ${error}`);
-  }
-};
+    // Filter by rating range
+    if (minRating || maxRating) {
+        filterCriteria.vote_average = {};
+        if (minRating) {
+            filterCriteria.vote_average.$gte = parseFloat(minRating);
+        }
+        if (maxRating) {
+            filterCriteria.vote_average.$lte = parseFloat(maxRating);
+        }
+    }
 
+    // Filter by release date if specified
+    if (releaseDate) {
+        filterCriteria.release_date = { $gte: new Date(releaseDate) };
+    }
 
+    try {
+        const totalMovies = await Movie.countDocuments(filterCriteria);
+        const movies = await Movie.find(filterCriteria).skip(skip).limit(pageSize);
 
-exports.getSimilarMovies = async (req, res) => {
-  try {
-      console.log("tmdb_id:", req.params.tmdb_id);
-      const movie = await MovieSimilar.findOne({ tmdb_id: req.params.tmdb_id });
-      // console.log("Movie found:", movie);
-      if (movie && movie.similar_movies) {
-          res.json(movie.similar_movies);
-      } else {
-          res.status(404).send('Similar movies not found');
-      }
-  } catch (error) {
-      console.error('Error retrieving similar movies:', error);
-      res.status(500).send(error.toString());
-  }
+        res.json({
+            total: totalMovies,
+            page: currentPage,
+            limit: pageSize,
+            totalPages: Math.ceil(totalMovies / pageSize),
+            data: movies,
+        });
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
 };

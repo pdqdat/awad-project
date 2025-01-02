@@ -5,7 +5,7 @@ const {
   getTrendingMoviesWeek
 } = require('../controllers/trendingMoviesController');
 
-router.get('/trending/day', getTrendingMoviesDay);
+router.get('/trending/days', getTrendingMoviesDay);
 router.get('/trending/week', getTrendingMoviesWeek);
 
 module.exports = router;

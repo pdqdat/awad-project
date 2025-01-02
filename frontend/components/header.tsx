@@ -30,9 +30,13 @@ const Header = async () => {
                         <SignInButton>
                             <Button variant="outline">Sign in</Button>
                         </SignInButton>
-                        <SignUpButton>
-                            <Button variant="ringHover">Create account</Button>
-                        </SignUpButton>
+                        <div className="hidden sm:block">
+                            <SignUpButton>
+                                <Button variant="ringHover">
+                                    Create account
+                                </Button>
+                            </SignUpButton>
+                        </div>
                     </SignedOut>
                     <SignedIn>
                         <div className="ml-auto flex size-9">

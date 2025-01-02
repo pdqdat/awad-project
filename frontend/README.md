@@ -3,6 +3,10 @@
 ## Tech stack
 
 - Next.js
+- Tailwind CSS
+- Radix UI
+- Shadcn UI
+- Clerk
 
 ## How to run
 
@@ -15,6 +19,7 @@ TMDB_ACCESS_TOKEN=
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
 NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_BACKEND_URL=http://localhost:5000
 ```
 
 Install dependencies:

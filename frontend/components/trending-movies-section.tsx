@@ -5,10 +5,10 @@ import { Separator } from "@ui/separator";
 
 const TrendingMoviesSection = async () => {
     const weeklyTrendingMoviesResponse = await fetchTrendingMovies("week", 1);
-    const weeklyTrendingMovies = weeklyTrendingMoviesResponse.results;
+    const weeklyTrendingMovies = weeklyTrendingMoviesResponse.data;
 
     const dailyTrendingMoviesResponse = await fetchTrendingMovies("day", 1);
-    const dailyTrendingMovies = dailyTrendingMoviesResponse.results;
+    const dailyTrendingMovies = dailyTrendingMoviesResponse.data;
 
     return (
         <div className="bg-muted py-8">

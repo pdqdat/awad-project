@@ -1,18 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { Movie } from "@/types";
+import { Movie, MovieCredit } from "@/types";
 import { tmdbPosterSizes, getTmdbImageUrl } from "@/config/tmdb";
 
-interface MovieCardProps {
-    movie: Movie;
-}
-
-const MovieCard = ({ movie }: MovieCardProps) => {
+const MovieCard = ({ movie }: { movie: Movie | MovieCredit }) => {
     return (
         <div className="space-y-2">
             <Link href={`/movie/${movie.id}`}>
-                <div className="overflow-hidden rounded-md">
+                <div className="overflow-hidden rounded-xl">
                     <Image
                         src={getTmdbImageUrl(
                             tmdbPosterSizes.w342,
