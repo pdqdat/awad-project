@@ -20,12 +20,12 @@ const SearchBox = ({
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === "Enter") {
-            router.push(`/search?q=${encodeURIComponent(query)}`);
+            router.push(`/search?q=${encodeURIComponent(query.trim())}`);
         }
     };
 
     const handleClick = () => {
-        router.push(`/search?q=${encodeURIComponent(query)}`);
+        router.push(`/search?q=${encodeURIComponent(query.trim())}`);
     };
 
     return (

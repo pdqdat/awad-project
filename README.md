@@ -9,7 +9,10 @@ A movie recommendation system that recommends movies based on the user's prefere
 ## Tech stack
 
 -   Next.js
+-   Tailwind CSS
 -   Clerk
+-   Express.js
+-   MongoDB
 
 ## How to run
 
@@ -17,6 +20,14 @@ Clone the repository:
 
 ```bash
 git clone https://github.com/pdqdat/awad-project.git
+```
+
+Configure the missing environment variables in the `backend/.env.development` file:
+
+```backend/.env.development
+PORT=5000
+MONGO_URI=
+CLERK_SECRET_KEY=
 ```
 
 Configure the missing environment variables in the `frontend/.env.development` file:
@@ -28,18 +39,22 @@ TMDB_ACCESS_TOKEN=
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
 NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_BACKEND_URL=http://localhost:5000
 ```
 
-Install the frontend dependencies:
+Install the dependencies, then run the Backend server:
+
+```bash
+cd backend
+npm install
+npm start
+```
+
+In another terminal, install the dependencies, then run the Frontend server:
 
 ```bash
 cd frontend
 npm install
-```
-
-Run the development server:
-
-```bash
 npm run dev
 ```
 

@@ -18,3 +18,13 @@ export const dateFormatter = (date: string) => {
         day: "2-digit",
     });
 };
+
+/**
+ * Formats a given string into a encoded string with spaces replaced by "+", for use in URL encoding.
+ *
+ * @param str - The string to encode
+ * @returns The encoded string with spaces replaced by "+"
+ */
+export const customEncodeURIComponent = (str: string): string => {
+    return encodeURIComponent(str).replace(/%2B/g, "+");
+};
