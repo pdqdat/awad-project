@@ -3,11 +3,11 @@ const connectDB = require('../config/db.js');
 const movieRoutes = require('../routes/moviesRoutes.js');
 const trendingRoutes = require('../routes/moviesTrendingRoutes.js');
 const castRoutes = require('../routes/castRoute.js');
-const userRoutes = require('../routes/userRoutes.js'); 
+// const userRoutes = require('../routes/userRoutes.js'); 
 const webhookRoutes = require('../routes/webhookRoutes.js');
 
-const { clerkMiddleware, requireAuth } = require('@clerk/express');
-const { ClerkExpressRequireAuth } =  require('@clerk/clerk-sdk-node')
+// const { clerkMiddleware, requireAuth } = require('@clerk/express');
+// const { ClerkExpressRequireAuth } =  require('@clerk/clerk-sdk-node')
 
 const dotenv = require('dotenv');
 dotenv.config(); 
@@ -38,7 +38,7 @@ app.use((req, res, next) => {
 app.use('/api', movieRoutes);
 app.use('/api', trendingRoutes);
 app.use('/api', castRoutes);
-app.use('/api',ClerkExpressRequireAuth(), userRoutes); 
+// app.use('/api',ClerkExpressRequireAuth(), userRoutes); 
 app.use('/api', webhookRoutes);
 
 // app.get('/debug-secret', (req, res) => {

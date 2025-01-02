@@ -50,8 +50,8 @@ function buildFilterCriteria({ genres, minRating, maxRating, startDate, endDate 
 
   if (genres) {
       // console.log("chua decode",genres)
-      genres = decodeURIComponent(genres).replace(/\+/g, ' ');
-      // console.log("decode",genres)
+      genres = decodeURIComponent(genres)
+      console.log("decode",genres)
       if (typeof genres === 'string') {
           genres = genres.split(',').map(genre => capitalizeWords(genre.trim()));
       } else if (Array.isArray(genres)) {
@@ -176,44 +176,44 @@ exports.getMovieById = async (req, res) => {
 
 exports.searchMovies = async (req, res) => {
   const { query, page = 1, limit = 10, ...filters } = req.query;
-  const filterCriteria = buildFilterCriteria(filters);
-  const llmResults = await retrieveFromLLM(query);
+  const currentPage = parseInt(page);
+  const pageSize = parseInt(limit);
+  const skip = (currentPage - 1) * pageSize;
 
-  // Traditional database search criteria
-  const dbSearchCriteria = {
-       $or: [
-          { title: { $regex: query, $options: 'i' } },
-          { 'credits.cast.name': { $regex: query, $options: 'i' } }
+  try {
+    // Lấy kết quả từ LLM
+    const llmResults = await retrieveFromLLM(query);
+    const llmIds = new Set(llmResults); // Chuyển thành Set để loại bỏ trùng lặp
+    console.log(llmIds)
+
+    // Xây dựng điều kiện tìm kiếm dựa trên kết quả LLM và điều kiện từ filters
+    const filterCriteria = buildFilterCriteria(filters);
+    const dbSearchCriteria = {
+      $or: [
+        { _id: { $in: Array.from(llmIds) } },
+        { title: { $regex: query, $options: 'i' } },
+        { 'credits.cast.name': { $regex: query, $options: 'i' } }
       ],
-    ...filterCriteria 
-  };
+      ...filterCriteria
+    };
 
-  const resultsFromDB = await Movie.find(dbSearchCriteria).limit(limit).skip((page - 1) * limit);
-  const resultsFromLLM = llmResults.length ? await Movie.find({ _id: { $in: llmResults }, ...filterCriteria }).limit(limit) : [];
+    // Truy vấn MongoDB với điều kiện đã xây dựng, kết hợp phân trang
+    const results = await Movie.find(dbSearchCriteria).skip(skip).limit(pageSize);
+    const totalResults = await Movie.countDocuments(dbSearchCriteria);
 
-
-  console.log("db",resultsFromDB.length)
-  console.log("LLM",resultsFromLLM.length)
-
-
-  // Combine results and eliminate duplicates
-  const combinedResults = [...resultsFromDB, ...resultsFromLLM].reduce((acc, current) => {
-    const x = acc.find(item => item._id.toString() === current._id.toString());
-    if (!x) {
-      return acc.concat([current]);
-    } else {
-      return acc;
-    }
-  }, []);
-
-  res.json({
-    total: combinedResults.length,
-    page,
-    limit,
-    totalPages: Math.ceil(combinedResults.length / limit),
-    data: combinedResults
-  });
+    res.json({
+      total: totalResults,
+      page: currentPage,
+      limit: pageSize,
+      totalPages: Math.ceil(totalResults / pageSize),
+      data: results
+    });
+  } catch (error) {
+    console.error('Error in enhanced search:', error);
+    res.status(500).send(`Error in enhanced search: ${error.message}`);
+  }
 };
+
 
 
 exports.getUpcomingMovies = async (req, res) => {
