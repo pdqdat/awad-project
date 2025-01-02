@@ -1,7 +1,6 @@
 "use server";
 
-import { tmdbApiBaseUrl } from "@/config/tmdb";
-import { Movie, MovieDetail, MovieSearchResult, PersonDetail } from "@/types";
+import { Movie, MovieSearchResult, Cast } from "@/types";
 import { LIMIT } from "@/config/movie";
 
 // Request options for GET requests to the TMDB API
@@ -177,7 +176,7 @@ export const fetchTopRatedMovies = async (
 
 export const fetchMovieDetail = async (
     movieID: string,
-): Promise<MovieDetail | null> => {
+): Promise<Movie | null> => {
     try {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/movies/${movieID}`,
@@ -268,26 +267,9 @@ export const searchMovies = async (
     }
 };
 
-// export const fetchCastDetail = async (
-//     castID: string,
-// ): Promise<CastDetail> => {
-//     try {
-//         const res = await fetch(
-//             `${tmdbApiBaseUrl}/person/${castID}?language=en-US`,
-//             getRequestOptions,
-//         );
-//         const data = await res.json();
-
-//         return data;
-//     } catch (error) {
-//         console.error("Error fetching cast detail: ", error);
-//         throw new Error("Error fetching cast detail");
-//     }
-// };
-
-export const fetchPersonDetail = async (
+export const fetchCastDetail = async (
     castID: string,
-): Promise<PersonDetail | null> => {
+): Promise<Cast | null> => {
     try {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/cast/${castID}`,
@@ -308,24 +290,5 @@ export const fetchPersonDetail = async (
     } catch (error) {
         console.error("Error fetching cast detail: ", error);
         throw new Error("Error fetching cast detail");
-    }
-};
-
-export const fetchGenres = async (): Promise<{
-    genres: { id: number; name: string }[];
-}> => {
-    try {
-        const res = await fetch(
-            `${tmdbApiBaseUrl}/genre/movie/list?language=en-US`,
-            getRequestOptions,
-        );
-        const data = await res.json();
-
-        return {
-            genres: data.genres,
-        };
-    } catch (error) {
-        console.error("Error fetching genres: ", error);
-        throw new Error("Error fetching genres");
     }
 };

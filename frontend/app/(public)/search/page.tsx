@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { searchMovies } from "@lib/actions";
 import siteConfig from "@/config/site";
 import MoviesList from "@comp/movies-list";
-import PaginationControls from "@comp/pagination-controls-client";
+import PaginationControls from "@comp/pagination-controls";
 import MobileFilter from "@comp/mobile-filter";
 import MainFilter from "@comp/main-filter";
 import PageHeading from "@comp/page-heading";

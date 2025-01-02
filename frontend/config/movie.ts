@@ -74,12 +74,12 @@ export const genres = [
     {
         id: 878,
         name: "Science Fiction",
-        value: "science+fiction",
+        value: "science fiction",
     },
     {
         id: 10770,
         name: "TV Movie",
-        value: "tv+movie",
+        value: "tv movie",
     },
     {
         id: 53,

@@ -2,10 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { Star } from "lucide-react";
 
-import { MovieSearchResult } from "@/types";
-import { tmdbPosterSizes, getTmdbImageUrl } from "@/config/tmdb";import {Badge } from "@ui/badge";
+import { Movie } from "@/types";
+import { tmdbPosterSizes, getTmdbImageUrl } from "@/config/tmdb";
+import { Badge } from "@ui/badge";
 
-const MoviesList = ({ movies }: { movies: MovieSearchResult[] }) => {
+const MoviesList = ({ movies }: { movies: Movie[] }) => {
     return (
         <ul className="space-y-2">
             {movies.map((movie) => (
@@ -54,8 +55,8 @@ const MoviesList = ({ movies }: { movies: MovieSearchResult[] }) => {
                                     / 10
                                 </p>
                             </div>
-                            <div className="flex gap-1 flex-wrap">
-                                {movie.genres.map(({id, name}) => (
+                            <div className="flex flex-wrap gap-1">
+                                {movie.genres.map(({ id, name }) => (
                                     <Badge
                                         key={id}
                                         variant="outline"

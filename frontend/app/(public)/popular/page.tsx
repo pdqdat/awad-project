@@ -4,7 +4,7 @@ import MoviesGrid from "@comp/movies-grid";
 import { fetchPopularMovies } from "@lib/actions";
 import MainFilter from "@comp/main-filter";
 import MobileFilter from "@comp/mobile-filter";
-import PaginationControls from "@comp/pagination-controls-client";
+import PaginationControls from "@comp/pagination-controls";
 import PageHeading from "@comp/page-heading";
 
 export const metadata: Metadata = {
