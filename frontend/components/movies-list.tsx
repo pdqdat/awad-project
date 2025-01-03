@@ -3,7 +3,8 @@ import Link from "next/link";
 import { Star } from "lucide-react";
 
 import { Movie } from "@/types";
-import { tmdbPosterSizes, getTmdbImageUrl } from "@/config/tmdb";
+import { tmdbPosterSizes } from "@/config/tmdb";
+import { getTmdbImageUrl } from "@lib/utils";
 import { Badge } from "@ui/badge";
 
 const MoviesList = ({ movies }: { movies: Movie[] }) => {

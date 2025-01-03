@@ -7,7 +7,7 @@ interface FancyHeadingProps {
 
 const FancyHeading = ({ children, className }: FancyHeadingProps) => {
     return (
-        <div className="flex">
+        <div className="mb-4 flex">
             <div className="mr-2 rounded-md border-r-[3px] border-primary"></div>
             <p className={cn("h6 font-semibold", className)}>{children}</p>
         </div>
