@@ -1,0 +1,79 @@
+const express = require('express');
+const connectDB = require('../config/db.js');
+const movieRoutes = require('../routes/moviesRoutes.js');
+const trendingRoutes = require('../routes/moviesTrendingRoutes.js');
+const castRoutes = require('../routes/castRoute.js');
+// const userRoutes = require('../routes/userRoutes.js'); 
+const webhookRoutes = require('../routes/webhookRoutes.js');
+
+// const { clerkMiddleware, requireAuth } = require('@clerk/express');
+const { ClerkExpressWithAuth } =  require('@clerk/clerk-sdk-node')
+
+const { Clerk } = require('@clerk/clerk-sdk-node');
+
+// Apply Clerk middleware for authentication
+
+const dotenv = require('dotenv');
+dotenv.config(); 
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// app.use(clerkExpressMiddleware({ apiKey: process.env.CLERK_API_KEY }));
+
+
+const cors = require('cors');
+app.use(cors());
+
+// app.use(clerkMiddleware());
+
+// Connect to the database
+connectDB();
+
+
+
+app.use((req, res, next) => {
+    if (req.path === '/api/webhook') {
+        next(); // Skip JSON parsing for webhook route
+    } else {
+        express.json()(req, res, next); // Apply JSON parsing for all other routes
+    }
+});
+
+
+// Define routes
+app.use('/api', movieRoutes);
+app.use('/api', trendingRoutes);
+app.use('/api', castRoutes);
+// app.use('/api',ClerkExpressRequireAuth(), userRoutes); 
+app.use('/api', webhookRoutes);
+
+app.get('/protected-endpoint', ClerkExpressWithAuth(), (req, res) => {
+    res.json({ message: "You are authenticated!", user: req.auth });
+  });
+
+
+app.use((err, req, res, next) => {
+    console.error(err.stack)
+    res.status(401).send('Unauthenticated!')
+  })
+
+// Handle 404 - Not Found
+app.use((req, res, next) => {
+    res.status(404).send("Sorry, that route doesn't exist.");
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+});
+
+app.get("/", (req, res) => res.send("Express on Vercel"));
+
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log('CLERK_WEBHOOK_SECRET_KEY:', process.env.CLERK_WEBHOOK_SECRET_KEY);
+});
+
+module.exports = app;
