@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Star, ChevronRight } from "lucide-react";
+import { Star, ChevronRight, Heart, Bookmark } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@ui/button";
@@ -44,9 +44,10 @@ const MovieDetailPage = async ({
 
     const similarMovies = await fetchSimilarMovies(movieID);
 
-    if (!movieDetail) {
-        return <div>Error fetching movie detail</div>;
-    }
+    const videoKey = movieDetail.trailers?.findLast(result => result.name === 'Official Trailer' || result.type === 'Trailer')?.key;
+    console.log(movieDetail.trailers);
+
+    console.log(videoKey);
 
     return (
         <div>
@@ -99,12 +100,24 @@ const MovieDetailPage = async ({
                             </p>
                         </div>
                         <p>{movieDetail.overview}</p>
-                        <Button variant="secondary" asChild>
+                        <Button variant="secondary" asChild className="mt-4 bg-gray-200 ">
                             <Link href={`/movie/${movieID}/review`}>
                                 Go to review
                                 <ChevronRight />
                             </Link>
                         </Button>
+
+                        <div className="mt-4 flex space-x-4">
+                            <Button variant="outline" className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-black hover:bg-gray-400 group">
+                                <Heart className="w-5 h-5" />
+                                <span className="absolute opacity-0 group-hover:opacity-100 transition-opacity text-sm mt-20 ml-2">Mark as favorite</span>
+                            </Button>
+                            <Button variant="outline" className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-black hover:bg-gray-400 group">
+                                <Bookmark className="w-5 h-5" />
+                                <span className="absolute opacity-0 group-hover:opacity-100 transition-opacity text-sm mt-20 ml-2">Add to watchlist</span>
+                            </Button>
+                        </div>
+
                     </div>
                 </div>
 
@@ -114,12 +127,25 @@ const MovieDetailPage = async ({
 
                 <CastRow casts={movieDetail.credits.cast.slice(0, 5)} />
 
-                <Button variant="secondary" asChild>
+                <Button variant="secondary" asChild className="mt-4 bg-gray-200" >
                     <Link href={`/movie/${movieID}/cast`}>
                         Full cast
                         <ChevronRight />
                     </Link>
                 </Button>
+
+                <div className="mt-8">
+                    <h2 className="text-xl font-semibold">Trailer</h2>
+                    <div className="relative pb-[56.25%] mt-4">
+                        <iframe
+                            className="absolute top-0 left-0 h-full w-full"
+                            src={`https://www.youtube.com/embed/${videoKey}`}
+                            title={`${movieDetail.title} Trailer`}
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                        />
+                    </div>
+                </div>
 
                 <div className="mt-8">
                     <h2 className="text-xl font-semibold">Similar Movies</h2>
