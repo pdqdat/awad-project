@@ -2,7 +2,7 @@ import Link from "next/link";
 import { MoveRight } from "lucide-react";
 
 import siteConfig from "@/config/site";
-import { navigationItems } from "@/lib/navigation-items";
+import { navigationItems } from "@lib/navigation-items";
 
 const Footer = () => {
     return (

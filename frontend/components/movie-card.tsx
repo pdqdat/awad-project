@@ -2,7 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { Movie, MovieCredit } from "@/types";
-import { tmdbPosterSizes, getTmdbImageUrl } from "@/config/tmdb";
+import { tmdbPosterSizes } from "@/config/tmdb";
+import { getTmdbImageUrl } from "@lib/utils";
 
 const MovieCard = ({ movie }: { movie: Movie | MovieCredit }) => {
     return (

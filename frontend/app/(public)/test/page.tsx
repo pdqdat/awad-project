@@ -1,20 +1,17 @@
-"use client";
+// import { auth } from "@clerk/nextjs/server";
+import { getAuthData } from "@lib/actions";
 
-import useMediaQuery from "@hooks/use-media-query";
-
-const TestPage = () => {
-    const isMobile = useMediaQuery("(max-width: 767px)");
-    const isTablet = useMediaQuery(
-        "(min-width: 768px) and (max-width: 1023px)",
-    );
-    const isDesktop = useMediaQuery("(min-width: 1024px)");
+const TestPage = async () => {
+    const authData = await getAuthData();
 
     return (
         <div className="container">
-            <h1>Test Page</h1>
-            {isMobile && <p>Mobile</p>}
-            {isTablet && <p>Tablet</p>}
-            {isDesktop && <p>Desktop</p>}
+            <div className="mb-4 font-bold">Data from API:</div>
+            <div>
+                {authData
+                    ? JSON.stringify(authData, null, 2)
+                    : "error fetching auth data"}
+            </div>
         </div>
     );
 };
