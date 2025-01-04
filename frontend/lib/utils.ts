@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { tmdbImageBaseUrl } from "@/config/tmdb";
 
 export const cn = (...inputs: ClassValue[]) => {
     return twMerge(clsx(inputs));
@@ -27,4 +28,18 @@ export const dateFormatter = (date: string) => {
  */
 export const customEncodeURIComponent = (str: string): string => {
     return encodeURIComponent(str).replace(/%2B/g, "+");
+};
+
+/**
+ * Returns the full URL of a TMDB image based on the image size and image path.
+ *
+ * @param imageSize - The size of the image to fetch.
+ * @param imagePath - The path of the image to fetch.
+ * @returns The full URL of the TMDB image.
+ */
+export const getTmdbImageUrl = (
+    imageSize: string = "w780",
+    imagePath: string,
+) => {
+    return `${tmdbImageBaseUrl}/${imageSize}/${imagePath}`;
 };

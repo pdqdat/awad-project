@@ -1,4 +1,38 @@
+// export interface Movie {
+//     _id: string;
+//     tmdb_id: number;
+//     adult: boolean;
+//     backdrop_path: string;
+//     budget: number;
+//     categories: string[];
+//     genres: Genre[];
+//     homepage: string;
+//     id: number;
+//     imdb_id: string;
+//     origin_country: string[];
+//     original_language: string;
+//     original_title: string;
+//     overview: string;
+//     popularity: number;
+//     poster_path: string;
+//     production_companies: ProductionCompany[];
+//     production_countries: ProductionCountry[];
+//     release_date: string;
+//     revenue: number;
+//     runtime: number;
+//     spoken_languages: SpokenLanguage[];
+//     status: string;
+//     tagline: string;
+//     title: string;
+//     video: boolean;
+//     vote_average: number;
+//     vote_count: number;
+//     credits: Credit;
+//     similar_movies: Movie[];
+//     trailers: Trailer[];
+// }
 export interface Movie {
+    belongs_to_collection: null;
     _id: string;
     tmdb_id: number;
     adult: boolean;
@@ -33,6 +67,7 @@ export interface Movie {
 }
 
 export interface Trailer {
+    _id: string;
     iso_639_1: string;
     iso_3166_1: string;
     name: string;

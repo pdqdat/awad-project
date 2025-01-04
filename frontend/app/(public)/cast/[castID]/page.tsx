@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 
 import { fetchCastDetail } from "@lib/actions";
-import { getTmdbImageUrl, tmdbPosterSizes } from "@/config/tmdb";
+import { tmdbPosterSizes } from "@/config/tmdb";
+import { getTmdbImageUrl } from "@lib/utils";
 import MoviesRow from "@comp/movies-row";
 
 export const generateMetadata = async ({

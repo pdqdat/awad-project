@@ -1,10 +1,5 @@
 export const navigationItems = [
     {
-        title: "Home",
-        href: "/",
-        description: "",
-    },
-    {
         title: "Movie",
         description: "Explore thousands of movies now.",
         items: [
@@ -23,7 +18,24 @@ export const navigationItems = [
         ],
     },
     {
-        title: "Lists",
-        href: "/list",
+        title: "Your lists",
+        items: [
+            {
+                title: "Watchlist",
+                href: "/profile/watchlist",
+            },
+            {
+                title: "Favorites",
+                href: "/profile/favorites",
+            },
+            {
+                title: "Ratings",
+                href: "/profile/ratings",
+            },
+        ],
+    },
+    {
+        title: "Your profile",
+        href: "/profile",
     },
 ];
