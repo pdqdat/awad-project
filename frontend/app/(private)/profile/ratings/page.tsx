@@ -18,13 +18,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
 };
 
 const RatingsPage = async () => {
-    const user = await currentUser();
-
-    if (!user) {
-        return <Section>Failed to fetch user info</Section>;
-    }
-
-    return <Section heading="Ratings">{user.fullName}&apos;s ratings</Section>;
+    return <Section heading="Ratings">Your ratings</Section>;
 };
 
 export default RatingsPage;

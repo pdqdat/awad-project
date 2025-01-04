@@ -51,7 +51,7 @@ const SearchPage = async ({
     const { data: movies, totalPages, total } = response;
 
     return (
-        <div className="min-h-72 py-8 lg:min-h-[30rem]">
+        <div className="min-h-72 py-8">
             <div className="container">
                 <PageHeading>
                     {total} result{total <= 1 ? "" : "s"} for &quot;{q}

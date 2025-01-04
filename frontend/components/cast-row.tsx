@@ -28,13 +28,11 @@ const CastRow = ({ casts }: { casts: CastInCredit[] }) => {
                     </Link>
                     <Button
                         variant="linkHover2"
-                        className="mt-2 text-base"
+                        className="mt-2 text-base font-medium leading-none"
                         asChild
                     >
                         <Link href={`/cast/${cast.id}`}>
-                            <div className="font-medium leading-none">
-                                {cast.original_name}
-                            </div>
+                            {cast.original_name}
                         </Link>
                     </Button>
                     <p className="text-sm text-muted-foreground">

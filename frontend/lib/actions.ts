@@ -2,7 +2,7 @@
 
 import { auth } from "@clerk/nextjs/server";
 
-import { Movie, MovieSearchResult, Cast } from "@/types";
+import { Movie, MovieSearchResult, Cast, MovieInList } from "@/types";
 import { LIMIT } from "@/config/movie";
 
 // Request options for GET requests to the TMDB API
@@ -260,13 +260,11 @@ export const searchMovies = async (
             undefined,
         );
 
-        console.log(params.toString());
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/search?${params.toString()}`,
             { method: "GET" },
         );
         const data = await res.json();
-        console.log(data.total);
 
         return {
             data: data.data,
@@ -330,7 +328,7 @@ export const getAuthData = async () => {
     return data;
 };
 
-export const fetchLatestTrailers = async (): Promise<{
+export const fetchUpcomingMovies = async (): Promise<{
     data: Movie[];
 } | null> => {
     try {
@@ -353,5 +351,76 @@ export const fetchLatestTrailers = async (): Promise<{
     } catch (error) {
         console.error("Error fetching trailer: ", error);
         throw new Error("Error fetching trailer");
+    }
+};
+
+export const addToWatchlist = async (
+    token: string,
+    movieID: string,
+): Promise<{ message: string; watchlist: MovieInList[] } | null> => {
+    try {
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/watchlist`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ movieID }),
+            },
+        );
+
+        if (!res.ok) {
+            if (res.status === 404) {
+                console.error("Error adding to watchlist");
+                return null;
+            }
+            if (res.status === 401) {
+                console.error("Unauthorized");
+                return null;
+            }
+
+            throw new Error("Error adding to watchlist");
+        }
+
+        const data = await res.json();
+
+        return data;
+    } catch (error) {
+        console.error("Error adding to watchlist: ", error);
+        throw new Error("Error adding to watchlist");
+    }
+};
+
+export const fetchWatchlist = async (
+    token: string,
+): Promise<MovieInList[] | null> => {
+    try {
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/watchlist`,
+            {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            },
+        );
+
+        if (!res.ok) {
+            if (res.status === 404) {
+                console.error("Error fetching watchlist");
+                return null;
+            }
+
+            throw new Error("Error fetching watchlist");
+        }
+
+        const data = await res.json();
+
+        return data.watchlist;
+    } catch (error) {
+        console.error("Error fetching watchlist: ", error);
+        throw new Error("Error fetching watchlist");
     }
 };

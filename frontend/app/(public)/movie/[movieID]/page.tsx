@@ -40,9 +40,6 @@ const MovieDetailPage = async ({
     const { movieID } = await params;
     const movieDetail = await fetchMovieDetail(movieID);
 
-    console.log(movieDetail);
-    console.log(movieID);
-
     if (!movieDetail) {
         return <div className="container">Error fetching movie detail</div>;
     }
@@ -133,6 +130,9 @@ const MovieDetailPage = async ({
                                 </span>
                             </Button>
                         </div>
+                        <div className="mt-16">
+                            <Button>remove from  watchlist</Button>
+                        </div>
                     </div>
                 </div>
             </Section>
@@ -143,17 +143,23 @@ const MovieDetailPage = async ({
             >
                 <CastRow casts={movieDetail.credits.cast.slice(0, 5)} />
             </Section>
-            <Section id="trailer" heading="Trailer" sectionClassName="bg-muted">
-                <div className="relative mt-4 pb-[56.25%]">
-                    <iframe
-                        className="absolute left-0 top-0 h-full w-full"
-                        src={`https://www.youtube.com/embed/${videoKey}`}
-                        title={`${movieDetail.title} trailer`}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                    />
-                </div>
-            </Section>
+            {videoKey && (
+                <Section
+                    id="trailer"
+                    heading="Trailer"
+                    sectionClassName="bg-muted"
+                >
+                    <div className="relative mt-4 pb-[56.25%]">
+                        <iframe
+                            className="absolute left-0 top-0 h-full w-full"
+                            src={`https://www.youtube.com/embed/${videoKey}`}
+                            title={`${movieDetail.title} trailer`}
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                        />
+                    </div>
+                </Section>
+            )}
             <Section id="similar" heading="Similar movies">
                 <MoviesRow movies={similarMovies.data} />
             </Section>

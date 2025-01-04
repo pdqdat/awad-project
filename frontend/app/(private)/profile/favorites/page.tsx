@@ -13,19 +13,13 @@ export const generateMetadata = async (): Promise<Metadata> => {
     }
 
     return {
-        title: `${user.fullName}'s Favorites"`,
+        title: `${user.fullName}'s Favorites`,
     };
 };
 
 const FavoritesPage = async () => {
-    const user = await currentUser();
-
-    if (!user) {
-        return <Section>Failed to fetch user info</Section>;
-    }
-
     return (
-        <Section heading="Favorites">{user.fullName}&apos;s favorites</Section>
+        <Section heading="Favorites">Your favorites</Section>
     );
 };
 
