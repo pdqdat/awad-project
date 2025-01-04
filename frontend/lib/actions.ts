@@ -263,11 +263,13 @@ export const searchMovies = async (
             undefined,
         );
 
+        console.log(params.toString());
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/search?${params.toString()}`,
             { method: "GET" },
         );
         const data = await res.json();
+        console.log(data.total);
 
         return {
             data: data.data,

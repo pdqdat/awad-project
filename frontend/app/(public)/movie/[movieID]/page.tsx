@@ -182,7 +182,7 @@ const MovieDetailPage = async ({
                     <MoviesRow movies={similarMovies.data} />
                 </div>
             </div>
-            <Section className="bg-muted" id="hehe" heading="Hehe">
+            <Section sectionClassName="bg-muted" id="hehe" heading="Hehe">
                 <div className="min-h-screen">hehehehehe</div>
             </Section>
         </>

@@ -1,6 +1,9 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-const isPrivateRoute = createRouteMatcher(["/chat(.*)", "/list(.*)"]);
+const isPrivateRoute = createRouteMatcher([
+    "/chat(.*)",
+    "/profile(.*)",
+]);
 
 export default clerkMiddleware(async (auth, req) => {
     // Protect all private routes

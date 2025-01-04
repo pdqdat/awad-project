@@ -5,17 +5,21 @@ const Section = ({
     id,
     heading,
     children,
-    className,
+    sectionClassName,
+    containerClassName,
 }: {
     id?: string;
     heading?: string;
     children: React.ReactNode;
-    className?: string;
+    sectionClassName?: string;
+    containerClassName?: string;
 }) => {
     return (
-        <section className={cn("py-8", className)} id={id}>
+        <section className={cn("py-8", sectionClassName)} id={id}>
             <div className="container">
                 {heading && <FancyHeading>{heading}</FancyHeading>}
+            </div>
+            <div className={cn("container", containerClassName)}>
                 {children}
             </div>
         </section>
