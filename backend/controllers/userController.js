@@ -1,6 +1,7 @@
 const getModelForCollection = require('../models/Movies');
 const User = require('../models/User');
 const Movie = getModelForCollection('movies');
+const PersonalList = require('../models/PersonalList')
 
 
 exports.addToWatchlist = async (req, res) => {
@@ -118,15 +119,41 @@ exports.getWatchlist = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        res.status(200).json({ watchlist: user.watchlist });
+        const movieIds = user.watchlist.map(item => item.movieId);
+
+        const movies = await Movie.find(
+            { tmdb_id: { $in: movieIds } },
+            {
+                _id: 1,
+                tmdb_id: 1,
+                adult: 1,
+                backdrop_path: 1,
+                belongs_to_collection: 1,
+                genres: 1,
+                homepage: 1,
+                id: 1,
+                imdb_id: 1,
+                overview: 1,
+                popularity: 1,
+                poster_path: 1,
+                release_date: 1,
+                runtime: 1,
+                title: 1,
+                vote_average: 1,
+                vote_count: 1,
+            }
+        );
+
+        res.status(200).json({ watchlist: movies });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching watchlist', error: error.message });
     }
 };
 
 
+
 exports.getFavoriteList = async (req, res) => {
-    const userId = req.auth.userId; 
+    const userId = req.auth.userId;
 
     try {
         const user = await User.findOne({ clerkUserId: userId });
@@ -134,15 +161,42 @@ exports.getFavoriteList = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        res.status(200).json({ favoriteList: user.favoriteList });
+        // Lấy danh sách ID phim từ favorite list
+        const movieIds = user.favoriteList.map(item => item.movieId);
+
+        // Truy vấn thông tin chi tiết phim
+        const movies = await Movie.find(
+            { tmdb_id: { $in: movieIds } },
+            {
+                _id: 1,
+                tmdb_id: 1,
+                adult: 1,
+                backdrop_path: 1,
+                belongs_to_collection: 1,
+                genres: 1,
+                homepage: 1,
+                id: 1,
+                imdb_id: 1,
+                overview: 1,
+                popularity: 1,
+                poster_path: 1,
+                release_date: 1,
+                runtime: 1,
+                title: 1,
+                vote_average: 1,
+                vote_count: 1,
+            }
+        );
+
+        res.status(200).json({ favoriteList: movies });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching watchlist', error: error.message });
+        res.status(500).json({ message: 'Error fetching favorite list', error: error.message });
     }
 };
 
 
 exports.getRatingList = async (req, res) => {
-    const userId = req.auth.userId; 
+    const userId = req.auth.userId;
 
     try {
         const user = await User.findOne({ clerkUserId: userId });
@@ -150,11 +204,48 @@ exports.getRatingList = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        res.status(200).json({ ratingList: user.ratingList });
+        // Lấy danh sách ID phim từ rating list
+        const movieIds = user.ratingList.map(item => item.movieId);
+
+        // Truy vấn thông tin chi tiết phim
+        const movies = await Movie.find(
+            { tmdb_id: { $in: movieIds } },
+            {
+                _id: 1,
+                tmdb_id: 1,
+                adult: 1,
+                backdrop_path: 1,
+                belongs_to_collection: 1,
+                genres: 1,
+                homepage: 1,
+                id: 1,
+                imdb_id: 1,
+                overview: 1,
+                popularity: 1,
+                poster_path: 1,
+                release_date: 1,
+                runtime: 1,
+                title: 1,
+                vote_average: 1,
+                vote_count: 1,
+            }
+        );
+
+        // Thêm rating của user vào chi tiết movie
+        const ratingDetails = movies.map(movie => {
+            const rating = user.ratingList.find(item => item.movieId === movie.tmdb_id);
+            return {
+                ...movie._doc,
+                userRating: rating.rating,
+            };
+        });
+
+        res.status(200).json({ ratingList: ratingDetails });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching watchlist', error: error.message });
+        res.status(500).json({ message: 'Error fetching rating list', error: error.message });
     }
 };
+
 
 exports.removeFromWatchlist = async (req, res) => {
     const { movieId } = req.body;
@@ -261,3 +352,121 @@ exports.removeFromRatingList = async (req, res) => {
     }
 };
 
+exports.createPersonalList = async (req, res) => {
+    const userId = req.auth.userId;
+    const { name, description, isPublic } = req.body;
+
+    try {
+        const newList = new PersonalList({
+            userId,
+            name,
+            description,
+            isPublic
+        });
+
+        await newList.save();
+        res.status(201).json({ message: 'List created successfully', list: newList });
+    } catch (error) {
+        res.status(500).json({ message: 'Error creating list', error: error.message });
+    }
+};
+
+exports.addMovieToPersonalList = async (req, res) => {
+    const userId = req.auth.userId;
+    const { movieId } = req.body; 
+    const listId = req.params.listId; 
+
+    // console.log('User ID:', userId); 
+    // console.log('listId:', listId); 
+
+    try {
+        const list = await PersonalList.findOne({ _id: listId, userId });
+        console.log('List:', list); 
+
+        if (!list) {
+            return res.status(404).json({ message: 'List not found' });
+        }
+
+        const exists = list.movies.some(item => item.movieId === movieId);
+        if (exists) {
+            return res.status(400).json({ message: 'Movie already in list' });
+        }
+
+        list.movies.push({ movieId });
+        await list.save();
+
+        res.status(200).json({ message: 'Movie added to list', list });
+    } catch (error) {
+        res.status(500).json({ message: 'Error adding movie to list', error: error.message });
+    }
+};
+
+
+exports.getPersonalLists = async (req, res) => {
+    const userId = req.auth.userId;
+
+    try {
+        const lists = await PersonalList.find({ userId });
+        res.status(200).json({ lists });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching lists', error: error.message });
+    }
+};
+
+
+exports.getPersonalListById = async (req, res) => {
+    const userId = req.auth.userId;
+    const { listId } = req.params;
+
+    try {
+        const list = await PersonalList.findOne({ _id: listId, userId });
+        if (!list) {
+            return res.status(404).json({ message: 'List not found' });
+        }
+
+        const movieIds = list.movies.map(item => item.movieId);
+        const movies = await Movie.find(
+            { tmdb_id: { $in: movieIds } },
+            {
+                _id: 1,
+                tmdb_id: 1,
+                adult: 1,
+                backdrop_path: 1,
+                belongs_to_collection: 1,
+                genres: 1,
+                homepage: 1,
+                id: 1,
+                imdb_id: 1,
+                overview: 1,
+                popularity: 1,
+                poster_path: 1,
+                release_date: 1,
+                runtime: 1,
+                title: 1,
+                vote_average: 1,
+                vote_count: 1,
+            }
+        );
+
+        res.status(200).json({ list, movies });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching list details', error: error.message });
+    }
+};
+
+
+exports.deletePersonalList = async (req, res) => {
+    const userId = req.auth.userId;
+    const { listId } = req.params;
+
+    try {
+        const list = await PersonalList.findOneAndDelete({ _id: listId, userId });
+        if (!list) {
+            return res.status(404).json({ message: 'List not found' });
+        }
+
+        res.status(200).json({ message: 'List deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting list', error: error.message });
+    }
+};

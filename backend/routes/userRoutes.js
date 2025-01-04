@@ -11,6 +11,11 @@ const {
     removeFromWatchlist,
     removeFromFavoriteList,
     removeFromRatingList,
+    createPersonalList,
+    addMovieToPersonalList,
+    getPersonalLists,
+    getPersonalListById,
+    deletePersonalList
 } = require('../controllers/userController');
 
 const router = express.Router();
@@ -24,6 +29,11 @@ router.get('/rate', ClerkExpressRequireAuth(), getRatingList);
 router.delete('/watchlist', ClerkExpressRequireAuth(), removeFromWatchlist);
 router.delete('/favorite', ClerkExpressRequireAuth(), removeFromFavoriteList);
 router.delete('/rate', ClerkExpressRequireAuth(), removeFromRatingList);
+router.post('/lists', ClerkExpressRequireAuth(), createPersonalList);
+router.post('/lists/:listId/movies', ClerkExpressRequireAuth(), addMovieToPersonalList);
+router.get('/lists', ClerkExpressRequireAuth(), getPersonalLists);
+router.get('/lists/:listId', ClerkExpressRequireAuth(), getPersonalListById);
+router.delete('/lists/:listId', ClerkExpressRequireAuth(), deletePersonalList);
 
 
 
