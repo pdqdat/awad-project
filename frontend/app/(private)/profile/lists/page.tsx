@@ -1,16 +1,22 @@
 import Link from "next/link";
+import { currentUser } from "@clerk/nextjs/server";
+import { Button } from "@ui/button";
 
-const ListsPage = () => {
+const ProfileListsPage = async () => {
+    const user = await currentUser();
+
     return (
         <div className="container">
-            DP's ListsPage
+            {user?.fullName}&apos;s lists
             <div>
-                <Link href="/list/datdeptrai">
-                    go to 'datdeptrai' movie list
-                </Link>
+                <Button asChild>
+                    <Link href="/list/datdeptrai">
+                        Go to <strong>datdeptrai</strong> movie list
+                    </Link>
+                </Button>
             </div>
         </div>
     );
 };
 
-export default ListsPage;
+export default ProfileListsPage;

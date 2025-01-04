@@ -10,19 +10,19 @@ import {
 
 const TrailerSection = () => {
     return (
-        <Section sectionClassName="bg-red-100" containerClassName="flex justify-center">
+        <Section
+            sectionClassName="bg-secondary-foreground"
+            containerClassName="flex justify-center"
+        >
             <Carousel
                 opts={{
                     align: "start",
                 }}
-                className="w-full max-w-5xl"
+                className="w-full max-w-3xl"
             >
                 <CarouselContent>
                     {Array.from({ length: 10 }).map((_, index) => (
-                        <CarouselItem
-                            key={index}
-                            className="md:basis-1/2"
-                        >
+                        <CarouselItem key={index}>
                             <div className="p-1">
                                 <Card>
                                     <CardContent className="flex aspect-video items-center justify-center p-6">

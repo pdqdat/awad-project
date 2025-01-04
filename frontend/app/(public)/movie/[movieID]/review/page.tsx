@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 
 import { Button } from "@ui/button";
 import { fetchMovieDetail } from "@lib/actions";
+import Section from "@comp/section";
 
 export const generateMetadata = async ({
     params,
@@ -31,23 +32,40 @@ const MovieReviewPage = async ({
     params: Promise<{ movieID: string }>;
 }) => {
     const { movieID } = await params;
-    // const review = await fetch(...)
-    // if (!review) {
-    //     return <div>Error fetching review</div>;
-    // }
+    const movieDetail = await fetchMovieDetail(movieID);
+
+    if (!movieDetail) {
+        return <div className="container">Error fetching movie detail</div>;
+    }
+
+    const backBtn = (
+        <div className="container my-4">
+            <Button variant="outline" asChild>
+                <Link href={`/movie/${movieID}`}>
+                    <ChevronLeft />
+                    Back to {movieDetail.title} details
+                </Link>
+            </Button>
+        </div>
+    );
 
     return (
-        <div>
-            <div className="container py-8">
-                <Button variant="secondary" asChild>
-                    <Link href={`/movie/${movieID}`}>
-                        <ChevronLeft />
-                        Back to movie detail page
-                    </Link>
-                </Button>
-                Review Page for movie <strong>{movieID}</strong>
-            </div>
-        </div>
+        <>
+            {backBtn}
+            <Section
+                heading={
+                    <>
+                        Reviews of{" "}
+                        <span className="text-primary">
+                            {movieDetail.title} (
+                            {new Date(movieDetail.release_date).getFullYear()})
+                        </span>
+                    </>
+                }
+            >
+                Reviews...
+            </Section>
+        </>
     );
 };
 

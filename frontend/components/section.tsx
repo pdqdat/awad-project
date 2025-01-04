@@ -7,17 +7,19 @@ const Section = ({
     children,
     sectionClassName,
     containerClassName,
+    href,
 }: {
     id?: string;
-    heading?: string;
+    heading?: string | React.ReactNode;
     children: React.ReactNode;
     sectionClassName?: string;
     containerClassName?: string;
+    href?: string;
 }) => {
     return (
-        <section className={cn("py-8", sectionClassName)} id={id}>
-            <div className="container">
-                {heading && <FancyHeading>{heading}</FancyHeading>}
+        <section id={id} className={cn("py-8", sectionClassName)}>
+            <div className="container mb-4 flex items-center gap-1">
+                {heading && <FancyHeading href={href}>{heading}</FancyHeading>}
             </div>
             <div className={cn("container", containerClassName)}>
                 {children}

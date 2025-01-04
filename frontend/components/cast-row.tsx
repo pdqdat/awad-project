@@ -19,7 +19,7 @@ const CastRow = ({ casts }: { casts: CastInCredit[] }) => {
                                     cast.profile_path ?? "",
                                 )}
                                 alt={cast.original_name}
-                                className="object-cover"
+                                className="object-cover transition-all hover:scale-105"
                             />
                             <AvatarFallback className="text-sm">
                                 {cast.name}

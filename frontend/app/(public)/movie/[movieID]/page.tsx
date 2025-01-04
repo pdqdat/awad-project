@@ -53,137 +53,109 @@ const MovieDetailPage = async ({
         (result) =>
             result.name === "Official Trailer" || result.type === "Trailer",
     )?.key;
-    console.log(movieDetail.trailers);
-
-    console.log(videoKey);
 
     return (
         <>
-            <div>
-                <div className="container mx-auto py-8">
-                    <div className="flex flex-col items-center md:flex-row md:items-start">
-                        {/* Poster */}
-                        <Image
-                            src={getTmdbImageUrl(
-                                tmdbPosterSizes.w500,
-                                movieDetail.poster_path,
-                            )}
-                            alt={movieDetail.title}
-                            width={342}
-                            height={513}
-                            className="mb-6 rounded-xl shadow-md md:mb-0 md:mr-8"
-                        />
-                        {/* Movie info */}
-                        <div className="flex-1">
-                            <h1 className="mb-4 text-4xl font-bold">
-                                {movieDetail.title}{" "}
+            <Section id="overview">
+                <div className="flex flex-col items-center md:flex-row md:items-start">
+                    <Image
+                        src={getTmdbImageUrl(
+                            tmdbPosterSizes.w500,
+                            movieDetail.poster_path,
+                        )}
+                        alt={movieDetail.title}
+                        width={342}
+                        height={513}
+                        className="mb-6 rounded-xl shadow-md md:mb-0 md:mr-8"
+                    />
+                    <div className="flex-1">
+                        <h1 className="mb-4 text-4xl font-bold">
+                            {movieDetail.title}{" "}
+                            <span className="font-normal text-muted-foreground">
+                                (
+                                {new Date(
+                                    movieDetail.release_date,
+                                ).getFullYear()}
+                                )
+                            </span>
+                        </h1>
+                        <div className="mb-4 flex flex-wrap gap-2">
+                            {movieDetail.genres.map((genre) => (
+                                <Badge
+                                    key={genre.id}
+                                    variant="outline"
+                                    className="text-sm"
+                                >
+                                    {genre.name}
+                                </Badge>
+                            ))}
+                        </div>
+                        <div className="group mb-4 flex items-center">
+                            <Star className="mr-1 text-yellow-500 group-hover:animate-wiggle" />
+                            <p className="mr-2 text-lg font-semibold">
+                                <span className="transition-colors group-hover:text-yellow-500">
+                                    {movieDetail.vote_average}
+                                </span>{" "}
+                                / 10{" "}
                                 <span className="font-normal text-muted-foreground">
-                                    (
-                                    {new Date(
-                                        movieDetail.release_date,
-                                    ).getFullYear()}
-                                    )
+                                    ({movieDetail.vote_count} votes)
                                 </span>
-                            </h1>
-                            <div className="mb-4 flex flex-wrap gap-2">
-                                {movieDetail.genres.map((genre) => (
-                                    <Badge
-                                        key={genre.id}
-                                        variant="outline"
-                                        className="text-sm"
-                                    >
-                                        {genre.name}
-                                    </Badge>
-                                ))}
-                            </div>
-                            <div className="group mb-4 flex items-center">
-                                <Star className="mr-1 text-yellow-500 group-hover:animate-wiggle" />
-                                <p className="mr-2 text-lg font-semibold">
-                                    <span className="transition-colors group-hover:text-yellow-500">
-                                        {movieDetail.vote_average}
-                                    </span>{" "}
-                                    / 10{" "}
-                                    <span className="font-normal text-muted-foreground">
-                                        ({movieDetail.vote_count} votes)
-                                    </span>
-                                </p>
-                            </div>
-                            <p>{movieDetail.overview}</p>
+                            </p>
+                        </div>
+                        <p>{movieDetail.overview}</p>
+                        <Button
+                            variant="secondary"
+                            asChild
+                            className="mt-4 bg-gray-200"
+                        >
+                            <Link href={`/movie/${movieID}/review`}>
+                                Go to review
+                                <ChevronRight />
+                            </Link>
+                        </Button>
+                        <div className="mt-4 flex space-x-4">
                             <Button
-                                variant="secondary"
-                                asChild
-                                className="mt-4 bg-gray-200"
+                                variant="outline"
+                                className="group flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-black hover:bg-gray-400"
                             >
-                                <Link href={`/movie/${movieID}/review`}>
-                                    Go to review
-                                    <ChevronRight />
-                                </Link>
+                                <Heart className="h-5 w-5" />
+                                <span className="absolute ml-2 mt-20 text-sm opacity-0 transition-opacity group-hover:opacity-100">
+                                    Mark as favorite
+                                </span>
                             </Button>
-
-                            <div className="mt-4 flex space-x-4">
-                                <Button
-                                    variant="outline"
-                                    className="group flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-black hover:bg-gray-400"
-                                >
-                                    <Heart className="h-5 w-5" />
-                                    <span className="absolute ml-2 mt-20 text-sm opacity-0 transition-opacity group-hover:opacity-100">
-                                        Mark as favorite
-                                    </span>
-                                </Button>
-                                <Button
-                                    variant="outline"
-                                    className="group flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-black hover:bg-gray-400"
-                                >
-                                    <Bookmark className="h-5 w-5" />
-                                    <span className="absolute ml-2 mt-20 text-sm opacity-0 transition-opacity group-hover:opacity-100">
-                                        Add to watchlist
-                                    </span>
-                                </Button>
-                            </div>
+                            <Button
+                                variant="outline"
+                                className="group flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-black hover:bg-gray-400"
+                            >
+                                <Bookmark className="h-5 w-5" />
+                                <span className="absolute ml-2 mt-20 text-sm opacity-0 transition-opacity group-hover:opacity-100">
+                                    Add to watchlist
+                                </span>
+                            </Button>
                         </div>
                     </div>
-
-                    <div className="mt-8">
-                        <h2 className="text-xl font-semibold">Top Cast</h2>
-                    </div>
-
-                    <CastRow casts={movieDetail.credits.cast.slice(0, 5)} />
-
-                    <Button
-                        variant="secondary"
-                        asChild
-                        className="mt-4 bg-gray-200"
-                    >
-                        <Link href={`/movie/${movieID}/cast`}>
-                            Full cast
-                            <ChevronRight />
-                        </Link>
-                    </Button>
-
-                    <div className="mt-8">
-                        <h2 className="text-xl font-semibold">Trailer</h2>
-                        <div className="relative mt-4 pb-[56.25%]">
-                            <iframe
-                                className="absolute left-0 top-0 h-full w-full"
-                                src={`https://www.youtube.com/embed/${videoKey}`}
-                                title={`${movieDetail.title} Trailer`}
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
-                            />
-                        </div>
-                    </div>
-
-                    <div className="mt-8">
-                        <h2 className="text-xl font-semibold">
-                            Similar Movies
-                        </h2>
-                    </div>
-
-                    <MoviesRow movies={similarMovies.data} />
                 </div>
-            </div>
-            <Section sectionClassName="bg-muted" id="hehe" heading="Hehe">
-                <div className="min-h-screen">hehehehehe</div>
+            </Section>
+            <Section
+                id="cast"
+                heading="Top cast"
+                href={`/movie/${movieID}/cast`}
+            >
+                <CastRow casts={movieDetail.credits.cast.slice(0, 5)} />
+            </Section>
+            <Section id="trailer" heading="Trailer" sectionClassName="bg-muted">
+                <div className="relative mt-4 pb-[56.25%]">
+                    <iframe
+                        className="absolute left-0 top-0 h-full w-full"
+                        src={`https://www.youtube.com/embed/${videoKey}`}
+                        title={`${movieDetail.title} Trailer`}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                    />
+                </div>
+            </Section>
+            <Section id="similar" heading="Similar movies">
+                <MoviesRow movies={similarMovies.data} />
             </Section>
         </>
     );

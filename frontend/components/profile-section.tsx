@@ -6,7 +6,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@ui/avatar";
 const ProfileSection = async () => {
     const user = await currentUser();
 
-    console.log(user);
+    // console.log(user);
 
     if (!user) {
         return <Section>Failed to fetch user info</Section>;
@@ -14,7 +14,7 @@ const ProfileSection = async () => {
 
     return (
         <Section
-            sectionClassName="bg-secondary"
+            sectionClassName="bg-secondary-foreground text-background"
             containerClassName="flex items-center gap-4"
         >
             <Avatar className="size-24">
