@@ -5,8 +5,8 @@ import TrailerSection from "@comp/trailer-section";
 const HomePage = () => {
     return (
         <>
-            <SearchSection />
             <TrailerSection />
+            <SearchSection />
             <TrendingMoviesSection />
         </>
     );

@@ -11,9 +11,9 @@ const Footer = () => {
                 <div className="grid items-center gap-10 lg:grid-cols-2">
                     <div className="flex flex-col items-start gap-8">
                         <div className="flex flex-col gap-2">
-                            <h2 className="max-w-xl text-left text-3xl font-semibold tracking-tighter md:text-5xl">
+                            <h1 className="max-w-xl text-left text-3xl font-semibold tracking-tighter md:text-5xl text-primary">
                                 {siteConfig.name}
-                            </h2>
+                            </h1>
                             <p className="max-w-lg text-left text-lg leading-relaxed tracking-tight text-background/75">
                                 {siteConfig.slogan}
                             </p>
