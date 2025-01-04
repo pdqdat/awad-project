@@ -18,10 +18,3 @@ export const tmdbBackdropSizes = {
     1280: "w1280",
     original: "original",
 };
-
-export const getTmdbImageUrl = (
-    imageSize: string = "w780",
-    imagePath: string,
-) => {
-    return `${tmdbImageBaseUrl}/${imageSize}/${imagePath}`;
-};

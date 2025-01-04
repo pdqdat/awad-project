@@ -5,10 +5,12 @@ import Link from "next/link";
 
 import { Button } from "@ui/button";
 import { fetchMovieDetail, fetchSimilarMovies } from "@lib/actions";
-import { getTmdbImageUrl, tmdbPosterSizes } from "@/config/tmdb";
+import { tmdbPosterSizes } from "@/config/tmdb";
+import { getTmdbImageUrl } from "@lib/utils";
 import { Badge } from "@ui/badge";
 import MoviesRow from "@comp/movies-row";
 import CastRow from "@comp/cast-row";
+import Section from "@comp/section";
 
 export const generateMetadata = async ({
     params,
@@ -38,22 +40,24 @@ const MovieDetailPage = async ({
     const { movieID } = await params;
     const movieDetail = await fetchMovieDetail(movieID);
 
+    console.log(movieDetail);
+    console.log(movieID);
+
     if (!movieDetail) {
         return <div className="container">Error fetching movie detail</div>;
     }
 
     const similarMovies = await fetchSimilarMovies(movieID);
 
-    const videoKey = movieDetail.trailers?.findLast(result => result.name === 'Official Trailer' || result.type === 'Trailer')?.key;
-    console.log(movieDetail.trailers);
-
-    console.log(videoKey);
+    const videoKey = movieDetail.trailers?.findLast(
+        (result) =>
+            result.name === "Official Trailer" || result.type === "Trailer",
+    )?.key;
 
     return (
-        <div>
-            <div className="container mx-auto py-8">
+        <>
+            <Section id="overview">
                 <div className="flex flex-col items-center md:flex-row md:items-start">
-                    {/* Poster */}
                     <Image
                         src={getTmdbImageUrl(
                             tmdbPosterSizes.w500,
@@ -64,7 +68,6 @@ const MovieDetailPage = async ({
                         height={513}
                         className="mb-6 rounded-xl shadow-md md:mb-0 md:mr-8"
                     />
-                    {/* Movie info */}
                     <div className="flex-1">
                         <h1 className="mb-4 text-4xl font-bold">
                             {movieDetail.title}{" "}
@@ -100,60 +103,61 @@ const MovieDetailPage = async ({
                             </p>
                         </div>
                         <p>{movieDetail.overview}</p>
-                        <Button variant="secondary" asChild className="mt-4 bg-gray-200 ">
+                        <Button
+                            variant="secondary"
+                            asChild
+                            className="mt-4 bg-gray-200"
+                        >
                             <Link href={`/movie/${movieID}/review`}>
                                 Go to review
                                 <ChevronRight />
                             </Link>
                         </Button>
-
                         <div className="mt-4 flex space-x-4">
-                            <Button variant="outline" className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-black hover:bg-gray-400 group">
-                                <Heart className="w-5 h-5" />
-                                <span className="absolute opacity-0 group-hover:opacity-100 transition-opacity text-sm mt-20 ml-2">Mark as favorite</span>
+                            <Button
+                                variant="outline"
+                                className="group flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-black hover:bg-gray-400"
+                            >
+                                <Heart className="h-5 w-5" />
+                                <span className="absolute ml-2 mt-20 text-sm opacity-0 transition-opacity group-hover:opacity-100">
+                                    Mark as favorite
+                                </span>
                             </Button>
-                            <Button variant="outline" className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-black hover:bg-gray-400 group">
-                                <Bookmark className="w-5 h-5" />
-                                <span className="absolute opacity-0 group-hover:opacity-100 transition-opacity text-sm mt-20 ml-2">Add to watchlist</span>
+                            <Button
+                                variant="outline"
+                                className="group flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-black hover:bg-gray-400"
+                            >
+                                <Bookmark className="h-5 w-5" />
+                                <span className="absolute ml-2 mt-20 text-sm opacity-0 transition-opacity group-hover:opacity-100">
+                                    Add to watchlist
+                                </span>
                             </Button>
                         </div>
-
                     </div>
                 </div>
-
-                <div className="mt-8">
-                    <h2 className="text-xl font-semibold">Top Cast</h2>
-                </div>
-
+            </Section>
+            <Section
+                id="cast"
+                heading="Top cast"
+                href={`/movie/${movieID}/cast`}
+            >
                 <CastRow casts={movieDetail.credits.cast.slice(0, 5)} />
-
-                <Button variant="secondary" asChild className="mt-4 bg-gray-200" >
-                    <Link href={`/movie/${movieID}/cast`}>
-                        Full cast
-                        <ChevronRight />
-                    </Link>
-                </Button>
-
-                <div className="mt-8">
-                    <h2 className="text-xl font-semibold">Trailer</h2>
-                    <div className="relative pb-[56.25%] mt-4">
-                        <iframe
-                            className="absolute top-0 left-0 h-full w-full"
-                            src={`https://www.youtube.com/embed/${videoKey}`}
-                            title={`${movieDetail.title} Trailer`}
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                        />
-                    </div>
+            </Section>
+            <Section id="trailer" heading="Trailer" sectionClassName="bg-muted">
+                <div className="relative mt-4 pb-[56.25%]">
+                    <iframe
+                        className="absolute left-0 top-0 h-full w-full"
+                        src={`https://www.youtube.com/embed/${videoKey}`}
+                        title={`${movieDetail.title} trailer`}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                    />
                 </div>
-
-                <div className="mt-8">
-                    <h2 className="text-xl font-semibold">Similar Movies</h2>
-                </div>
-
+            </Section>
+            <Section id="similar" heading="Similar movies">
                 <MoviesRow movies={similarMovies.data} />
-            </div>
-        </div>
+            </Section>
+        </>
     );
 };
 

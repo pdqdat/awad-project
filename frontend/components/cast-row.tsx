@@ -2,7 +2,8 @@ import Link from "next/link";
 
 import { CastInCredit } from "@/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@ui/avatar";
-import { tmdbPosterSizes, getTmdbImageUrl } from "@/config/tmdb";
+import { tmdbPosterSizes } from "@/config/tmdb";
+import { getTmdbImageUrl } from "@lib/utils";
 import { Button } from "@ui/button";
 
 const CastRow = ({ casts }: { casts: CastInCredit[] }) => {
@@ -18,7 +19,7 @@ const CastRow = ({ casts }: { casts: CastInCredit[] }) => {
                                     cast.profile_path ?? "",
                                 )}
                                 alt={cast.original_name}
-                                className="object-cover"
+                                className="object-cover transition-all hover:scale-105"
                             />
                             <AvatarFallback className="text-sm">
                                 {cast.name}

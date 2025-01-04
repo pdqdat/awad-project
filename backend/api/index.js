@@ -3,13 +3,14 @@ const connectDB = require('../config/db.js');
 const movieRoutes = require('../routes/moviesRoutes.js');
 const trendingRoutes = require('../routes/moviesTrendingRoutes.js');
 const castRoutes = require('../routes/castRoute.js');
-// const userRoutes = require('../routes/userRoutes.js'); 
+const userRoutes = require('../routes/userRoutes.js'); 
 const webhookRoutes = require('../routes/webhookRoutes.js');
+const { ClerkExpressRequireAuth  } =  require('@clerk/clerk-sdk-node')
+
 
 // const { clerkMiddleware, requireAuth } = require('@clerk/express');
-const { ClerkExpressWithAuth } =  require('@clerk/clerk-sdk-node')
 
-const { Clerk } = require('@clerk/clerk-sdk-node');
+
 
 // Apply Clerk middleware for authentication
 
@@ -45,10 +46,10 @@ app.use((req, res, next) => {
 app.use('/api', movieRoutes);
 app.use('/api', trendingRoutes);
 app.use('/api', castRoutes);
-// app.use('/api',ClerkExpressRequireAuth(), userRoutes); 
+app.use('/api',userRoutes);
 app.use('/api', webhookRoutes);
 
-app.get('/protected-endpoint', ClerkExpressWithAuth(), (req, res) => {
+app.get('/protected-endpoint', ClerkExpressRequireAuth(), (req, res) => {
     res.json({ message: "You are authenticated!", user: req.auth });
   });
 
