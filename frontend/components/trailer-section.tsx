@@ -7,10 +7,27 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from "@ui/carousel";
+import { fetchLatestTrailers } from "@lib/actions";
 
-const TrailerSection = () => {
+const TrailerSection = async () => {
+    const response = await fetchLatestTrailers();
+
+    if (!response || !response.data) {
+        return <div>Error fetching trailers</div>;
+    }
+    const { data: movies } = response;
+
+    if (!movies.length) {
+        return <div>No trailers available</div>;
+    }
+
     return (
         <Section
+            heading={
+                <span className="text-background">
+                    Check out these latest trailers
+                </span>
+            }
             sectionClassName="bg-secondary-foreground"
             containerClassName="flex justify-center"
         >
@@ -21,16 +38,23 @@ const TrailerSection = () => {
                 className="w-full max-w-3xl"
             >
                 <CarouselContent>
-                    {Array.from({ length: 10 }).map((_, index) => (
-                        <CarouselItem key={index}>
-                            <div className="p-1">
-                                <Card>
-                                    <CardContent className="flex aspect-video items-center justify-center p-6">
-                                        <span className="text-3xl font-semibold">
-                                            Trailer #{index + 1}
-                                        </span>
+                    {movies.map((movie) => (
+                        <CarouselItem key={movie.trailers[0].id}>
+                            <div className="text-center text-background">
+                                <Card className="overflow-hidden">
+                                    <CardContent className="relative aspect-video">
+                                        <iframe
+                                            src={`https://www.youtube.com/embed/${movie.trailers[0].key}`}
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowFullScreen
+                                            className="absolute left-0 top-0 h-full w-full"
+                                        />
                                     </CardContent>
                                 </Card>
+                                <div className="h5 font-bold">
+                                    {movie.title}
+                                </div>
+                                <div>{movie.tagline}</div>
                             </div>
                         </CarouselItem>
                     ))}

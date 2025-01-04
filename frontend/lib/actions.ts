@@ -194,9 +194,6 @@ export const fetchMovieDetail = async (
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/movies/${movieID}`,
             { method: "GET" },
         );
-        console.log(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/movies/${movieID}`,
-        );
         if (!res.ok) {
             if (res.status === 404) {
                 console.error("Movie not found");
@@ -331,4 +328,30 @@ export const getAuthData = async () => {
 
     const data = await response.json();
     return data;
+};
+
+export const fetchLatestTrailers = async (): Promise<{
+    data: Movie[];
+} | null> => {
+    try {
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/movies/cate/upcoming`,
+            { method: "GET" },
+        );
+        if (!res.ok) {
+            if (res.status === 404) {
+                console.error("Error fetching trailers");
+                return null;
+            }
+
+            throw new Error("Error fetching trailers");
+        }
+
+        const data = await res.json();
+
+        return { data: data.data };
+    } catch (error) {
+        console.error("Error fetching trailer: ", error);
+        throw new Error("Error fetching trailer");
+    }
 };

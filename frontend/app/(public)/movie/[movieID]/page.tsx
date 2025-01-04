@@ -148,7 +148,7 @@ const MovieDetailPage = async ({
                     <iframe
                         className="absolute left-0 top-0 h-full w-full"
                         src={`https://www.youtube.com/embed/${videoKey}`}
-                        title={`${movieDetail.title} Trailer`}
+                        title={`${movieDetail.title} trailer`}
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
                     />
