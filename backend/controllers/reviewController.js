@@ -24,10 +24,9 @@ exports.getReviews = async (req, res) => {
 
     try {
         const reviews = await Review.find({ movieId })
-            .lean()  // Sử dụng lean() để tối ưu hóa truy vấn
+            .lean() 
             .exec();
 
-        // Lấy thông tin người dùng cho mỗi review
         const userInfos = await Promise.all(
             reviews.map(review => 
                 User.findOne({ clerkUserId: review.userId }, 'firstName lastName').lean()
@@ -46,3 +45,20 @@ exports.getReviews = async (req, res) => {
     }
 };
 
+
+exports.deleteReview = async (req, res) => {
+    const { reviewId } = req.params;
+    const userId = req.auth.userId;  
+
+    try {
+        const result = await Review.deleteOne({ _id: reviewId, userId: userId });
+
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ message: "No review found or you don't have permission to delete this review" });
+        }
+
+        res.status(200).json({ message: 'Review deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting review', error: error.message });
+    }
+};
