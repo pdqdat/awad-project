@@ -1,6 +1,7 @@
 import TrendingMoviesSection from "@comp/trending-movies-section";
 import SearchSection from "@comp/search-section";
 import TrailerSection from "@comp/trailer-section";
+import PopularMoviesSection from "@/components/Popular-movies-section";
 
 const HomePage = () => {
     return (
@@ -8,6 +9,7 @@ const HomePage = () => {
             <SearchSection />
             <TrailerSection />
             <TrendingMoviesSection />
+            <PopularMoviesSection />
         </>
     );
 };
