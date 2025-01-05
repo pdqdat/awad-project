@@ -6,6 +6,7 @@ const castRoutes = require('../routes/castRoute.js');
 const userRoutes = require('../routes/userRoutes.js'); 
 const webhookRoutes = require('../routes/webhookRoutes.js');
 const { ClerkExpressRequireAuth  } =  require('@clerk/clerk-sdk-node')
+const reviewRoutes = require('../routes/reviewRoute.js')
 
 
 // const { clerkMiddleware, requireAuth } = require('@clerk/express');
@@ -48,6 +49,8 @@ app.use('/api', trendingRoutes);
 app.use('/api', castRoutes);
 app.use('/api',userRoutes);
 app.use('/api', webhookRoutes);
+app.use('/api', reviewRoutes);
+
 
 app.get('/protected-endpoint', ClerkExpressRequireAuth(), (req, res) => {
     res.json({ message: "You are authenticated!", user: req.auth });
