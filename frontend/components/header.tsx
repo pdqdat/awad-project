@@ -27,7 +27,7 @@ const Header = async () => {
                         {siteConfig.name}
                     </Link>
                 </div>
-                <div className="flex w-full justify-end gap-4">
+                <div className="flex w-full justify-end gap-2">
                     <SearchBox whiteBg />
                     <SignedOut>
                         <SignInButton>

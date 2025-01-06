@@ -33,8 +33,6 @@ const SearchBox = ({
     return (
         <div
             className={cn(
-                // "flex w-full items-center rounded-md border border-input px-2.5",
-                // "flex w-full items-center rounded-md px-2.5 bg-background",
                 "flex w-full items-center rounded-md px-2.5",
                 whiteBg ? "bg-background" : "border border-input",
                 className,

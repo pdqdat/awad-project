@@ -1,6 +1,5 @@
 import { currentUser } from "@clerk/nextjs/server";
 import type { Metadata } from "next";
-import { auth } from "@clerk/nextjs/server";
 
 import Section from "@comp/section";
 import { fetchWatchlist } from "@lib/actions";
@@ -19,16 +18,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
 };
 
 const ProfilePage = async () => {
-    const { getToken } = await auth();
-
-    const token = await getToken();
-
-    if (!token) {
-        return <Section>Error fetching auth info</Section>;
-    }
-    console.log(token);
-
-    const watchlist = await fetchWatchlist(token);
+    const watchlist = await fetchWatchlist();
     if (!watchlist) {
         return <Section>Error fetching your watchlist</Section>;
     }

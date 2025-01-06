@@ -72,7 +72,7 @@ const MoviesListInList = ({ movies }: { movies: MovieInList[] }) => {
                                             </span>
                                         </p>
                                     </div>
-                                    <RateBtn id={movie.id} />
+                                    <RateBtn movieID={movie.id} />
                                 </div>
                             </div>
                         </div>

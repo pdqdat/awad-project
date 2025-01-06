@@ -4,16 +4,18 @@ import { useState } from "react";
 import { LoaderCircle } from "lucide-react";
 
 import { Button } from "@ui/button";
+import { useToast } from "@hooks/use-toast";
 
-const RateBtn = ({ id }: { id: number }) => {
+const RateBtn = ({ movieID }: { movieID: number }) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const { toast } = useToast();
 
     const handleOnClick = () => {
         setIsLoading(true);
 
         setTimeout(() => {
             setIsLoading(false);
-            alert(`rate movie #${id}`);
+            toast({ title: `Rating for movie #${movieID}submitted!` });
         }, 2000);
     };
 
@@ -26,7 +28,7 @@ const RateBtn = ({ id }: { id: number }) => {
             onClick={handleOnClick}
         >
             {isLoading ? (
-                <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+                <LoaderCircle className="size-4 animate-spin" />
             ) : (
                 <>Rate</>
             )}

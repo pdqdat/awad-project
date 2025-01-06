@@ -6,7 +6,7 @@ import { Movie, MovieSearchResult, Cast, MovieInList } from "@/types";
 import { LIMIT } from "@/config/movie";
 
 // Request options for GET requests to the TMDB API
-const getRequestOptions = {
+const tmdbGetRequestOptions = {
     method: "GET",
     headers: {
         accept: "application/json",
@@ -74,7 +74,7 @@ export const fetchTrendingMovies = async (
     try {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/trending/${timeWindow}?page=${page}&limit=${LIMIT}`,
-            getRequestOptions,
+            tmdbGetRequestOptions,
         );
         const data = await res.json();
 
@@ -220,7 +220,7 @@ export const fetchSimilarMovies = async (
     try {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/movies/${movieID}/similar`,
-            getRequestOptions,
+            tmdbGetRequestOptions,
         );
         const data = await res.json();
 
@@ -303,31 +303,6 @@ export const fetchCastDetail = async (castID: string): Promise<Cast | null> => {
     }
 };
 
-export const getAuthData = async () => {
-    const { getToken } = await auth();
-
-    const token = await getToken();
-    console.log(token);
-
-    const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/protected-endpoint`,
-        {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-                mode: "cors",
-            },
-        },
-    );
-
-    if (!response.ok) {
-        return null;
-    }
-
-    const data = await response.json();
-    return data;
-};
-
 export const fetchUpcomingMovies = async (): Promise<{
     data: Movie[];
 } | null> => {
@@ -355,10 +330,21 @@ export const fetchUpcomingMovies = async (): Promise<{
 };
 
 export const addToWatchlist = async (
-    token: string,
-    movieID: string,
-): Promise<{ message: string; watchlist: MovieInList[] } | null> => {
+    movieID: number,
+): Promise<{
+    status: number;
+    message: string;
+    watchlist: MovieInList[];
+} | null> => {
+    const { getToken } = await auth();
+
     try {
+        const token = await getToken();
+        if (!token) {
+            console.error("Error fetching session token");
+            return null;
+        }
+
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/watchlist`,
             {
@@ -367,7 +353,7 @@ export const addToWatchlist = async (
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ movieID }),
+                body: JSON.stringify({ movieId: movieID }),
             },
         );
 
@@ -386,25 +372,95 @@ export const addToWatchlist = async (
 
         const data = await res.json();
 
-        return data;
+        return {
+            status: res.status,
+            message: data.message,
+            watchlist: data.watchlist,
+        };
     } catch (error) {
         console.error("Error adding to watchlist: ", error);
         throw new Error("Error adding to watchlist");
     }
 };
 
-export const fetchWatchlist = async (
-    token: string,
-): Promise<MovieInList[] | null> => {
+export const removeFromWatchlist = async (
+    movieID: number,
+): Promise<{
+    status: number;
+    message: string;
+    watchlist: MovieInList[];
+} | null> => {
+    const { getToken } = await auth();
+
     try {
+        const token = await getToken();
+        if (!token) {
+            console.error("Error fetching session token");
+            return null;
+        }
+
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/watchlist`,
             {
-                method: "GET",
+                method: "DELETE",
                 headers: {
+                    "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
+                body: JSON.stringify({ movieId: movieID }),
             },
+        );
+
+        if (!res.ok) {
+            if (res.status === 404) {
+                console.error("Error removing from watchlist");
+                return null;
+            }
+            if (res.status === 401) {
+                console.error("Unauthorized");
+                return null;
+            }
+
+            throw new Error("Error removing from watchlist");
+        }
+
+        const data = await res.json();
+
+        return {
+            status: res.status,
+            message: data.message,
+            watchlist: data.watchlist,
+        };
+    } catch (error) {
+        console.error("Error removing from watchlist: ", error);
+        throw new Error("Error removing from watchlist");
+    }
+};
+
+export const fetchWatchlist = async (): Promise<MovieInList[] | null> => {
+    const { getToken } = await auth();
+
+    try {
+        const token = await getToken();
+        if (!token) {
+            console.error("Error fetching session token");
+            return null;
+        }
+
+        const options: RequestInit = {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            // Cache the response for 3 seconds
+            next: {
+                revalidate: 3,
+            },
+        };
+
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/watchlist`,
+            options,
         );
 
         if (!res.ok) {

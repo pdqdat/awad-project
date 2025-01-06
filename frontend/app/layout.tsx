@@ -3,6 +3,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 
 import "@/app/globals.css";
 import siteConfig from "@/config/site";
+import { Toaster } from "@ui/toaster";
 
 export const metadata: Metadata = {
     title: {
@@ -21,7 +22,10 @@ export default function RootLayout({
     return (
         <ClerkProvider>
             <html lang="en">
-                <body className="antialiased">{children}</body>
+                <body className="antialiased">
+                    {children}
+                    <Toaster />
+                </body>
             </html>
         </ClerkProvider>
     );

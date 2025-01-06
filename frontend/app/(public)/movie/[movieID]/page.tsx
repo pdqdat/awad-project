@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Star, ChevronRight, Heart, Bookmark } from "lucide-react";
+import { Star, ChevronRight, Heart } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@ui/button";
@@ -11,6 +11,7 @@ import { Badge } from "@ui/badge";
 import MoviesRow from "@comp/movies-row";
 import CastRow from "@comp/cast-row";
 import Section from "@comp/section";
+import WatchlistBtn from "@comp/watchlist-btn";
 
 export const generateMetadata = async ({
     params,
@@ -120,18 +121,12 @@ const MovieDetailPage = async ({
                                     Mark as favorite
                                 </span>
                             </Button>
-                            <Button
-                                variant="outline"
-                                className="group flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-black hover:bg-gray-400"
-                            >
-                                <Bookmark className="h-5 w-5" />
-                                <span className="absolute ml-2 mt-20 text-sm opacity-0 transition-opacity group-hover:opacity-100">
-                                    Add to watchlist
-                                </span>
-                            </Button>
                         </div>
-                        <div className="mt-16">
-                            <Button>remove from  watchlist</Button>
+                        <div className="mt-12 flex w-1/5">
+                            <WatchlistBtn
+                                movieID={movieDetail.id}
+                                className="flex-1"
+                            />
                         </div>
                     </div>
                 </div>

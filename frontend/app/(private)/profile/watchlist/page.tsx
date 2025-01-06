@@ -1,17 +1,11 @@
 import { currentUser } from "@clerk/nextjs/server";
 import type { Metadata } from "next";
-import { auth } from "@clerk/nextjs/server";
 import { Info } from "lucide-react";
 
 import Section from "@comp/section";
 import { fetchWatchlist } from "@lib/actions";
 import MoviesListInList from "@comp/movies-list-in-list";
-import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent,
-} from "@ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@ui/card";
 
 export const generateMetadata = async (): Promise<Metadata> => {
     const user = await currentUser();
@@ -33,15 +27,8 @@ const WatchlistPage = async () => {
     if (!user) {
         return <Section>Failed to fetch user info</Section>;
     }
-    const { getToken } = await auth();
 
-    const token = await getToken();
-
-    if (!token) {
-        return <Section>Error fetching auth info</Section>;
-    }
-
-    const watchlist = await fetchWatchlist(token);
+    const watchlist = await fetchWatchlist();
     if (!watchlist) {
         return <Section>Error fetching your watchlist</Section>;
     }
