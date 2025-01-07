@@ -51,7 +51,7 @@ const MoviesList = ({ movies }: { movies: Movie[] }) => {
                                 <Star className="mr-1 size-5 text-yellow-500" />
                                 <p className="mr-2 font-semibold">
                                     <span className="text-yellow-500">
-                                        {movie.vote_average}
+                                        {movie.vote_average.toFixed(1)}
                                     </span>{" "}
                                     / 10
                                 </p>

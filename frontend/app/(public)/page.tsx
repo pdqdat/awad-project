@@ -1,13 +1,13 @@
-import TrendingMoviesSection from "@comp/trending-movies-section";
+import TrendingSection from "@comp/trending-section";
 import SearchSection from "@comp/search-section";
 import TrailerSection from "@comp/trailer-section";
 
 const HomePage = () => {
     return (
         <>
-            <SearchSection />
             <TrailerSection />
-            <TrendingMoviesSection />
+            <SearchSection />
+            <TrendingSection />
         </>
     );
 };

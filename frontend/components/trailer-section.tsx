@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import Section from "@comp/section";
 import { Card, CardContent } from "@ui/card";
 import {
@@ -7,10 +9,10 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from "@ui/carousel";
-import { fetchLatestTrailers } from "@lib/actions";
+import { fetchUpcomingMovies } from "@lib/actions";
 
 const TrailerSection = async () => {
-    const response = await fetchLatestTrailers();
+    const response = await fetchUpcomingMovies();
 
     if (!response || !response.data) {
         return <div>Error fetching trailers</div>;
@@ -51,9 +53,12 @@ const TrailerSection = async () => {
                                         />
                                     </CardContent>
                                 </Card>
-                                <div className="h5 font-bold">
+                                <Link
+                                    href={`/movie/${movie.id}`}
+                                    className="h5 font-bold transition-colors hover:text-primary"
+                                >
                                     {movie.title}
-                                </div>
+                                </Link>
                                 <div>{movie.tagline}</div>
                             </div>
                         </CarouselItem>

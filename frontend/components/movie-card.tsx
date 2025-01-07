@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Movie, MovieCredit } from "@/types";
 import { tmdbPosterSizes } from "@/config/tmdb";
 import { getTmdbImageUrl } from "@lib/utils";
+import WatchlistBtn from "@comp/watchlist-btn";
 
 const MovieCard = ({ movie }: { movie: Movie | MovieCredit }) => {
     return (
@@ -19,15 +20,18 @@ const MovieCard = ({ movie }: { movie: Movie | MovieCredit }) => {
                         width={342}
                         height={513}
                         loading="lazy"
-                        className="aspect-[3/4] h-auto w-auto object-cover transition-all hover:scale-105"
+                        className="aspect-[3/4] h-auto w-auto object-cover transition-all hover:brightness-90"
                     />
                 </div>
             </Link>
-            <div className="space-y-1">
-                <h3 className="font-medium leading-none">{movie.title}</h3>
-                <p className="text-sm text-muted-foreground">
-                    {new Date(movie.release_date).getFullYear()}
-                </p>
+            <div className="flex justify-between">
+                <div className="space-y-1">
+                    <h3 className="font-medium leading-none">{movie.title}</h3>
+                    <p className="text-sm text-muted-foreground">
+                        {new Date(movie.release_date).getFullYear()}
+                    </p>
+                </div>
+                <WatchlistBtn movieID={movie.id} small className="shrink-0" />
             </div>
         </div>
     );
