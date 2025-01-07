@@ -12,6 +12,7 @@ import MoviesRow from "@comp/movies-row";
 import CastRow from "@comp/cast-row";
 import Section from "@comp/section";
 import WatchlistBtn from "@comp/watchlist-btn";
+import HttpStatusPage from "@comp/http-status-page";
 
 export const generateMetadata = async ({
     params,
@@ -42,10 +43,11 @@ const MovieDetailPage = async ({
     const movieDetail = await fetchMovieDetail(movieID);
 
     if (!movieDetail) {
-        return <div className="container">Error fetching movie detail</div>;
+        return <HttpStatusPage status={404}>Movie not found</HttpStatusPage>;
     }
 
     const similarMovies = await fetchSimilarMovies(movieID);
+    console.log(similarMovies);
 
     const videoKey = movieDetail.trailers?.findLast(
         (result) =>
@@ -156,7 +158,11 @@ const MovieDetailPage = async ({
                 </Section>
             )}
             <Section id="similar" heading="Similar movies">
-                <MoviesRow movies={similarMovies.data} />
+                {similarMovies && similarMovies.data.length > 0 ? (
+                    <MoviesRow movies={similarMovies.data} />
+                ) : (
+                    <div>Error fetching similar movies</div>
+                )}
             </Section>
         </>
     );

@@ -44,7 +44,8 @@ const CastPage = async ({
             <Button variant="outline" asChild>
                 <Link href={`/movie/${movieID}`}>
                     <ChevronLeft />
-                    Back to {movieDetail.title} details
+                    Back to{" "}
+                    <span className="font-bold">{movieDetail.title}</span>
                 </Link>
             </Button>
         </div>

@@ -1,10 +1,4 @@
-import {
-    UserButton,
-    SignInButton,
-    SignUpButton,
-    SignedIn,
-    SignedOut,
-} from "@clerk/nextjs";
+import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import Link from "next/link";
 
 import siteConfig from "@/config/site";
@@ -12,6 +6,7 @@ import { Button } from "@ui/button";
 import MobileNav from "@comp/mobile-nav";
 import MainNav from "@comp/main-nav";
 import SearchBox from "@comp/search-box";
+import UserBtn from "@comp/user-btn";
 
 const Header = async () => {
     return (
@@ -27,30 +22,15 @@ const Header = async () => {
                         {siteConfig.name}
                     </Link>
                 </div>
-                <div className="flex w-full justify-end gap-2">
+                <div className="flex w-full items-center justify-end gap-2 lg:gap-4">
                     <SearchBox whiteBg />
                     <SignedOut>
                         <SignInButton>
-                            <Button variant="outline">Sign in</Button>
+                            <Button variant="ringHover">Sign in</Button>
                         </SignInButton>
-                        <div className="hidden sm:block">
-                            <SignUpButton>
-                                <Button variant="ringHover">
-                                    Create account
-                                </Button>
-                            </SignUpButton>
-                        </div>
                     </SignedOut>
                     <SignedIn>
-                        <div className="ml-auto flex size-9">
-                            <UserButton
-                                appearance={{
-                                    elements: {
-                                        userButtonAvatarBox: "size-full",
-                                    },
-                                }}
-                            />
-                        </div>
+                        <UserBtn />
                     </SignedIn>
                 </div>
             </div>

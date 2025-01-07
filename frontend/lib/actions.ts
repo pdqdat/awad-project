@@ -216,12 +216,26 @@ export const fetchSimilarMovies = async (
     movieID: string,
 ): Promise<{
     data: Movie[];
-}> => {
+} | null> => {
     try {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/movies/${movieID}/similar`,
             tmdbGetRequestOptions,
         );
+        if (!res.ok) {
+            if (res.status === 404) {
+                console.error("Similar movies not found");
+                return null;
+            }
+
+            if (res.status === 401) {
+                console.error("Unauthorized");
+                return null;
+            }
+
+            throw new Error("Error fetching similar movies");
+        }
+
         const data = await res.json();
 
         return {
@@ -268,7 +282,7 @@ export const searchMovies = async (
             console.log("Error searching movies");
             return null;
         }
-        
+
         const data = await res.json();
 
         return {

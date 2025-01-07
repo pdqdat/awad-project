@@ -5,6 +5,7 @@ import { fetchCastDetail } from "@lib/actions";
 import { tmdbPosterSizes } from "@/config/tmdb";
 import { getTmdbImageUrl } from "@lib/utils";
 import MoviesRow from "@comp/movies-row";
+import HttpStatusPage from "@comp/http-status-page";
 
 export const generateMetadata = async ({
     params,
@@ -35,7 +36,7 @@ const CastDetailPage = async ({
     const castDetail = await fetchCastDetail(castID);
 
     if (!castDetail) {
-        return <div className="container">Error fetching cast detail</div>;
+        return <HttpStatusPage status={404}>Cast not found</HttpStatusPage>;
     }
 
     if (!castDetail) {
