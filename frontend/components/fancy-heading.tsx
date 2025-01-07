@@ -16,7 +16,9 @@ const FancyHeading = ({
         <div className="group flex">
             <div className="mr-2 rounded-md border-r-[4px] border-primary" />
             <div className="flex items-center">
-                <p className={cn("h5 font-[650]", className)}>{children}</p>
+                <h3 className={cn("h3 tracking-normal", className)}>
+                    {children}
+                </h3>
                 {href && (
                     <ChevronRight className="size-9 stroke-[2.25px] transition-all group-hover:translate-x-1 group-hover:text-primary" />
                 )}

@@ -9,13 +9,13 @@ import { getTmdbImageUrl } from "@lib/utils";
 import { formatRuntime } from "@lib/utils";
 import RateBtn from "@comp/rate-btn";
 
-const MoviesListInList = ({ movies }: { movies: MovieInList[] }) => {
+const MoviesList1 = ({ movies }: { movies: MovieInList[] }) => {
     return (
         <ul className="space-y-2">
             {movies.map((movie, index) => (
                 <li
                     key={movie.id}
-                    className="flex flex-col gap-2 rounded-xl border p-2"
+                    className="flex flex-col gap-2 rounded-xl border p-4"
                 >
                     <div>
                         <div className="flex gap-2">
@@ -95,4 +95,4 @@ const MoviesListInList = ({ movies }: { movies: MovieInList[] }) => {
     );
 };
 
-export default MoviesListInList;
+export default MoviesList1;

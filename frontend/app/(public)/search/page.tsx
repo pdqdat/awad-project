@@ -48,6 +48,9 @@ const SearchPage = async ({
         from as string,
         to as string,
     );
+    if (!response) {
+        return <div>Error fetching movies</div>;
+    }
     const { data: movies, totalPages, total } = response;
 
     return (

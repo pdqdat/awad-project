@@ -247,7 +247,7 @@ export const searchMovies = async (
     totalPages: number;
     total: number;
     limit: number;
-}> => {
+} | null> => {
     try {
         const params = generateQueryParams(
             query,
@@ -264,6 +264,11 @@ export const searchMovies = async (
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/search?${params.toString()}`,
             { method: "GET" },
         );
+        if (!res.ok) {
+            console.log("Error searching movies");
+            return null;
+        }
+        
         const data = await res.json();
 
         return {

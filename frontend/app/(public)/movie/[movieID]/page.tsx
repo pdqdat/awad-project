@@ -67,7 +67,7 @@ const MovieDetailPage = async ({
                         className="mb-6 rounded-xl shadow-md md:mb-0 md:mr-8"
                     />
                     <div className="flex-1">
-                        <h1 className="mb-4 text-4xl font-bold">
+                        <h1 className="h2 mb-4">
                             {movieDetail.title}{" "}
                             <span className="font-normal text-muted-foreground">
                                 (

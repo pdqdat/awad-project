@@ -11,10 +11,15 @@ const Footer = () => {
                 <div className="grid items-center gap-10 lg:grid-cols-2">
                     <div className="flex flex-col items-start gap-8">
                         <div className="flex flex-col gap-2">
-                            <h1 className="max-w-xl text-left text-3xl font-semibold tracking-tighter md:text-5xl text-primary">
-                                {siteConfig.name}
-                            </h1>
-                            <p className="max-w-lg text-left text-lg leading-relaxed tracking-tight text-background/75">
+                            <div className="max-w-xl text-left text-3xl font-semibold tracking-tighter text-primary md:text-5xl">
+                                <Link
+                                    href="/"
+                                    className="max-w-xl text-left text-3xl font-semibold tracking-tighter text-primary md:text-5xl"
+                                >
+                                    {siteConfig.name}
+                                </Link>
+                            </div>
+                            <p className="h4 font-medium text-accent">
                                 {siteConfig.slogan}
                             </p>
                         </div>
@@ -35,13 +40,13 @@ const Footer = () => {
                                             href={item.href}
                                             className="group flex items-center justify-between"
                                         >
-                                            <span className="text-xl">
+                                            <span className="h4">
                                                 {item.title}
                                             </span>
                                             <MoveRight className="ml-2 hidden h-4 w-4 text-muted-foreground transition-opacity group-hover:block" />
                                         </Link>
                                     ) : (
-                                        <p className="text-xl">{item.title}</p>
+                                        <div className="h4">{item.title}</div>
                                     )}
                                     {item.items &&
                                         item.items.map((subItem) => (

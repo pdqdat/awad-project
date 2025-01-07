@@ -15,13 +15,13 @@ const RateBtn = ({ movieID }: { movieID: number }) => {
 
         setTimeout(() => {
             setIsLoading(false);
-            toast({ title: `Rating for movie #${movieID}submitted!` });
+            toast({ title: `Rating for movie #${movieID} submitted!` });
         }, 2000);
     };
 
     return (
         <Button
-            variant="ghost"
+            variant="secondary"
             size="sm"
             className="text-sm"
             disabled={isLoading}
