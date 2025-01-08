@@ -4,8 +4,8 @@ import { useEffect, useState, useCallback } from "react";
 import { LoaderCircle, Plus, Bookmark, Check } from "lucide-react";
 import { useAuth } from "@clerk/clerk-react";
 import { useRouter } from "next/navigation";
-
 import { cn } from "@lib/utils";
+
 import { Button } from "@ui/button";
 import {
     fetchWatchlist,

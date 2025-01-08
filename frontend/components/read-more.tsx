@@ -2,22 +2,30 @@
 
 import { useState } from "react";
 
-function ReadMore({ text, limit = 250 }: { text: string; limit?: number }) {
-    "use client";
+import { Button } from "@ui/button";
+
+const ReadMore = ({ text, limit = 250 }: { text: string; limit?: number }) => {
     const [expanded, setExpanded] = useState(false);
+
     const isLong = text.length > limit;
-    const displayText = expanded ? text : text.slice(0, limit) + (isLong ? "..." : "");
+    const displayText = expanded
+        ? text
+        : text.slice(0, limit) + (isLong ? "..." : "");
 
     return (
         <div>
-            <p style={{ display: "inline" }}>{displayText}</p>
+            <p className="inline">{displayText}</p>
             {isLong && (
-            <button style={{ display: "inline", marginLeft: "10px", color: "gray", textDecoration: "underline" }} onClick={() => setExpanded(!expanded)}>
-                {expanded ? "Show Less" : "Read More"}
-            </button>
+                <Button
+                    variant="link"
+                    className="ml-2 inline h-fit p-0 text-base"
+                    onClick={() => setExpanded((prevState) => !prevState)}
+                >
+                    {expanded ? "Show less" : "Read more"}
+                </Button>
             )}
         </div>
     );
-}
+};
 
 export default ReadMore;
