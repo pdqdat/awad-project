@@ -27,9 +27,12 @@ const MovieCard = ({ movie }: { movie: Movie | MovieCredit }) => {
             <div className="flex justify-between">
                 <div className="space-y-1">
                     <h3 className="font-medium leading-none">{movie.title}</h3>
-                    <p className="text-sm text-muted-foreground">
-                        {new Date(movie.release_date).getFullYear()}
-                    </p>
+                    {movie.release_date &&
+                    !isNaN(new Date(movie.release_date).getFullYear()) ? (
+                        <p className="text-sm text-muted-foreground">
+                            {new Date(movie.release_date).getFullYear()}
+                        </p>
+                    ) : null}
                 </div>
                 <WatchlistBtn movieID={movie.id} small className="shrink-0" />
             </div>

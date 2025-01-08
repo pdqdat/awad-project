@@ -88,7 +88,11 @@ const MoviesList1 = ({
                                             </span>
                                         </p>
                                     </div>
-                                    <RateBtn movieID={movie.id} />
+                                    <RateBtn
+                                        movieID={movie.id}
+                                        small
+                                        disabled
+                                    />
                                 </div>
                             </div>
                         </div>

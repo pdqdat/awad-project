@@ -182,6 +182,8 @@ export interface MovieInList {
     vote_count: number;
 }
 
+export interface MovieInRatingList extends MovieInList { userRating: number };
+
 export type MovieSearchResult = Omit<Movie, "media_type"> & { genres: Genre[] };
 
 export type TmdbGenre = Record<"value" | "name", string>;

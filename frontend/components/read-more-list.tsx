@@ -2,25 +2,38 @@
 
 import { useState } from "react";
 
-function ReadMoreList({ items, limit = 5 }: { items: string[]; limit?: number }) {
+import { Button } from "@ui/button";
+
+const ReadMoreList = ({
+    items,
+    limit = 5,
+}: {
+    items: string[];
+    limit?: number;
+}) => {
     const [expanded, setExpanded] = useState(false);
+
     const isLong = items.length > limit;
     const displayItems = expanded ? items : items.slice(0, limit);
 
     return (
         <div>
-            <ul className="list-inside list-disc">
+            <ul className="list-inside list-disc marker:text-primary">
                 {displayItems.map((item) => (
                     <li key={item}>{item}</li>
                 ))}
             </ul>
             {isLong && (
-                <button style={{ display: "inline", marginLeft: "10px", color: "gray", textDecoration: "underline" }} onClick={() => setExpanded(!expanded)}>
-                    {expanded ? "Show Less" : "Read More"}
-                </button>
+                <Button
+                    variant="link"
+                    className="inline h-fit p-0 text-base"
+                    onClick={() => setExpanded((prevState) => !prevState)}
+                >
+                    {expanded ? "Show less" : "Read more"}
+                </Button>
             )}
         </div>
     );
-}
+};
 
 export default ReadMoreList;
