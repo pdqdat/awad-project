@@ -8,6 +8,7 @@ import MoviesRow from "@comp/movies-row";
 import ReadMore from "@/components/read-more";
 import ReadMoreList from "@/components/read-more-list";
 
+import HttpStatusPage from "@comp/http-status-page";
 
 export const generateMetadata = async ({
     params,
@@ -38,7 +39,7 @@ const CastDetailPage = async ({
     const castDetail = await fetchCastDetail(castID);
 
     if (!castDetail) {
-        return <div className="container">Error fetching cast detail</div>;
+        return <HttpStatusPage status={404}>Cast not found</HttpStatusPage>;
     }
 
     if (!castDetail) {
@@ -67,7 +68,7 @@ const CastDetailPage = async ({
 
                     <div className="mt-4">
                         <h2 className="text-xl font-semibold">Biography</h2>
-                        <ReadMore text={castDetail.biography} limit={250} />
+                        <ReadMore text={castDetail.biography} limit={700} />
                     </div>
 
                     <div className="mt-4"></div>

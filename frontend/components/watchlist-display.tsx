@@ -3,17 +3,22 @@
 import { useEffect, useState } from "react";
 import { Info } from "lucide-react";
 
-import { fetchWatchlist } from "@lib/actions";
+import { fetchWatchlist, removeFromWatchlist } from "@lib/actions";
 import MoviesList1 from "@comp/movies-list-1";
 import { MovieInList } from "@/types";
 import { Card, CardHeader, CardTitle, CardContent } from "@ui/card";
 import Section from "@comp/section";
 import { Skeleton } from "@ui/skeleton";
 import MoviesRowSimple from "@comp/movies-row-simple";
+import { useToast } from "@hooks/use-toast";
 
 const WatchlistDisplay = ({ display }: { display: "row" | "list" }) => {
+    // State to keep track of watchlist
     const [watchlist, setWatchlist] = useState<MovieInList[]>([]);
+    // State to keep track of loading state
     const [loading, setLoading] = useState(true);
+
+    const { toast } = useToast();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -31,6 +36,20 @@ const WatchlistDisplay = ({ display }: { display: "row" | "list" }) => {
 
         fetchData();
     }, []);
+
+    const remove = async (id: number) => {
+        setLoading(true);
+
+        const response = await removeFromWatchlist(id);
+        if (response?.status === 200) {
+            setWatchlist((prev) => prev.filter((movie) => movie.id !== id));
+            toast({
+                title: "Movie removed from watchlist",
+            });
+        }
+
+        setLoading(false);
+    };
 
     if (display === "row") {
         return (
@@ -81,7 +100,7 @@ const WatchlistDisplay = ({ display }: { display: "row" | "list" }) => {
                             <div>Your watchlist is empty</div>
                         )}
                         {watchlist.length !== 0 && (
-                            <MoviesList1 movies={watchlist} />
+                            <MoviesList1 movies={watchlist} onRemove={remove} />
                         )}
                     </div>
                     <div className="hidden lg:col-span-3 lg:mb-0 lg:block">
@@ -98,6 +117,7 @@ const WatchlistDisplay = ({ display }: { display: "row" | "list" }) => {
                                     !loading &&
                                     "is empty"}
                                 {watchlist.length !== 0 &&
+                                    !loading &&
                                     `contains ${watchlist.length} title${
                                         watchlist.length > 1 ? "s" : ""
                                     }`}

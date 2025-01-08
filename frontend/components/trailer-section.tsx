@@ -27,7 +27,7 @@ const TrailerSection = async () => {
         <Section
             heading={
                 <span className="text-background">
-                    Check out these latest trailers
+                    Latest trailers
                 </span>
             }
             sectionClassName="bg-secondary-foreground"
