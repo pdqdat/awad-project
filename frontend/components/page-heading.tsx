@@ -7,7 +7,7 @@ const PageHeading = ({
     children: React.ReactNode;
     className?: string;
 }) => {
-    return <div className={cn("h3 mb-8", className)}>{children}</div>;
+    return <div className={cn("h2 mb-8", className)}>{children}</div>;
 };
 
 export default PageHeading;

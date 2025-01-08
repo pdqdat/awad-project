@@ -38,11 +38,11 @@ const MainNav = () => {
                                     <NavigationMenuTrigger className="text-base font-medium">
                                         {item.title}
                                     </NavigationMenuTrigger>
-                                    <NavigationMenuContent className="!w-[450px] p-4">
+                                    <NavigationMenuContent className="!w-[450px] bg-foreground p-4 text-background">
                                         <div className="flex grid-cols-2 flex-col gap-4 lg:grid">
                                             <div className="flex h-full flex-col justify-between">
                                                 <div className="flex flex-col">
-                                                    <p className="text-base font-semibold">
+                                                    <p className="text-lg font-semibold">
                                                         {item.title}
                                                     </p>
                                                     <p className="text-sm text-muted-foreground">
@@ -65,7 +65,7 @@ const MainNav = () => {
                                                     <NavigationMenuLink
                                                         href={subItem.href}
                                                         key={subItem.title}
-                                                        className="flex flex-row items-center justify-between rounded px-4 py-2 hover:bg-muted"
+                                                        className="flex flex-row items-center justify-between rounded px-4 py-2 hover:bg-secondary-foreground"
                                                     >
                                                         <span>
                                                             {subItem.title}

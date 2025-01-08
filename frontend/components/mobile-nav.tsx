@@ -21,13 +21,13 @@ const MobileNav = () => {
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 lg:hidden"
+                    className="text-base text-background hover:bg-transparent hover:text-background focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 lg:hidden"
                 >
-                    <Menu className="" />
+                    <Menu className="size-8" />
                     <span className="sr-only">Toggle Menu</span>
                 </Button>
             </DrawerTrigger>
-            <DrawerContent className="max-h-[60svh] p-0">
+            <DrawerContent className="max-h-[60svh] p-0 bg-foreground">
                 <div className="overflow-auto p-6">
                     <div className="flex flex-col space-y-2">
                         {navigationItems.map((item, index) => (
@@ -39,12 +39,12 @@ const MobileNav = () => {
                                     <MobileLink
                                         href={item.href}
                                         onOpenChange={setOpen}
-                                        className="font-medium"
+                                        className="font-medium text-background"
                                     >
                                         {item.title}
                                     </MobileLink>
                                 ) : (
-                                    <h4 className="font-medium">
+                                    <h4 className="font-medium text-background">
                                         {item.title}
                                     </h4>
                                 )}

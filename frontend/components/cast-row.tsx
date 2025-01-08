@@ -19,7 +19,7 @@ const CastRow = ({ casts }: { casts: CastInCredit[] }) => {
                                     cast.profile_path ?? "",
                                 )}
                                 alt={cast.original_name}
-                                className="object-cover transition-all hover:scale-105"
+                                className="object-cover transition-all hover:brightness-90"
                             />
                             <AvatarFallback className="text-sm">
                                 {cast.name}
@@ -28,13 +28,11 @@ const CastRow = ({ casts }: { casts: CastInCredit[] }) => {
                     </Link>
                     <Button
                         variant="linkHover2"
-                        className="mt-2 text-base"
+                        className="mt-2 text-base font-medium leading-none"
                         asChild
                     >
                         <Link href={`/cast/${cast.id}`}>
-                            <div className="font-medium leading-none">
-                                {cast.original_name}
-                            </div>
+                            {cast.original_name}
                         </Link>
                     </Button>
                     <p className="text-sm text-muted-foreground">

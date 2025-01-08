@@ -48,10 +48,13 @@ const SearchPage = async ({
         from as string,
         to as string,
     );
+    if (!response) {
+        return <div>Error fetching movies</div>;
+    }
     const { data: movies, totalPages, total } = response;
 
     return (
-        <div className="min-h-72 py-8 lg:min-h-[30rem]">
+        <div className="min-h-72 py-8">
             <div className="container">
                 <PageHeading>
                     {total} result{total <= 1 ? "" : "s"} for &quot;{q}

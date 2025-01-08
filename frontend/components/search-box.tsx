@@ -11,9 +11,11 @@ import { Button } from "@ui/button";
 const SearchBox = ({
     className,
     searchBtn,
+    whiteBg = false,
 }: {
     className?: string;
     searchBtn?: boolean;
+    whiteBg?: boolean;
 }) => {
     const [query, setQuery] = useState("");
     const router = useRouter();
@@ -31,7 +33,8 @@ const SearchBox = ({
     return (
         <div
             className={cn(
-                "flex w-full items-center rounded-md border border-input px-2.5",
+                "flex w-full items-center rounded-md px-2.5",
+                whiteBg ? "bg-background" : "border border-input",
                 className,
             )}
         >

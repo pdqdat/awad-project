@@ -43,3 +43,16 @@ export const getTmdbImageUrl = (
 ) => {
     return `${tmdbImageBaseUrl}/${imageSize}/${imagePath}`;
 };
+
+/**
+ * Formats a runtime in minutes into a string with the format "h m".
+ *
+ * @param runtime - The runtime in minutes to format.
+ * @returns The formatted runtime string.
+ */
+export const formatRuntime = (runtime: number) => {
+    const hours = Math.floor(runtime / 60);
+    const minutes = runtime % 60;
+
+    return `${hours}h ${minutes}m`;
+};

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Star, ChevronRight, Heart, Bookmark } from "lucide-react";
+import { Star, ChevronRight, Heart } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@ui/button";
@@ -11,6 +11,7 @@ import { Badge } from "@ui/badge";
 import MoviesRow from "@comp/movies-row";
 import CastRow from "@comp/cast-row";
 import Section from "@comp/section";
+import WatchlistBtn from "@comp/watchlist-btn";
 
 export const generateMetadata = async ({
     params,
@@ -40,9 +41,6 @@ const MovieDetailPage = async ({
     const { movieID } = await params;
     const movieDetail = await fetchMovieDetail(movieID);
 
-    console.log(movieDetail);
-    console.log(movieID);
-
     if (!movieDetail) {
         return <div className="container">Error fetching movie detail</div>;
     }
@@ -69,7 +67,7 @@ const MovieDetailPage = async ({
                         className="mb-6 rounded-xl shadow-md md:mb-0 md:mr-8"
                     />
                     <div className="flex-1">
-                        <h1 className="mb-4 text-4xl font-bold">
+                        <h1 className="h2 mb-4">
                             {movieDetail.title}{" "}
                             <span className="font-normal text-muted-foreground">
                                 (
@@ -123,15 +121,12 @@ const MovieDetailPage = async ({
                                     Mark as favorite
                                 </span>
                             </Button>
-                            <Button
-                                variant="outline"
-                                className="group flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-black hover:bg-gray-400"
-                            >
-                                <Bookmark className="h-5 w-5" />
-                                <span className="absolute ml-2 mt-20 text-sm opacity-0 transition-opacity group-hover:opacity-100">
-                                    Add to watchlist
-                                </span>
-                            </Button>
+                        </div>
+                        <div className="mt-12 flex w-1/5">
+                            <WatchlistBtn
+                                movieID={movieDetail.id}
+                                className="flex-1"
+                            />
                         </div>
                     </div>
                 </div>
@@ -143,17 +138,23 @@ const MovieDetailPage = async ({
             >
                 <CastRow casts={movieDetail.credits.cast.slice(0, 5)} />
             </Section>
-            <Section id="trailer" heading="Trailer" sectionClassName="bg-muted">
-                <div className="relative mt-4 pb-[56.25%]">
-                    <iframe
-                        className="absolute left-0 top-0 h-full w-full"
-                        src={`https://www.youtube.com/embed/${videoKey}`}
-                        title={`${movieDetail.title} trailer`}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                    />
-                </div>
-            </Section>
+            {videoKey && (
+                <Section
+                    id="trailer"
+                    heading="Trailer"
+                    sectionClassName="bg-muted"
+                >
+                    <div className="relative mt-4 pb-[56.25%]">
+                        <iframe
+                            className="absolute left-0 top-0 h-full w-full"
+                            src={`https://www.youtube.com/embed/${videoKey}`}
+                            title={`${movieDetail.title} trailer`}
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                        />
+                    </div>
+                </Section>
+            )}
             <Section id="similar" heading="Similar movies">
                 <MoviesRow movies={similarMovies.data} />
             </Section>

@@ -15,17 +15,20 @@ import SearchBox from "@comp/search-box";
 
 const Header = async () => {
     return (
-        <header className="w-full bg-background">
+        <header className="w-full bg-foreground">
             <div className="container relative mx-auto flex min-h-20 flex-row items-center gap-4 lg:grid lg:grid-cols-3">
                 <MainNav />
                 <MobileNav />
                 <div className="flex lg:justify-center">
-                    <Link href="/" className="text-xl font-bold lg:text-2xl">
+                    <Link
+                        href="/"
+                        className="text-xl font-bold text-primary lg:text-2xl"
+                    >
                         {siteConfig.name}
                     </Link>
                 </div>
-                <div className="flex w-full justify-end gap-4">
-                    <SearchBox />
+                <div className="flex w-full justify-end gap-2">
+                    <SearchBox whiteBg />
                     <SignedOut>
                         <SignInButton>
                             <Button variant="outline">Sign in</Button>
