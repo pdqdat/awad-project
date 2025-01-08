@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Star, ChevronRight, Heart } from "lucide-react";
+import { Star, ChevronRight } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@ui/button";
@@ -12,6 +12,8 @@ import MoviesRow from "@comp/movies-row";
 import CastRow from "@comp/cast-row";
 import Section from "@comp/section";
 import WatchlistBtn from "@comp/watchlist-btn";
+import HttpStatusPage from "@comp/http-status-page";
+import FavBtn from "@comp/fav-btn";
 
 export const generateMetadata = async ({
     params,
@@ -42,7 +44,7 @@ const MovieDetailPage = async ({
     const movieDetail = await fetchMovieDetail(movieID);
 
     if (!movieDetail) {
-        return <div className="container">Error fetching movie detail</div>;
+        return <HttpStatusPage status={404}>Movie not found</HttpStatusPage>;
     }
 
     const similarMovies = await fetchSimilarMovies(movieID);
@@ -111,22 +113,14 @@ const MovieDetailPage = async ({
                                 <ChevronRight />
                             </Link>
                         </Button>
-                        <div className="mt-4 flex space-x-4">
-                            <Button
-                                variant="outline"
-                                className="group flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-black hover:bg-gray-400"
-                            >
-                                <Heart className="h-5 w-5" />
-                                <span className="absolute ml-2 mt-20 text-sm opacity-0 transition-opacity group-hover:opacity-100">
-                                    Mark as favorite
-                                </span>
-                            </Button>
-                        </div>
                         <div className="mt-12 flex w-1/5">
                             <WatchlistBtn
                                 movieID={movieDetail.id}
                                 className="flex-1"
                             />
+                        </div>
+                        <div className="mt-12 flex w-1/5">
+                            <FavBtn movieID={movieDetail.id} />
                         </div>
                     </div>
                 </div>
@@ -156,7 +150,11 @@ const MovieDetailPage = async ({
                 </Section>
             )}
             <Section id="similar" heading="Similar movies">
-                <MoviesRow movies={similarMovies.data} />
+                {similarMovies && similarMovies.data.length > 0 ? (
+                    <MoviesRow movies={similarMovies.data} />
+                ) : (
+                    <div>Error fetching similar movies</div>
+                )}
             </Section>
         </>
     );

@@ -18,7 +18,8 @@ export const navigationItems = [
         ],
     },
     {
-        title: "Your lists",
+        title: "Your collections",
+        description: "Manage your watchlist, favorites, and ratings.",
         items: [
             {
                 title: "Watchlist",
@@ -35,7 +36,7 @@ export const navigationItems = [
         ],
     },
     {
-        title: "Your profile",
-        href: "/profile",
+        title: "Your lists",
+        href: "/profile/lists",
     },
 ];
