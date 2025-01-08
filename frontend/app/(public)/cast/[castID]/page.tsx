@@ -5,6 +5,9 @@ import { fetchCastDetail } from "@lib/actions";
 import { tmdbPosterSizes } from "@/config/tmdb";
 import { getTmdbImageUrl } from "@lib/utils";
 import MoviesRow from "@comp/movies-row";
+import ReadMore from "@/components/read-more";
+import ReadMoreList from "@/components/read-more-list";
+
 import HttpStatusPage from "@comp/http-status-page";
 
 export const generateMetadata = async ({
@@ -65,7 +68,7 @@ const CastDetailPage = async ({
 
                     <div className="mt-4">
                         <h2 className="text-xl font-semibold">Biography</h2>
-                        <p>{castDetail.biography}</p>
+                        <ReadMore text={castDetail.biography} limit={250} />
                     </div>
 
                     <div className="mt-4"></div>
@@ -120,11 +123,13 @@ const CastDetailPage = async ({
                             <h2 className="text-xl font-semibold">
                                 Also Known As
                             </h2>
-                            <ul className="list-inside list-disc">
+                            <ReadMoreList items={castDetail.also_known_as} />
+
+                            {/* <ul className="list-inside list-disc">
                                 {castDetail.also_known_as.map((aka) => (
                                     <li key={aka}>{aka}</li>
                                 ))}
-                            </ul>
+                            </ul> */}
                         </div>
                     )}
 
