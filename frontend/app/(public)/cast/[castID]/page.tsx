@@ -5,8 +5,8 @@ import { fetchCastDetail } from "@lib/actions";
 import { tmdbPosterSizes } from "@/config/tmdb";
 import { getTmdbImageUrl } from "@lib/utils";
 import MoviesRow from "@comp/movies-row";
-import ReadMore from "@comp/readmore";
-import ReadMoreList from "@comp/readmore-list";
+import ReadMore from "@/components/read-more";
+import ReadMoreList from "@/components/read-more-list";
 
 
 export const generateMetadata = async ({
