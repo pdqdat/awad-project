@@ -504,3 +504,155 @@ export const fetchWatchlist = async (): Promise<MovieInList[] | null> => {
         throw new Error("Error fetching watchlist");
     }
 };
+
+export const addToFavorite = async (
+    movieID: number,
+): Promise<{
+    status: number;
+    message: string;
+    favorite: MovieInList[];
+} | null> => {
+    const { getToken } = await auth();
+
+    try {
+        const token = await getToken();
+        if (!token) {
+            console.error("Error fetching session token");
+            return null;
+        }
+
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/favorite`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ movieId: movieID }),
+            },
+        );
+
+        if (!res.ok) {
+            if (res.status === 404) {
+                console.error("Error adding to favorite");
+                return null;
+            }
+            if (res.status === 401) {
+                console.error("Unauthorized");
+                return null;
+            }
+
+            throw new Error("Error adding to favorite");
+        }
+
+        const data = await res.json();
+
+        return {
+            status: res.status,
+            message: data.message,
+            favorite: data.favorite,
+        };
+    } catch (error) {
+        console.error("Error adding to favorite: ", error);
+        throw new Error("Error adding to favorite");
+    }
+};
+
+export const removeFromFavorite = async (
+    movieID: number,
+): Promise<{
+    status: number;
+    message: string;
+    favorite: MovieInList[];
+} | null> => {
+    const { getToken } = await auth();
+
+    try {
+        const token = await getToken();
+        if (!token) {
+            console.error("Error fetching session token");
+            return null;
+        }
+
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/favorite`,
+            {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ movieId: movieID }),
+            },
+        );
+
+        if (!res.ok) {
+            if (res.status === 404) {
+                console.error("Error removing from favorite");
+                return null;
+            }
+            if (res.status === 401) {
+                console.error("Unauthorized");
+                return null;
+            }
+
+            throw new Error("Error removing from watchlist");
+        }
+
+        const data = await res.json();
+
+        return {
+            status: res.status,
+            message: data.message,
+            favorite: data.favorite,
+        };
+    } catch (error) {
+        console.error("Error removing from favorite: ", error);
+        throw new Error("Error removing from favorite");
+    }
+};
+
+export const fetchFavorite = async (): Promise<MovieInList[] | null> => {
+    const { getToken } = await auth();
+
+    try {
+        const token = await getToken();
+        if (!token) {
+            console.error("Error fetching session token");
+            return null;
+        }
+
+        const options: RequestInit = {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            // Cache the response for 3 seconds
+            next: {
+                revalidate: 3,
+            },
+        };
+
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/favorite`,
+            options,
+        );
+
+        if (!res.ok) {
+            if (res.status === 404) {
+                console.error("Error fetching favorite");
+                return null;
+            }
+
+            throw new Error("Error fetching favorite");
+        }
+
+        const data = await res.json();
+
+        return data.favorite;
+    } catch (error) {
+        console.error("Error fetching favorite: ", error);
+        throw new Error("Error fetching favorite");
+    }
+};
