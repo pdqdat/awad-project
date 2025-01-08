@@ -200,6 +200,11 @@ export const fetchMovieDetail = async (
                 return null;
             }
 
+            if (res.status === 500) {
+                console.error("Internal server error");
+                return null;
+            }
+
             throw new Error("Error fetching movie detail");
         }
 

@@ -1,4 +1,4 @@
-import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
+import { SignUpButton, SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import Link from "next/link";
 
 import siteConfig from "@/config/site";
@@ -7,6 +7,7 @@ import MobileNav from "@comp/mobile-nav";
 import MainNav from "@comp/main-nav";
 import SearchBox from "@comp/search-box";
 import UserBtn from "@comp/user-btn";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@ui/hover-card";
 
 const Header = async () => {
     return (
@@ -25,9 +26,24 @@ const Header = async () => {
                 <div className="flex w-full items-center justify-end gap-2 lg:gap-4">
                     <SearchBox whiteBg />
                     <SignedOut>
-                        <SignInButton>
-                            <Button variant="ringHover">Sign in</Button>
-                        </SignInButton>
+                        <HoverCard openDelay={1000} closeDelay={1000}>
+                            <HoverCardTrigger>
+                                <SignInButton>
+                                    <Button variant="ringHover">Sign in</Button>
+                                </SignInButton>
+                            </HoverCardTrigger>
+                            <HoverCardContent className="w-[17rem] text-center">
+                                New Customer?{" "}
+                                <SignUpButton>
+                                    <Button
+                                        variant="linkHover2"
+                                        className="px-0 text-base"
+                                    >
+                                        Create account
+                                    </Button>
+                                </SignUpButton>
+                            </HoverCardContent>
+                        </HoverCard>
                     </SignedOut>
                     <SignedIn>
                         <UserBtn />

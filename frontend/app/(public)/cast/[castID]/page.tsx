@@ -68,7 +68,7 @@ const CastDetailPage = async ({
 
                     <div className="mt-4">
                         <h2 className="text-xl font-semibold">Biography</h2>
-                        <ReadMore text={castDetail.biography} limit={250} />
+                        <ReadMore text={castDetail.biography} limit={700} />
                     </div>
 
                     <div className="mt-4"></div>

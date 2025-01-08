@@ -2,6 +2,12 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { tmdbImageBaseUrl } from "@/config/tmdb";
 
+/**
+ * Merges the given class names and returns the merged class name.
+ *
+ * @param inputs - The class names to merge.
+ * @returns The merged class name.
+ */
 export const cn = (...inputs: ClassValue[]) => {
     return twMerge(clsx(inputs));
 };

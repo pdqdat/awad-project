@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { LoaderCircle, Plus, Bookmark, Check } from "lucide-react";
+import { LoaderCircle, Heart } from "lucide-react";
 import { useAuth } from "@clerk/clerk-react";
 import { useRouter } from "next/navigation";
 
@@ -14,51 +14,49 @@ import {
 } from "@lib/actions";
 import { useToast } from "@hooks/use-toast";
 
-const WatchlistBtn = ({
+const FavBtn = ({
     movieID,
-    small = false,
     className,
 }: {
     movieID: number;
-    small?: boolean;
     className?: string;
 }) => {
     // State to keep track of loading state
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    // State to keep track of whether the movie is in the watchlist
-    const [isInWatchlist, setIsInWatchlist] = useState<boolean>(false);
+    // State to keep track of whether the movie is in the favorites
+    const [isInFav, setIsInFav] = useState<boolean>(false);
 
     const { isLoaded, isSignedIn } = useAuth();
     const router = useRouter();
     const { toast } = useToast();
 
-    const checkIsInWatchlist = useCallback(async () => {
+    const checkIsInFav = useCallback(async () => {
         setIsLoading(true);
 
-        // Fetch watchlist
+        // Fetch favorites
         const watchlist = await fetchWatchlist();
         if (!watchlist) return;
 
         // Check if movie ID is in watchlist
-        setIsInWatchlist(watchlist.some((movie) => movie.id === movieID));
+        setIsInFav(watchlist.some((movie) => movie.id === movieID));
 
         setIsLoading(false);
-    }, [movieID, setIsLoading, setIsInWatchlist]);
+    }, [movieID, setIsLoading, setIsInFav]);
 
     useEffect(() => {
-        // If user is signed in, check if movie is in watchlist
+        // If user is signed in, check if movie is in favorites
         // when the component is mounted
         if (isLoaded && isSignedIn) {
-            checkIsInWatchlist();
+            checkIsInFav();
         }
         // If user is not signed in, do nothing
-    }, [isLoaded, isSignedIn, checkIsInWatchlist]);
+    }, [isLoaded, isSignedIn, checkIsInFav]);
 
     const handleClick = useCallback(async () => {
         // If user is not signed in, redirect to sign in page and notify user
         if (!isSignedIn || !isLoaded) {
             toast({
-                title: "Sign in to add to your Watchlist",
+                title: "Sign in to add to your Favorites",
             });
             router.push(
                 `/sign-in?redirect_url=${encodeURIComponent(window.location.toString())}`,
@@ -68,24 +66,24 @@ const WatchlistBtn = ({
 
         setIsLoading(true);
 
-        if (isInWatchlist) {
-            // If movie is in watchlist, remove it from watchlist
+        if (isInFav) {
+            // If movie is in favorites, remove it
             const response = await removeFromWatchlist(movieID);
 
             if (response?.status === 200) {
-                setIsInWatchlist(false);
+                setIsInFav(false);
                 toast({
-                    title: "Movie removed from watchlist",
+                    title: "Movie removed from favorites",
                 });
             }
         } else {
-            // If movie is not in watchlist, add it to watchlist
+            // If movie is not in favorites, add it
             const response = await addToWatchlist(movieID);
 
             if (response?.status === 201) {
-                setIsInWatchlist(true);
+                setIsInFav(true);
                 toast({
-                    title: "Movie added to watchlist",
+                    title: "Movie added to favorites",
                 });
             }
         }
@@ -97,46 +95,28 @@ const WatchlistBtn = ({
         toast,
         router,
         setIsLoading,
-        isInWatchlist,
-        setIsInWatchlist,
+        isInFav,
+        setIsInFav,
         movieID,
     ]);
 
-    const btnContent = isInWatchlist ? (
-        <>
-            <Check />
-            In Watchlist
-        </>
+    const btnContent = isInFav ? (
+        <Heart className="fill-primary stroke-primary" />
     ) : (
-        <>
-            <Plus />
-            Add to Watchlist
-        </>
+        <Heart />
     );
-
-    if (small) {
-        return (
-            <Bookmark
-                className={cn(
-                    "relative size-8 cursor-pointer stroke-primary stroke-[1.5px] hover:scale-110",
-                    isLoading && "animate-pulse",
-                    isInWatchlist && "fill-primary",
-                    className,
-                )}
-                onClick={handleClick}
-            />
-        );
-    }
 
     return (
         <Button
+            variant="secondary"
+            size="icon"
             disabled={isLoading}
             onClick={handleClick}
-            className={cn("", className)}
+            className={cn("size-10", className)}
         >
             {isLoading ? <LoaderCircle className="animate-spin" /> : btnContent}
         </Button>
     );
 };
 
-export default WatchlistBtn;
+export default FavBtn;
