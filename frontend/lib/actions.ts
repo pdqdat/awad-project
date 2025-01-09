@@ -2,8 +2,14 @@
 
 import { auth } from "@clerk/nextjs/server";
 
-import { Movie, MovieSearchResult, Cast, MovieInList } from "@/types";
-import { LIMIT } from "@/config/movie";
+import {
+    Movie,
+    MovieSearchResult,
+    Cast,
+    MovieInList,
+    MovieInRatingList,
+} from "@/types";
+import { LIMIT, CACHE_DURATION } from "@/config/movie";
 
 // Request options for GET requests to the TMDB API
 const tmdbGetRequestOptions = {
@@ -476,9 +482,10 @@ export const fetchWatchlist = async (): Promise<MovieInList[] | null> => {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
-            // Cache the response for 3 seconds
+            // Cache the response
+            // The default cache duration is 3 seconds
             next: {
-                revalidate: 3,
+                revalidate: CACHE_DURATION,
             },
         };
 
@@ -654,5 +661,170 @@ export const fetchFavorite = async (): Promise<MovieInList[] | null> => {
     } catch (error) {
         console.error("Error fetching favorite: ", error);
         throw new Error("Error fetching favorite");
+    }
+};
+
+export const rateMovie = async (
+    movieID: number,
+    rating: number,
+): Promise<{
+    status: number;
+    message: string;
+    movie: {
+        tmdb_id: number;
+        vote_average: number;
+        vote_count: number;
+    };
+} | null> => {
+    const { getToken } = await auth();
+
+    try {
+        const token = await getToken();
+        if (!token) {
+            console.error("Error fetching session token");
+            return null;
+        }
+
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/rate`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    movieId: movieID,
+                    rating: rating,
+                }),
+            },
+        );
+
+        if (!res.ok) {
+            if (res.status === 404) {
+                console.error("Error rating movie");
+                return null;
+            }
+            if (res.status === 401) {
+                console.error("Unauthorized");
+                return null;
+            }
+
+            throw new Error("Error rating movie");
+        }
+
+        const data = await res.json();
+
+        return {
+            status: res.status,
+            message: data.message,
+            movie: data.movie,
+        };
+    } catch (error) {
+        console.error("Error rating movie: ", error);
+        throw new Error("Error rating movie");
+    }
+};
+
+export const removeRating = async (
+    movieID: number,
+): Promise<{
+    status: number;
+    message: string;
+    movie: {
+        tmdb_id: number;
+        vote_average: number;
+        vote_count: number;
+    };
+} | null> => {
+    const { getToken } = await auth();
+
+    try {
+        const token = await getToken();
+        if (!token) {
+            console.error("Error fetching session token");
+            return null;
+        }
+
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/rate`,
+            {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ movieId: movieID }),
+            },
+        );
+
+        if (!res.ok) {
+            if (res.status === 404) {
+                console.error("Error removing rating");
+                return null;
+            }
+            if (res.status === 401) {
+                console.error("Unauthorized");
+                return null;
+            }
+
+            throw new Error("Error removing rating");
+        }
+
+        const data = await res.json();
+
+        return {
+            status: res.status,
+            message: data.message,
+            movie: data.movie,
+        };
+    } catch (error) {
+        console.error("Error removing rating: ", error);
+        throw new Error("Error removing rating");
+    }
+};
+
+export const fetchRatingList = async (): Promise<
+    MovieInRatingList[] | null
+> => {
+    const { getToken } = await auth();
+
+    try {
+        const token = await getToken();
+        if (!token) {
+            console.error("Error fetching session token");
+            return null;
+        }
+
+        const options: RequestInit = {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            next: {
+                revalidate: CACHE_DURATION,
+            },
+        };
+
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/rate`,
+            options,
+        );
+
+        if (!res.ok) {
+            if (res.status === 404) {
+                console.error("Error fetching rating list");
+                return null;
+            }
+
+            throw new Error("Error fetching rating list");
+        }
+
+        const data = await res.json();
+
+        return data.ratingList;
+    } catch (error) {
+        console.error("Error fetching rating list: ", error);
+        throw new Error("Error fetching rating list");
     }
 };

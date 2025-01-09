@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 
 import Section from "@comp/section";
 import WatchlistDisplay from "@comp/watchlist-display";
+import RatingListDisplay from "@comp/rating-list-display";
 import FavoriteDisplay from "@comp/favorite-display";
 
 export const generateMetadata = async (): Promise<Metadata> => {
@@ -19,6 +20,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
 };
 
 const ProfilePage = async () => {
+    const favorites = [];
     const ratings = [];
 
     return (
@@ -27,18 +29,7 @@ const ProfilePage = async () => {
 
             <FavoriteDisplay display="row" />
 
-            <Section
-                id="ratings"
-                heading="Ratings"
-                href="/profile/ratings"
-                containerClassName="min-h-96"
-            >
-                {ratings.length !== 0 ? (
-                    <div>Feature being implemented</div>
-                ) : (
-                    <div>Your favorites is empty</div>
-                )}
-            </Section>
+            <RatingListDisplay display="row" />
         </>
     );
 };

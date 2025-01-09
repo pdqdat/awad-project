@@ -36,7 +36,7 @@ const MoviesRowSimple = ({ movies }: { movies: MovieInList[] }) => {
                                     {movie.vote_average.toFixed(1)}
                                 </span>
                             </div>
-                            <RateBtn movieID={movie.id} />
+                            <RateBtn movieID={movie.id} small disabled />
                         </div>
                         <div className="font-medium">
                             <Link href={`/movie/${movie.id}`}>
