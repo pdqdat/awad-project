@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import { fetchWatchlist, removeFromWatchlist } from "@lib/actions";
 import MoviesList1 from "@comp/movies-list-1";
@@ -9,15 +10,12 @@ import { Card, CardHeader, CardTitle, CardContent } from "@ui/card";
 import Section from "@comp/section";
 import { Skeleton } from "@ui/skeleton";
 import MoviesRowSimple from "@comp/movies-row-simple";
-import { useToast } from "@hooks/use-toast";
 
 const WatchlistDisplay = ({ display }: { display: "row" | "list" }) => {
     // State to keep track of watchlist
     const [watchlist, setWatchlist] = useState<MovieInList[]>([]);
     // State to keep track of loading state
     const [loading, setLoading] = useState(true);
-
-    const { toast } = useToast();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -26,6 +24,7 @@ const WatchlistDisplay = ({ display }: { display: "row" | "list" }) => {
             const watchlist = await fetchWatchlist();
             if (!watchlist) {
                 setLoading(false);
+                toast.error("Error fetching your watchlist");
                 return <Section>Error fetching your watchlist</Section>;
             }
 
@@ -38,12 +37,17 @@ const WatchlistDisplay = ({ display }: { display: "row" | "list" }) => {
 
     const remove = async (id: number) => {
         setLoading(true);
+        const loadingToastID = toast.loading("Please wait...");
 
         const response = await removeFromWatchlist(id);
         if (response?.status === 200) {
             setWatchlist((prev) => prev.filter((movie) => movie.id !== id));
-            toast({
-                title: "Movie removed from watchlist",
+            toast.dismiss(loadingToastID);
+            toast.success("Movie removed from watchlist");
+        } else {
+            toast.dismiss(loadingToastID);
+            toast.error("Failed to remove movie from watchlist", {
+                description: "Please try again later",
             });
         }
 

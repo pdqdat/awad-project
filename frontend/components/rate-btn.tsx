@@ -4,10 +4,10 @@ import { useEffect, useState, useCallback } from "react";
 import { LoaderCircle, Star } from "lucide-react";
 import { cn } from "@lib/utils";
 import { useAuth } from "@clerk/clerk-react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
+import { toast } from "sonner";
 
 import { Button } from "@ui/button";
-import { useToast } from "@hooks/use-toast";
 import { rateMovie, removeRating, fetchRatingList } from "@lib/actions";
 import { Popover, PopoverContent, PopoverTrigger } from "@ui/popover";
 
@@ -29,7 +29,6 @@ const RateBtn = ({
     // State to keep track of rating value when user rates the movie
     const [rating, setRating] = useState<number | null>(null);
 
-    const { toast } = useToast();
     const { isLoaded, isSignedIn } = useAuth();
     const router = useRouter();
 
@@ -64,9 +63,7 @@ const RateBtn = ({
     const handleClick = useCallback(async () => {
         // If user is not signed in, redirect to sign in page and notify user
         if (!isSignedIn || !isLoaded) {
-            toast({
-                title: "Sign in to rate this movie",
-            });
+            toast.info("Sign in to rate this movie");
             router.push(
                 `/sign-in?redirect_url=${encodeURIComponent(window.location.toString())}`,
             );
@@ -74,22 +71,26 @@ const RateBtn = ({
         }
 
         setIsLoading(true);
+        const loadingToastID = toast.loading("Please wait...");
 
-        if (rating === null) return;
+        if (rating === null) {
+            toast.dismiss(loadingToastID);
+            toast.error("Please select a rating");
+            return;
+        }
 
-        // If user has rated the movie and clicks the same rating, remove the rating
+        // If user has rated the movie and clicks the same rating, REMOVE THE RATING
         if (ratedValue && rating === ratedValue) {
             const response = await removeRating(movieID);
 
             if (response?.status === 200) {
                 setRatedValue(null);
                 setRating(null);
-                toast({
-                    title: "Rating removed",
-                });
+                toast.dismiss(loadingToastID);
+                toast.success("Rating removed");
             } else {
-                toast({
-                    title: "Rating removal failed",
+                toast.dismiss(loadingToastID);
+                toast.error("Rating removal failed", {
                     description: "Please try again later",
                 });
             }
@@ -98,18 +99,24 @@ const RateBtn = ({
             return;
         }
 
-        // If user has rated the movie and clicks a different rating, update the rating
+        // If user has rated the movie and clicks a different rating, UPDATE THE RATING
         if (ratedValue && rating !== ratedValue) {
             const response = await rateMovie(movieID, rating);
 
             if (response?.status === 200) {
                 setRatedValue(rating);
-                toast({
-                    title: "Rating updated",
+                toast.dismiss(loadingToastID);
+                toast.success("Rating updated", {
+                    action: {
+                        label: "View your Ratings",
+                        onClick: () => {
+                            router.push(`/profile/ratings`);
+                        },
+                    },
                 });
             } else {
-                toast({
-                    title: "Rating update failed",
+                toast.dismiss(loadingToastID);
+                toast.error("Rating update failed", {
                     description: "Please try again later",
                 });
             }
@@ -118,18 +125,24 @@ const RateBtn = ({
             return;
         }
 
-        // If user has not rated the movie, rate the movie
+        // If user has not rated the movie, RATE THE MOVIE
         if (!ratedValue) {
             const response = await rateMovie(movieID, rating);
 
             if (response?.status === 200) {
                 setRatedValue(rating);
-                toast({
-                    title: "Movie rated",
+                toast.dismiss(loadingToastID);
+                toast.success("Movie rated", {
+                    action: {
+                        label: "View your Ratings",
+                        onClick: () => {
+                            router.push(`/profile/ratings`);
+                        },
+                    },
                 });
             } else {
-                toast({
-                    title: "Rating failed",
+                toast.dismiss(loadingToastID);
+                toast.error("Rating failed", {
                     description: "Please try again later",
                 });
             }
@@ -138,7 +151,6 @@ const RateBtn = ({
         }
     }, [
         setIsLoading,
-        toast,
         router,
         isSignedIn,
         isLoaded,

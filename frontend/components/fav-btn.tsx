@@ -3,7 +3,8 @@
 import { useEffect, useState, useCallback } from "react";
 import { LoaderCircle, Heart } from "lucide-react";
 import { useAuth } from "@clerk/clerk-react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
+import { toast } from "sonner";
 
 import { cn } from "@lib/utils";
 import { Button } from "@ui/button";
@@ -12,7 +13,6 @@ import {
     addToWatchlist,
     removeFromWatchlist,
 } from "@lib/actions";
-import { useToast } from "@hooks/use-toast";
 
 const FavBtn = ({
     movieID,
@@ -28,7 +28,6 @@ const FavBtn = ({
 
     const { isLoaded, isSignedIn } = useAuth();
     const router = useRouter();
-    const { toast } = useToast();
 
     const checkIsInFav = useCallback(async () => {
         setIsLoading(true);
@@ -55,9 +54,7 @@ const FavBtn = ({
     const handleClick = useCallback(async () => {
         // If user is not signed in, redirect to sign in page and notify user
         if (!isSignedIn || !isLoaded) {
-            toast({
-                title: "Sign in to add to your Favorites",
-            });
+            toast.info("Sign in to add to your Favorites");
             router.push(
                 `/sign-in?redirect_url=${encodeURIComponent(window.location.toString())}`,
             );
@@ -72,9 +69,7 @@ const FavBtn = ({
 
             if (response?.status === 200) {
                 setIsInFav(false);
-                toast({
-                    title: "Movie removed from favorites",
-                });
+                toast.success("Movie removed from favorites");
             }
         } else {
             // If movie is not in favorites, add it
@@ -82,9 +77,7 @@ const FavBtn = ({
 
             if (response?.status === 201) {
                 setIsInFav(true);
-                toast({
-                    title: "Movie added to favorites",
-                });
+                toast.success("Movie added to favorites");
             }
         }
 
@@ -92,7 +85,6 @@ const FavBtn = ({
     }, [
         isSignedIn,
         isLoaded,
-        toast,
         router,
         setIsLoading,
         isInFav,
