@@ -551,7 +551,7 @@ export const addToFavorite = async (
         return {
             status: res.status,
             message: data.message,
-            favorite: data.favorite,
+            favorite: data.favoriteList,
         };
     } catch (error) {
         console.error("Error adding to favorite: ", error);
@@ -605,7 +605,7 @@ export const removeFromFavorite = async (
         return {
             status: res.status,
             message: data.message,
-            favorite: data.favorite,
+            favorite: data.favoriteList,
         };
     } catch (error) {
         console.error("Error removing from favorite: ", error);
@@ -650,7 +650,7 @@ export const fetchFavorite = async (): Promise<MovieInList[] | null> => {
 
         const data = await res.json();
 
-        return data.favorite;
+        return data.favoriteList;
     } catch (error) {
         console.error("Error fetching favorite: ", error);
         throw new Error("Error fetching favorite");

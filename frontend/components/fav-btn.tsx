@@ -89,6 +89,7 @@ const FavBtn = ({
         }
 
         setIsLoading(false);
+
     }, [
         isSignedIn,
         isLoaded,

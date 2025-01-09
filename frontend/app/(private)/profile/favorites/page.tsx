@@ -1,7 +1,6 @@
 import { currentUser } from "@clerk/nextjs/server";
 import type { Metadata } from "next";
 
-import Section from "@comp/section";
 import FavoriteDisplay from "@/components/favorite-display";
 
 export const generateMetadata = async (): Promise<Metadata> => {
@@ -20,7 +19,6 @@ export const generateMetadata = async (): Promise<Metadata> => {
 
 const FavoritesPage = async () => {
     return (
-        // <Section heading="Favorites">Your favorites</Section>
         <FavoriteDisplay display="list" />
     );
 };

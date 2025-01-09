@@ -24,13 +24,13 @@ const FavoriteDisplay = ({ display }: { display: "row" | "list" }) => {
         const fetchData = async () => {
             setLoading(true);
 
-            const favorites = await fetchFavorite();
-            if (!favorites) {
+            const favoritesFetched = await fetchFavorite();
+            if (!favoritesFetched) {
                 setLoading(false);
                 return <Section>Error fetching your favorites</Section>;
             }
 
-            setWatchlist(favorites);
+            setWatchlist(favoritesFetched);
             setLoading(false);
         };
 
