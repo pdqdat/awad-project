@@ -3,8 +3,9 @@
 import { useEffect, useState, useCallback } from "react";
 import { LoaderCircle, Plus, Bookmark, Check } from "lucide-react";
 import { useAuth } from "@clerk/clerk-react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import { cn } from "@lib/utils";
+import { toast } from "sonner";
 
 import { Button } from "@ui/button";
 import {
@@ -12,7 +13,6 @@ import {
     addToWatchlist,
     removeFromWatchlist,
 } from "@lib/actions";
-import { useToast } from "@hooks/use-toast";
 
 const WatchlistBtn = ({
     movieID,
@@ -30,7 +30,6 @@ const WatchlistBtn = ({
 
     const { isLoaded, isSignedIn } = useAuth();
     const router = useRouter();
-    const { toast } = useToast();
 
     const checkIsInWatchlist = useCallback(async () => {
         setIsLoading(true);
@@ -57,9 +56,7 @@ const WatchlistBtn = ({
     const handleClick = useCallback(async () => {
         // If user is not signed in, redirect to sign in page and notify user
         if (!isSignedIn || !isLoaded) {
-            toast({
-                title: "Sign in to add to your Watchlist",
-            });
+            toast.info("Sign in to add to your Watchlist");
             router.push(
                 `/sign-in?redirect_url=${encodeURIComponent(window.location.toString())}`,
             );
@@ -67,25 +64,41 @@ const WatchlistBtn = ({
         }
 
         setIsLoading(true);
+        const loadingToastID = toast.loading("Please wait...");
 
         if (isInWatchlist) {
-            // If movie is in watchlist, remove it from watchlist
+            // If movie is in watchlist, REMOVE IT FROM WATCHLIST
             const response = await removeFromWatchlist(movieID);
 
             if (response?.status === 200) {
                 setIsInWatchlist(false);
-                toast({
-                    title: "Movie removed from watchlist",
+                toast.dismiss(loadingToastID);
+                toast.success("Movie removed from watchlist");
+            } else {
+                toast.dismiss(loadingToastID);
+                toast.error("Error removing movie from watchlist", {
+                    description: "Please try again later",
                 });
             }
         } else {
-            // If movie is not in watchlist, add it to watchlist
+            // If movie is not in watchlist, ADD IT TO WATCHLIST
             const response = await addToWatchlist(movieID);
 
             if (response?.status === 201) {
                 setIsInWatchlist(true);
-                toast({
-                    title: "Movie added to watchlist",
+                toast.dismiss(loadingToastID);
+                toast.success("Movie added to watchlist", {
+                    action: {
+                        label: "View your Watchlist",
+                        onClick: () => {
+                            router.push(`/profile/watchlist`);
+                        },
+                    },
+                });
+            } else {
+                toast.dismiss(loadingToastID);
+                toast.error("Error adding movie to watchlist", {
+                    description: "Please try again later",
                 });
             }
         }
@@ -94,7 +107,6 @@ const WatchlistBtn = ({
     }, [
         isSignedIn,
         isLoaded,
-        toast,
         router,
         setIsLoading,
         isInWatchlist,

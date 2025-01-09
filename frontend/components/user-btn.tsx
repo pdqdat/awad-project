@@ -1,8 +1,17 @@
 "use client";
 
 import { useUser, useClerk } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import Link from "next/link";
+import {
+    Star,
+    LogOut,
+    Pencil,
+    List,
+    Heart,
+    Film,
+    UserRound,
+} from "lucide-react";
 
 import {
     DropdownMenu,
@@ -59,33 +68,47 @@ const UserBtn = () => {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                    <DropdownMenuItem
-                        asChild
-                        className="hover:bg-secondary-foreground"
-                    >
-                        <Link href="/profile">Profile</Link>
+                    <DropdownMenuItem asChild>
+                        <Link href="/profile">
+                            <UserRound />
+                            Profile
+                        </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                        <Link href="/profile/watchlist">Watchlist</Link>
+                        <Link href="/profile/watchlist">
+                            <Film />
+                            Watchlist
+                        </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                        <Link href="/profile/favorites">Favorites</Link>
+                        <Link href="/profile/favorites">
+                            <Heart />
+                            Favorites
+                        </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                        <Link href="/profile/ratings">Ratings</Link>
+                        <Link href="/profile/ratings">
+                            <Star />
+                            Ratings
+                        </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                        <Link href="/profile/lists">Your lists</Link>
+                        <Link href="/profile/lists">
+                            <List />
+                            Your lists
+                        </Link>
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => openUserProfile()}>
+                    <Pencil />
                     Edit profile
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                     onClick={() => signOut(() => router.push("/"))}
                 >
+                    <LogOut />
                     Sign out
                 </DropdownMenuItem>
             </DropdownMenuContent>
