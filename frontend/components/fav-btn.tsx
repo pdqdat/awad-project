@@ -9,9 +9,9 @@ import { toast } from "sonner";
 import { cn } from "@lib/utils";
 import { Button } from "@ui/button";
 import {
-    fetchWatchlist,
-    addToWatchlist,
-    removeFromWatchlist,
+    fetchFavorite,
+    addToFavorite,
+    removeFromFavorite,
 } from "@lib/actions";
 
 const FavBtn = ({
@@ -33,11 +33,11 @@ const FavBtn = ({
         setIsLoading(true);
 
         // Fetch favorites
-        const watchlist = await fetchWatchlist();
-        if (!watchlist) return;
+        const favorites = await fetchFavorite();
+        if (!favorites) return;
 
         // Check if movie ID is in watchlist
-        setIsInFav(watchlist.some((movie) => movie.id === movieID));
+        setIsInFav(favorites.some((movie) => movie.id === movieID));
 
         setIsLoading(false);
     }, [movieID, setIsLoading, setIsInFav]);
@@ -65,7 +65,7 @@ const FavBtn = ({
 
         if (isInFav) {
             // If movie is in favorites, remove it
-            const response = await removeFromWatchlist(movieID);
+            const response = await removeFromFavorite(movieID);
 
             if (response?.status === 200) {
                 setIsInFav(false);
@@ -73,7 +73,7 @@ const FavBtn = ({
             }
         } else {
             // If movie is not in favorites, add it
-            const response = await addToWatchlist(movieID);
+            const response = await addToFavorite(movieID);
 
             if (response?.status === 201) {
                 setIsInFav(true);
@@ -82,6 +82,7 @@ const FavBtn = ({
         }
 
         setIsLoading(false);
+
     }, [
         isSignedIn,
         isLoaded,
