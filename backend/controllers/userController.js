@@ -111,7 +111,7 @@ exports.rateMovie = async (req, res) => {
 };
 
 exports.getWatchlist = async (req, res) => {
-    const userId = req.auth.userId; 
+    const userId = req.auth.userId;
 
     try {
         const user = await User.findOne({ clerkUserId: userId });
@@ -119,7 +119,11 @@ exports.getWatchlist = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        const movieIds = user.watchlist.map(item => item.movieId);
+        const sortedWatchlist = user.watchlist.sort((a, b) => new Date(a.addedAt) - new Date(b.addedAt));
+
+        const movieIds = sortedWatchlist.map(item => item.movieId);
+        // console.log("Sorted watch List Movie IDs:", movieIds);
+
 
         const movies = await Movie.find(
             { tmdb_id: { $in: movieIds } },
@@ -152,6 +156,7 @@ exports.getWatchlist = async (req, res) => {
 
 
 
+
 exports.getFavoriteList = async (req, res) => {
     const userId = req.auth.userId;
 
@@ -161,10 +166,13 @@ exports.getFavoriteList = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Lấy danh sách ID phim từ favorite list
-        const movieIds = user.favoriteList.map(item => item.movieId);
+        // Sắp xếp favoriteList theo `addedAt`
+        const sortedFavoriteList = user.favoriteList.sort((a, b) => new Date(a.addedAt) - new Date(b.addedAt));
 
-        // Truy vấn thông tin chi tiết phim
+        const movieIds = sortedFavoriteList.map(item => item.movieId);
+        // console.log("Sorted Favorite List Movie IDs:", movieIds);
+
+
         const movies = await Movie.find(
             { tmdb_id: { $in: movieIds } },
             {
@@ -195,6 +203,7 @@ exports.getFavoriteList = async (req, res) => {
 };
 
 
+
 exports.getRatingList = async (req, res) => {
     const userId = req.auth.userId;
 
@@ -204,10 +213,10 @@ exports.getRatingList = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Lấy danh sách ID phim từ rating list
-        const movieIds = user.ratingList.map(item => item.movieId);
+        // Sắp xếp ratingList theo `ratedAt`
+        const sortedRatingList = user.ratingList.sort((a, b) => new Date(a.addedAt) - new Date(b.addedAt));
+        const movieIds = sortedRatingList.map(item => item.movieId);
 
-        // Truy vấn thông tin chi tiết phim
         const movies = await Movie.find(
             { tmdb_id: { $in: movieIds } },
             {
@@ -231,9 +240,9 @@ exports.getRatingList = async (req, res) => {
             }
         );
 
-        // Thêm rating của user vào chi tiết movie
+        // Thêm rating của user vào kết quả
         const ratingDetails = movies.map(movie => {
-            const rating = user.ratingList.find(item => item.movieId === movie.tmdb_id);
+            const rating = sortedRatingList.find(item => item.movieId === movie.tmdb_id);
             return {
                 ...movie._doc,
                 userRating: rating.rating,
@@ -245,6 +254,7 @@ exports.getRatingList = async (req, res) => {
         res.status(500).json({ message: 'Error fetching rating list', error: error.message });
     }
 };
+
 
 
 exports.removeFromWatchlist = async (req, res) => {

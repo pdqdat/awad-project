@@ -62,3 +62,25 @@ exports.deleteReview = async (req, res) => {
         res.status(500).json({ message: 'Error deleting review', error: error.message });
     }
 };
+
+exports.updateReview = async (req, res) => {
+    const { reviewId } = req.params; 
+    const { text } = req.body;
+    const userId = req.auth.userId;  
+
+    try {
+        const review = await Review.findOneAndUpdate(
+            { _id: reviewId, userId: userId }, 
+            { text: text }, 
+            { new: true } 
+        );
+
+        if (!review) {
+            return res.status(404).json({ message: "No review found or you don't have permission to update this review" });
+        }
+
+        res.status(200).json({ message: 'Review updated successfully', review });
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating review', error: error.message });
+    }
+};

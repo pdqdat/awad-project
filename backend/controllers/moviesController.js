@@ -25,7 +25,7 @@ async function retrieveFromLLM(query, amount = 5, threshold = 0.5) {
 
   try {
     // Tạo URL đầy đủ với các tham số bao gồm query
-    const fullUrl = `${apiUrl}?gemini_api_key=${encodeURIComponent(process.env.GEMINI_API_KEY)}&collection_name=movies&query=${encodedQuery}&amount=${amount}&threshold=${threshold}`;
+    const fullUrl = `${apiUrl}?llm_api_key=${encodeURIComponent(process.env.GEMINI_API_KEY)}&collection_name=movies&query=${encodedQuery}&amount=${amount}&threshold=${threshold}`;
 
     console.log('LLM API Request:', fullUrl); // Ghi log URL đầy đủ để kiểm tra
 
