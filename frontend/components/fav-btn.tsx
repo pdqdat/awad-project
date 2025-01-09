@@ -90,7 +90,7 @@ const FavBtn = ({
                     },
                 });
             } else {
-                toast.dismiss(loadingToastID);
+                toast.dismiss(loadingToastID); 
                 toast.error("Failed to add movie to favorites", {
                     description: "Please try again later",
                 });
