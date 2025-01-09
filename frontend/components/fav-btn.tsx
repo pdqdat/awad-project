@@ -8,11 +8,7 @@ import { toast } from "sonner";
 
 import { cn } from "@lib/utils";
 import { Button } from "@ui/button";
-import {
-    fetchFavorite,
-    addToFavorite,
-    removeFromFavorite,
-} from "@lib/actions";
+import { fetchFavorite, addToFavorite, removeFromFavorite } from "@lib/actions";
 
 const FavBtn = ({
     movieID,
@@ -62,27 +58,46 @@ const FavBtn = ({
         }
 
         setIsLoading(true);
+        const loadingToastID = toast.loading("Please wait...");
 
         if (isInFav) {
-            // If movie is in favorites, remove it
+            // If movie is in favorites, REMOVE IT FROM FAVORITES
             const response = await removeFromFavorite(movieID);
 
             if (response?.status === 200) {
                 setIsInFav(false);
+                toast.dismiss(loadingToastID);
                 toast.success("Movie removed from favorites");
+            } else {
+                toast.dismiss(loadingToastID);
+                toast.error("Failed to remove movie from favorites", {
+                    description: "Please try again later",
+                });
             }
         } else {
-            // If movie is not in favorites, add it
+            // If movie is not in favorites, ADD IT TO FAVORITES
             const response = await addToFavorite(movieID);
 
             if (response?.status === 201) {
                 setIsInFav(true);
-                toast.success("Movie added to favorites");
+                toast.dismiss(loadingToastID);
+                toast.success("Movie added to favorites", {
+                    action: {
+                        label: "View your Favorites",
+                        onClick: () => {
+                            router.push(`/profile/favorites`);
+                        },
+                    },
+                });
+            } else {
+                toast.dismiss(loadingToastID);
+                toast.error("Failed to add movie to favorites", {
+                    description: "Please try again later",
+                });
             }
         }
 
         setIsLoading(false);
-
     }, [
         isSignedIn,
         isLoaded,

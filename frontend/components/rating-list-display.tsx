@@ -21,14 +21,14 @@ const RatingListDisplay = ({ display }: { display: "row" | "list" }) => {
         const fetchData = async () => {
             setLoading(true);
 
-            const ratingList = await fetchRatingList();
-            if (!ratingList) {
+            const fetchedRatingList = await fetchRatingList();
+            if (!fetchedRatingList) {
                 setLoading(false);
                 toast.error("Error fetching your ratings");
                 return <Section>Error fetching your ratings</Section>;
             }
 
-            setRatingList(ratingList);
+            setRatingList(fetchedRatingList);
             setLoading(false);
         };
 

@@ -21,14 +21,14 @@ const WatchlistDisplay = ({ display }: { display: "row" | "list" }) => {
         const fetchData = async () => {
             setLoading(true);
 
-            const watchlist = await fetchWatchlist();
-            if (!watchlist) {
+            const fetchedWatchlist = await fetchWatchlist();
+            if (!fetchedWatchlist) {
                 setLoading(false);
                 toast.error("Error fetching your watchlist");
                 return <Section>Error fetching your watchlist</Section>;
             }
 
-            setWatchlist(watchlist);
+            setWatchlist(fetchedWatchlist);
             setLoading(false);
         };
 

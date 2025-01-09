@@ -109,7 +109,7 @@ const MovieDetailPage = async ({
                             <Star className="mr-1 text-yellow-500 group-hover:animate-wiggle" />
                             <p className="mr-2 text-lg font-semibold">
                                 <span className="transition-colors group-hover:text-yellow-500">
-                                    {movieDetail.vote_average}
+                                    {movieDetail.vote_average.toFixed(1)}
                                 </span>{" "}
                                 / 10{" "}
                                 <span className="font-normal text-muted-foreground">
