@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import { fetchRatingList, removeRating } from "@lib/actions";
 import MoviesList1 from "@comp/movies-list-1";
@@ -9,7 +10,6 @@ import { Card, CardHeader, CardTitle, CardContent } from "@ui/card";
 import Section from "@comp/section";
 import { Skeleton } from "@ui/skeleton";
 import MoviesRowSimple from "@comp/movies-row-simple";
-import { useToast } from "@hooks/use-toast";
 
 const RatingListDisplay = ({ display }: { display: "row" | "list" }) => {
     // State to keep track of watchlist
@@ -17,19 +17,18 @@ const RatingListDisplay = ({ display }: { display: "row" | "list" }) => {
     // State to keep track of loading state
     const [loading, setLoading] = useState(true);
 
-    const { toast } = useToast();
-
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
 
-            const ratingList = await fetchRatingList();
-            if (!ratingList) {
+            const fetchedRatingList = await fetchRatingList();
+            if (!fetchedRatingList) {
                 setLoading(false);
+                toast.error("Error fetching your ratings");
                 return <Section>Error fetching your ratings</Section>;
             }
 
-            setRatingList(ratingList);
+            setRatingList(fetchedRatingList);
             setLoading(false);
         };
 
@@ -38,12 +37,17 @@ const RatingListDisplay = ({ display }: { display: "row" | "list" }) => {
 
     const remove = async (id: number) => {
         setLoading(true);
+        const loadingToastID = toast.loading("Please wait...");
 
         const response = await removeRating(id);
         if (response?.status === 200) {
             setRatingList((prev) => prev.filter((movie) => movie.id !== id));
-            toast({
-                title: "Rating removed",
+            toast.dismiss(loadingToastID);
+            toast.success("Rating removed");
+        } else {
+            toast.dismiss(loadingToastID);
+            toast.error("Failed to remove rating", {
+                description: "Please try again later",
             });
         }
 

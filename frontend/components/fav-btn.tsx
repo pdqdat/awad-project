@@ -3,16 +3,12 @@
 import { useEffect, useState, useCallback } from "react";
 import { LoaderCircle, Heart } from "lucide-react";
 import { useAuth } from "@clerk/clerk-react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
+import { toast } from "sonner";
 
 import { cn } from "@lib/utils";
 import { Button } from "@ui/button";
-import {
-    fetchFavorite,
-    addToFavorite,
-    removeFromFavorite,
-} from "@lib/actions";
-import { useToast } from "@hooks/use-toast";
+import { fetchFavorite, addToFavorite, removeFromFavorite } from "@lib/actions";
 
 const FavBtn = ({
     movieID,
@@ -28,7 +24,6 @@ const FavBtn = ({
 
     const { isLoaded, isSignedIn } = useAuth();
     const router = useRouter();
-    const { toast } = useToast();
 
     const checkIsInFav = useCallback(async () => {
         setIsLoading(true);
@@ -55,9 +50,7 @@ const FavBtn = ({
     const handleClick = useCallback(async () => {
         // If user is not signed in, redirect to sign in page and notify user
         if (!isSignedIn || !isLoaded) {
-            toast({
-                title: "Sign in to add to your Favorites",
-            });
+            toast.info("Sign in to add to your Favorites");
             router.push(
                 `/sign-in?redirect_url=${encodeURIComponent(window.location.toString())}`,
             );
@@ -65,35 +58,49 @@ const FavBtn = ({
         }
 
         setIsLoading(true);
+        const loadingToastID = toast.loading("Please wait...");
 
         if (isInFav) {
-            // If movie is in favorites, remove it
+            // If movie is in favorites, REMOVE IT FROM FAVORITES
             const response = await removeFromFavorite(movieID);
 
             if (response?.status === 200) {
                 setIsInFav(false);
-                toast({
-                    title: "Movie removed from favorites",
+                toast.dismiss(loadingToastID);
+                toast.success("Movie removed from favorites");
+            } else {
+                toast.dismiss(loadingToastID);
+                toast.error("Failed to remove movie from favorites", {
+                    description: "Please try again later",
                 });
             }
         } else {
-            // If movie is not in favorites, add it
+            // If movie is not in favorites, ADD IT TO FAVORITES
             const response = await addToFavorite(movieID);
 
             if (response?.status === 201) {
                 setIsInFav(true);
-                toast({
-                    title: "Movie added to favorites",
+                toast.dismiss(loadingToastID);
+                toast.success("Movie added to favorites", {
+                    action: {
+                        label: "View your Favorites",
+                        onClick: () => {
+                            router.push(`/profile/favorites`);
+                        },
+                    },
+                });
+            } else {
+                toast.dismiss(loadingToastID); 
+                toast.error("Failed to add movie to favorites", {
+                    description: "Please try again later",
                 });
             }
         }
 
         setIsLoading(false);
-
     }, [
         isSignedIn,
         isLoaded,
-        toast,
         router,
         setIsLoading,
         isInFav,

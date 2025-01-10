@@ -2,7 +2,7 @@
 
 import { Search } from "lucide-react";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 
 import { Input } from "@ui/input";
 import { cn } from "@lib/utils";
