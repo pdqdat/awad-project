@@ -8,6 +8,7 @@ import {
     Cast,
     MovieInList,
     MovieInRatingList,
+    Review,
 } from "@/types";
 import { LIMIT, CACHE_DURATION } from "@/config/movie";
 
@@ -198,7 +199,7 @@ export const fetchMovieDetail = async (
     try {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/movies/${movieID}`,
-            { method: "GET" },
+            { method: "GET", cache: "no-store" },
         );
         if (!res.ok) {
             if (res.status === 404) {
@@ -231,7 +232,7 @@ export const fetchSimilarMovies = async (
     try {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/movies/${movieID}/similar`,
-            tmdbGetRequestOptions,
+            { method: "GET" },
         );
         if (!res.ok) {
             if (res.status === 404) {
@@ -635,9 +636,8 @@ export const fetchFavorite = async (): Promise<MovieInList[] | null> => {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
-            // Cache the response for 3 seconds
             next: {
-                revalidate: 3,
+                revalidate: CACHE_DURATION,
             },
         };
 
@@ -826,5 +826,127 @@ export const fetchRatingList = async (): Promise<
     } catch (error) {
         console.error("Error fetching rating list: ", error);
         throw new Error("Error fetching rating list");
+    }
+};
+
+export const fetchReviews = async (
+    movieID: number,
+): Promise<Review[] | null> => {
+    try {
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/movies/${movieID}/reviews`,
+            { method: "GET" },
+        );
+
+        if (!res.ok) {
+            if (res.status === 404) {
+                console.error("Error fetching reviews");
+                return null;
+            }
+            throw new Error("Error fetching reviews");
+        }
+
+        const data = await res.json();
+        return data;
+    } catch (error) {
+        console.error("Error fetching reviews: ", error);
+        throw new Error("Error fetching reviews");
+    }
+};
+
+export const addReview = async (
+    movieID: number,
+    review: string,
+): Promise<{ message: string; review: Review } | null> => {
+    const { getToken } = await auth();
+
+    try {
+        const token = await getToken();
+        if (!token) {
+            console.error("Error fetching session token");
+            return null;
+        }
+
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/reviews`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ text: review, movieId: movieID }),
+            },
+        );
+
+        if (!res.ok) {
+            if (res.status === 404) {
+                console.error("Error adding review");
+                return null;
+            }
+            if (res.status === 401) {
+                console.error("Unauthorized");
+                return null;
+            }
+
+            throw new Error("Error adding review");
+        }
+
+        const data = await res.json();
+
+        return {
+            message: data.message,
+            review: data.review,
+        };
+    } catch (error) {
+        console.error("Error adding review: ", error);
+        throw new Error("Error adding review");
+    }
+};
+
+export const deleteReview = async (
+    reviewID: string,
+): Promise<{ status: number; message: string } | null> => {
+    const { getToken } = await auth();
+
+    try {
+        const token = await getToken();
+        if (!token) {
+            console.error("Error fetching session token");
+            return null;
+        }
+
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/reviews/${reviewID}`,
+            {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            },
+        );
+
+        if (!res.ok) {
+            if (res.status === 404) {
+                console.error("Error removing rating");
+                return null;
+            }
+            if (res.status === 401) {
+                console.error("Unauthorized");
+                return null;
+            }
+
+            throw new Error("Error removing rating");
+        }
+
+        const data = await res.json();
+
+        return {
+            status: res.status,
+            message: data.message,
+        };
+    } catch (error) {
+        console.error("Error deleting review: ", error);
+        throw new Error("Error deleting review");
     }
 };

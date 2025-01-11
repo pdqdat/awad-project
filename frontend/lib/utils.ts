@@ -16,14 +16,22 @@ export const cn = (...inputs: ClassValue[]) => {
  * Formats a given date string into a localized date string with the format "dd/mm/yyyy".
  *
  * @param date - The date string to format.
- * @returns The formatted date string in "dd/mm/yyyy" format.
+ * @param withHour - Whether to include the hour and minute in the formatted date string.
+ * @returns The formatted date string in "dd/mm/yyyy" or "dd/mm/yyyy, hh:mm" format.
  */
-export const dateFormatter = (date: string) => {
-    return new Date(date).toLocaleDateString("en-GB", {
+export const dateFormatter = (date: string, withHour: boolean = false) => {
+    const options: Intl.DateTimeFormatOptions = {
         year: "numeric",
         month: "2-digit",
         day: "2-digit",
-    });
+    };
+
+    if (withHour) {
+        options.hour = "2-digit";
+        options.minute = "2-digit";
+    }
+
+    return new Date(date).toLocaleDateString("en-GB", options);
 };
 
 /**
