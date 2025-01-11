@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Star, ChevronRight } from "lucide-react";
-import Link from "next/link";
+import { Star } from "lucide-react";
 
-import { Button } from "@ui/button";
 import { fetchMovieDetail, fetchSimilarMovies } from "@lib/actions";
 import { tmdbPosterSizes } from "@/config/tmdb";
 import { getTmdbImageUrl } from "@lib/utils";
