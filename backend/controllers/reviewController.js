@@ -13,7 +13,19 @@ exports.addReview = async (req, res) => {
         });
 
         await review.save();
-        res.status(201).json({ message: 'Review added successfully', review });
+
+        const user = await User.findOne({ clerkUserId: userId }, '_id firstName lastName').lean();
+
+        const reviewWithUserInfo = {
+            ...review.toObject(),
+            user: {
+                _id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName
+            }
+        };
+
+        res.status(201).json({ message: 'Review added successfully', review: reviewWithUserInfo });
     } catch (error) {
         res.status(500).json({ message: 'Error adding review', error: error.message });
     }
@@ -33,7 +45,6 @@ exports.getReviews = async (req, res) => {
             )
         );
 
-        // Gắn thông tin người dùng vào từng review
         const reviewsWithUserInfo = reviews.map((review, index) => ({
             ...review,
             user: userInfos[index]

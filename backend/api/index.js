@@ -57,7 +57,11 @@ app.use('/api', navRoutes);
 app.get('/protected-endpoint', ClerkExpressRequireAuth(), (req, res) => {
     res.json({ message: "You are authenticated!", user: req.auth });
   });
+  
 
+app.get('/test-cicd', (req, res) => {
+    res.status(200).send('CI/CD is working properlyyyyyyyyyyyyyyyyyyyyyyyyy!!!!!!!');
+});
 
 app.use((err, req, res, next) => {
     console.error(err.stack)
@@ -79,7 +83,7 @@ app.get("/", (req, res) => res.send("Express on Vercel"));
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
-    console.log('CLERK_WEBHOOK_SECRET_KEY:', process.env.CLERK_WEBHOOK_SECRET_KEY);
+    // console.log('CLERK_WEBHOOK_SECRET_KEY:', process.env.CLERK_WEBHOOK_SECRET_KEY);
 });
 
 module.exports = app;
