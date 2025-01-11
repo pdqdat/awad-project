@@ -6,7 +6,7 @@ const TestPage = async () => {
     const token = await getToken();
     console.log(token);
 
-    return <div className="container min-h-96">Testing stuff...</div>;
+    return <div className="container min-h-96">Testing stuff..</div>;
 };
 
 export default TestPage;

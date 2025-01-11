@@ -5,6 +5,7 @@ const trendingRoutes = require('../routes/moviesTrendingRoutes.js');
 const castRoutes = require('../routes/castRoute.js');
 const userRoutes = require('../routes/userRoutes.js'); 
 const webhookRoutes = require('../routes/webhookRoutes.js');
+const navRoutes = require ('../routes/navRoute.js')
 const { ClerkExpressRequireAuth  } =  require('@clerk/clerk-sdk-node')
 const reviewRoutes = require('../routes/reviewRoute.js')
 
@@ -50,6 +51,7 @@ app.use('/api', castRoutes);
 app.use('/api',userRoutes);
 app.use('/api', webhookRoutes);
 app.use('/api', reviewRoutes);
+app.use('/api', navRoutes);
 
 
 app.get('/protected-endpoint', ClerkExpressRequireAuth(), (req, res) => {
