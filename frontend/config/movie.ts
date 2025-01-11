@@ -1,7 +1,7 @@
 export const LIMIT = 20;
 
 // Cache duration in seconds
-export const CACHE_DURATION = 2;
+export const CACHE_DURATION = 1;
 
 export const genres = [
     {

@@ -1,7 +1,7 @@
 import MoviesRow from "@comp/movies-row";
 import { fetchPopularMovies } from "@lib/actions";
 
-const PopularMoviesSection = async () => {
+const PopularSection = async () => {
 
     const { data: movies, } = await fetchPopularMovies(
         1,
@@ -29,4 +29,4 @@ const PopularMoviesSection = async () => {
     );
 };
 
-export default PopularMoviesSection;
+export default PopularSection;

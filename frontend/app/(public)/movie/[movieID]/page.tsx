@@ -15,6 +15,7 @@ import WatchlistBtn from "@comp/watchlist-btn";
 import HttpStatusPage from "@comp/http-status-page";
 import FavBtn from "@comp/fav-btn";
 import RateBtn from "@comp/rate-btn";
+import ReviewInputDisplay from "@comp/review-input-display";
 
 export const generateMetadata = async ({
     params,
@@ -168,6 +169,14 @@ const MovieDetailPage = async ({
                     </div>
                 </Section>
             )}
+            <Section
+                id="review"
+                heading="User reviews"
+                href={`/movie/${movieID}/review`}
+                sectionClassName="bg-muted"
+            >
+                <ReviewInputDisplay movieID={movieID} compact />
+            </Section>
             <Section id="similar" heading="Similar movies">
                 {similarMovies && similarMovies.data.length > 0 ? (
                     <MoviesRow movies={similarMovies.data} />
