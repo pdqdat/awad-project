@@ -60,7 +60,7 @@ app.get('/protected-endpoint', ClerkExpressRequireAuth(), (req, res) => {
   
 
 app.get('/test-cicd', (req, res) => {
-    res.status(200).send('CI/CD is working properly!!!!!!!!!!!!!!!!');
+    res.status(200).send('CI/CD is working properlyyyyyyyyyyyyyyyyyyyyyyyyy!!!!!!!');
 });
 
 app.use((err, req, res, next) => {
