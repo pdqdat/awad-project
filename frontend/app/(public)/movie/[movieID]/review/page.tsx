@@ -3,6 +3,7 @@ import { ChevronLeft } from "lucide-react";
 import type { Metadata } from "next";
 
 import { Button } from "@ui/button";
+import ReviewInputDisplay from "@comp/review-input-display";
 import { fetchMovieDetail } from "@lib/actions";
 import Section from "@comp/section";
 
@@ -32,12 +33,14 @@ const MovieReviewPage = async ({
     params: Promise<{ movieID: string }>;
 }) => {
     const { movieID } = await params;
+
     const movieDetail = await fetchMovieDetail(movieID);
 
     if (!movieDetail) {
         return <div className="container">Error fetching movie detail</div>;
     }
 
+    // Create the back button to go back to the movie detail page
     const backBtn = (
         <div className="container my-4">
             <Button variant="outline" asChild>
@@ -50,21 +53,24 @@ const MovieReviewPage = async ({
         </div>
     );
 
+    const sectionHeading = (
+        <>
+            Reviews of{" "}
+            <span className="text-primary">
+                {movieDetail.title} (
+                {new Date(movieDetail.release_date).getFullYear()})
+            </span>
+        </>
+    );
+
     return (
         <>
             {backBtn}
             <Section
-                heading={
-                    <>
-                        Reviews of{" "}
-                        <span className="text-primary">
-                            {movieDetail.title} (
-                            {new Date(movieDetail.release_date).getFullYear()})
-                        </span>
-                    </>
-                }
+                heading={sectionHeading}
+                sectionClassName="min-h-[calc(75vh)]"
             >
-                Reviews...
+                <ReviewInputDisplay movieID={movieID} />
             </Section>
         </>
     );

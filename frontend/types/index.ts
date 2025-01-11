@@ -182,7 +182,22 @@ export interface MovieInList {
     vote_count: number;
 }
 
-export interface MovieInRatingList extends MovieInList { userRating: number };
+export interface Review {
+    _id: string;
+    movieId: number;
+    userId: string;
+    text: string;
+    createdAt: string;
+    user: {
+        _id: string;
+        firstName: string;
+        lastName: string;
+    };
+}
+
+export interface MovieInRatingList extends MovieInList {
+    userRating: number;
+}
 
 export type MovieSearchResult = Omit<Movie, "media_type"> & { genres: Genre[] };
 

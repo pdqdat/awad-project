@@ -36,7 +36,7 @@ export const navigationItems = [
         ],
     },
     {
-        title: "Your lists",
-        href: "/profile/lists",
+        title: "Search with AI",
+        href: "/ai-search",
     },
 ];
