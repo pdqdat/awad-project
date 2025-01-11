@@ -14,11 +14,12 @@ exports.addReview = async (req, res) => {
 
         await review.save();
 
-        const user = await User.findOne({ clerkUserId: userId }, 'firstName lastName').lean();
+        const user = await User.findOne({ clerkUserId: userId }, '_id firstName lastName').lean();
 
         const reviewWithUserInfo = {
             ...review.toObject(),
             user: {
+                _id: user._id,
                 firstName: user.firstName,
                 lastName: user.lastName
             }
@@ -44,7 +45,6 @@ exports.getReviews = async (req, res) => {
             )
         );
 
-        // Gắn thông tin người dùng vào từng review
         const reviewsWithUserInfo = reviews.map((review, index) => ({
             ...review,
             user: userInfos[index]
