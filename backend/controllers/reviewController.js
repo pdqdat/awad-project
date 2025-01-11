@@ -13,7 +13,18 @@ exports.addReview = async (req, res) => {
         });
 
         await review.save();
-        res.status(201).json({ message: 'Review added successfully', review });
+
+        const user = await User.findOne({ clerkUserId: userId }, 'firstName lastName').lean();
+
+        const reviewWithUserInfo = {
+            ...review.toObject(),
+            user: {
+                firstName: user.firstName,
+                lastName: user.lastName
+            }
+        };
+
+        res.status(201).json({ message: 'Review added successfully', review: reviewWithUserInfo });
     } catch (error) {
         res.status(500).json({ message: 'Error adding review', error: error.message });
     }
