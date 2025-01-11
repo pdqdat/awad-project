@@ -120,7 +120,7 @@ const FavBtn = ({
             size="icon"
             disabled={isLoading}
             onClick={handleClick}
-            className={cn("size-10", className)}
+            className={cn("size-10", "bg-gray-200", className)}
         >
             {isLoading ? <LoaderCircle className="animate-spin" /> : btnContent}
         </Button>
