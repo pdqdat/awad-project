@@ -1,5 +1,9 @@
 const express = require('express');
+const { ClerkExpressWithAuth  } = require('@clerk/clerk-sdk-node');
+
 const router = express.Router();
+
+
 const { getAllMovies, getMovieById, searchMovies, filterMovies, getAllGenres,   getUpcomingMovies,
     getTopRatedMovies,
     getPopularMovies,
@@ -18,7 +22,7 @@ router.get('/movies/cate/upcoming', getUpcomingMovies);
 router.get('/movies/cate/toprated', getTopRatedMovies);
 router.get('/movies/cate/popular', getPopularMovies);
 router.get('/movies/cate/nowplaying', getNowPlayingMovies);
-router.get('/movies/:tmdb_id/similar', getSimilarMovies);
+router.get('/movies/:tmdb_id/similar',ClerkExpressWithAuth (), getSimilarMovies);
 
 
 module.exports = router;

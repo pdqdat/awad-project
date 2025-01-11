@@ -64,14 +64,14 @@ exports.deleteReview = async (req, res) => {
 };
 
 exports.updateReview = async (req, res) => {
-    const { reviewId } = req.params; 
+    const { reviewId } = req.params;
     const { text } = req.body;
-    const userId = req.auth.userId;  
+    const userId = req.auth.userId;
 
     try {
         const review = await Review.findOneAndUpdate(
-            { _id: reviewId, userId: userId }, 
-            { text: text }, 
+            { _id: reviewId, userId: userId },
+            { text: text, updatedAt: new Date() }, 
             { new: true } 
         );
 
@@ -84,3 +84,4 @@ exports.updateReview = async (req, res) => {
         res.status(500).json({ message: 'Error updating review', error: error.message });
     }
 };
+
