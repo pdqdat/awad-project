@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import { format, compareAsc } from "date-fns";
 
 import { Card, CardHeader, CardFooter, CardTitle, CardContent } from "@ui/card";

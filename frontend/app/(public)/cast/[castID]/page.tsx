@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 
 import { fetchCastDetail } from "@lib/actions";
 import { tmdbPosterSizes } from "@/config/tmdb";
 import { getTmdbImageUrl } from "@lib/utils";
 import MoviesRow from "@comp/movies-row";
+import ReadMore from "@comp/read-more";
+import ReadMoreList from "@comp/read-more-list";
+import HttpStatusPage from "@comp/http-status-page";
+import { Button } from "@ui/button";
 
 export const generateMetadata = async ({
     params,
@@ -35,17 +40,12 @@ const CastDetailPage = async ({
     const castDetail = await fetchCastDetail(castID);
 
     if (!castDetail) {
-        return <div className="container">Error fetching cast detail</div>;
-    }
-
-    if (!castDetail) {
-        return <div>Error fetching cast detail</div>;
+        return <HttpStatusPage status={404}>Cast not found</HttpStatusPage>;
     }
 
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="flex flex-col items-center md:flex-row md:items-start">
-                {/* Profile Image */}
                 <Image
                     src={getTmdbImageUrl(
                         tmdbPosterSizes.w500,
@@ -56,20 +56,13 @@ const CastDetailPage = async ({
                     height={513}
                     className="mb-6 rounded-lg shadow-md md:mb-0 md:mr-8"
                 />
-                {/* Cast Info */}
                 <div className="flex-1">
-                    <h1 className="mb-4 text-4xl font-bold">
-                        {castDetail.name}
-                    </h1>
-
+                    <h2 className="h2">{castDetail.name}</h2>
                     <div className="mt-4">
                         <h2 className="text-xl font-semibold">Biography</h2>
-                        <p>{castDetail.biography}</p>
+                        <ReadMore text={castDetail.biography} limit={700} />
                     </div>
-
-                    <div className="mt-4"></div>
-
-                    <div className="space-y-2 text-gray-700">
+                    <div className="mt-4 space-y-2 text-gray-700">
                         {castDetail.known_for_department && (
                             <p>
                                 <strong>Known For:</strong>{" "}
@@ -103,14 +96,15 @@ const CastDetailPage = async ({
                         {castDetail.homepage && (
                             <p>
                                 <strong>Homepage:</strong>{" "}
-                                <a
-                                    href={castDetail.homepage}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-blue-600 underline"
+                                <Button
+                                    variant="link"
+                                    className="h-fit p-0 text-base font-normal"
+                                    asChild
                                 >
-                                    {castDetail.homepage}
-                                </a>
+                                    <Link href={castDetail.homepage}>
+                                        {castDetail.homepage}
+                                    </Link>
+                                </Button>
                             </p>
                         )}
                     </div>
@@ -119,18 +113,12 @@ const CastDetailPage = async ({
                             <h2 className="text-xl font-semibold">
                                 Also Known As
                             </h2>
-                            <ul className="list-inside list-disc">
-                                {castDetail.also_known_as.map((aka) => (
-                                    <li key={aka}>{aka}</li>
-                                ))}
-                            </ul>
+                            <ReadMoreList items={castDetail.also_known_as} />
                         </div>
                     )}
-
                     <div className="mt-6">
                         <h2 className="text-xl font-semibold">Known For</h2>
                     </div>
-
                     <MoviesRow movies={castDetail.movie_credits} />
                 </div>
             </div>

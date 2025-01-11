@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Star } from "lucide-react";
+import { Star, X } from "lucide-react";
 
 import { MovieInList } from "@/types";
 import { Badge } from "@ui/badge";
@@ -8,8 +8,15 @@ import { tmdbPosterSizes } from "@/config/tmdb";
 import { getTmdbImageUrl } from "@lib/utils";
 import { formatRuntime } from "@lib/utils";
 import RateBtn from "@comp/rate-btn";
+import { Button } from "@ui/button";
 
-const MoviesList1 = ({ movies }: { movies: MovieInList[] }) => {
+const MoviesList1 = ({
+    movies,
+    onRemove,
+}: {
+    movies: MovieInList[];
+    onRemove: (id: number) => void;
+}) => {
     return (
         <ul className="space-y-2">
             {movies.map((movie, index) => (
@@ -34,29 +41,38 @@ const MoviesList1 = ({ movies }: { movies: MovieInList[] }) => {
                                     />
                                 </div>
                             </Link>
-                            <div className="space-y-1">
-                                <Link
-                                    href={`/movie/${movie.id}`}
-                                    className="text-lg hover:text-foreground/80"
-                                >
-                                    <span className="text-wrap font-semibold">
-                                        {index + 1}. {movie.title}
-                                    </span>{" "}
-                                    {movie.release_date &&
-                                    !isNaN(
-                                        new Date(
-                                            movie.release_date,
-                                        ).getFullYear(),
-                                    ) ? (
-                                        <>
-                                            (
-                                            {new Date(
+                            <div className="flex-1 space-y-1">
+                                <div className="flex items-center justify-between">
+                                    <Link
+                                        href={`/movie/${movie.id}`}
+                                        className="text-lg hover:text-foreground/80"
+                                    >
+                                        <span className="text-wrap font-semibold">
+                                            {index + 1}. {movie.title}
+                                        </span>{" "}
+                                        {movie.release_date &&
+                                        !isNaN(
+                                            new Date(
                                                 movie.release_date,
-                                            ).getFullYear()}
-                                            )
-                                        </>
-                                    ) : null}
-                                </Link>
+                                            ).getFullYear(),
+                                        ) ? (
+                                            <>
+                                                (
+                                                {new Date(
+                                                    movie.release_date,
+                                                ).getFullYear()}
+                                                )
+                                            </>
+                                        ) : null}
+                                    </Link>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => onRemove(movie.id)}
+                                    >
+                                        <X />
+                                    </Button>
+                                </div>
                                 <div className="text-muted-foreground">
                                     {formatRuntime(movie.runtime)}
                                 </div>
@@ -72,7 +88,11 @@ const MoviesList1 = ({ movies }: { movies: MovieInList[] }) => {
                                             </span>
                                         </p>
                                     </div>
-                                    <RateBtn movieID={movie.id} />
+                                    <RateBtn
+                                        movieID={movie.id}
+                                        small
+                                        disabled
+                                    />
                                 </div>
                             </div>
                         </div>

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import { fetchWatchlist, removeFromWatchlist } from "@lib/actions";
+import { fetchRatingList, removeRating } from "@lib/actions";
 import MoviesList1 from "@comp/movies-list-1";
 import { MovieInList } from "@/types";
 import { Card, CardHeader, CardTitle, CardContent } from "@ui/card";
@@ -11,9 +11,9 @@ import Section from "@comp/section";
 import { Skeleton } from "@ui/skeleton";
 import MoviesRowSimple from "@comp/movies-row-simple";
 
-const WatchlistDisplay = ({ display }: { display: "row" | "list" }) => {
+const RatingListDisplay = ({ display }: { display: "row" | "list" }) => {
     // State to keep track of watchlist
-    const [watchlist, setWatchlist] = useState<MovieInList[]>([]);
+    const [ratingList, setRatingList] = useState<MovieInList[]>([]);
     // State to keep track of loading state
     const [loading, setLoading] = useState(true);
 
@@ -21,14 +21,14 @@ const WatchlistDisplay = ({ display }: { display: "row" | "list" }) => {
         const fetchData = async () => {
             setLoading(true);
 
-            const fetchedWatchlist = await fetchWatchlist();
-            if (!fetchedWatchlist) {
+            const fetchedRatingList = await fetchRatingList();
+            if (!fetchedRatingList) {
                 setLoading(false);
-                toast.error("Error fetching your watchlist");
-                return <Section>Error fetching your watchlist</Section>;
+                toast.error("Error fetching your ratings");
+                return <Section>Error fetching your ratings</Section>;
             }
 
-            setWatchlist(fetchedWatchlist);
+            setRatingList(fetchedRatingList);
             setLoading(false);
         };
 
@@ -39,14 +39,14 @@ const WatchlistDisplay = ({ display }: { display: "row" | "list" }) => {
         setLoading(true);
         const loadingToastID = toast.loading("Please wait...");
 
-        const response = await removeFromWatchlist(id);
+        const response = await removeRating(id);
         if (response?.status === 200) {
-            setWatchlist((prev) => prev.filter((movie) => movie.id !== id));
+            setRatingList((prev) => prev.filter((movie) => movie.id !== id));
             toast.dismiss(loadingToastID);
-            toast.success("Movie removed from watchlist");
+            toast.success("Rating removed");
         } else {
             toast.dismiss(loadingToastID);
-            toast.error("Failed to remove movie from watchlist", {
+            toast.error("Failed to remove rating", {
                 description: "Please try again later",
             });
         }
@@ -57,10 +57,10 @@ const WatchlistDisplay = ({ display }: { display: "row" | "list" }) => {
     if (display === "row") {
         return (
             <Section
-                id="watchlist"
-                heading="Watchlist"
-                href="/profile/watchlist"
-                sectionClassName="min-h-96"
+                id="ratings"
+                heading="Ratings"
+                href="/profile/ratings"
+                containerClassName="min-h-96"
             >
                 {loading && (
                     <div className="my-4 grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
@@ -69,11 +69,11 @@ const WatchlistDisplay = ({ display }: { display: "row" | "list" }) => {
                         ))}
                     </div>
                 )}
-                {watchlist.length === 0 && !loading && (
-                    <div>Your watchlist is empty</div>
+                {ratingList.length === 0 && !loading && (
+                    <div>Your ratings is empty</div>
                 )}
-                {watchlist.length !== 0 && (
-                    <MoviesRowSimple movies={watchlist.slice(0, 5)} />
+                {ratingList.length !== 0 && (
+                    <MoviesRowSimple movies={ratingList.slice(0, 5)} />
                 )}
             </Section>
         );
@@ -82,13 +82,13 @@ const WatchlistDisplay = ({ display }: { display: "row" | "list" }) => {
     if (display === "list") {
         return (
             <Section
-                id="watchlist"
-                heading={`Watchlist${watchlist.length !== 0 ? ` (${watchlist.length})` : ""}`}
+                id="ratings"
+                heading={`Ratings${ratingList.length !== 0 ? ` (${ratingList.length})` : ""}`}
                 sectionClassName="min-h-96"
             >
                 <blockquote className="my-4 border-l-2 pl-4 italic lg:hidden">
-                    Watchlist is the place to track the titles you want to
-                    watch.
+                    This page compiles a list of titles you have rated,
+                    providing a convenient overview of all your ratings.
                 </blockquote>
                 <div className="gap-4 lg:grid lg:grid-cols-12">
                     <div className="mb-4 lg:col-span-9">
@@ -99,30 +99,34 @@ const WatchlistDisplay = ({ display }: { display: "row" | "list" }) => {
                                     className="mb-2 h-52 w-full"
                                 />
                             ))}
-                        {watchlist.length === 0 && !loading && (
-                            <div>Your watchlist is empty</div>
+                        {ratingList.length === 0 && !loading && (
+                            <div>Your ratings is empty</div>
                         )}
-                        {watchlist.length !== 0 && (
-                            <MoviesList1 movies={watchlist} onRemove={remove} />
+                        {ratingList.length !== 0 && (
+                            <MoviesList1
+                                movies={ratingList}
+                                onRemove={remove}
+                            />
                         )}
                     </div>
                     <div className="hidden lg:col-span-3 lg:mb-0 lg:block">
                         <Card>
                             <CardHeader>
                                 <CardTitle className="text-base">
-                                    Watchlist is the place to track the titles
-                                    you want to watch.
+                                    This page compiles a list of titles you have
+                                    rated, providing a convenient overview of
+                                    all your ratings.
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
-                                Your Watchlist {loading && "is loading..."}
-                                {watchlist.length === 0 &&
+                                Your Ratings {loading && "is loading..."}
+                                {ratingList.length === 0 &&
                                     !loading &&
                                     "is empty"}
-                                {watchlist.length !== 0 &&
+                                {ratingList.length !== 0 &&
                                     !loading &&
-                                    `contains ${watchlist.length} title${
-                                        watchlist.length > 1 ? "s" : ""
+                                    `contains ${ratingList.length} title${
+                                        ratingList.length > 1 ? "s" : ""
                                     }`}
                             </CardContent>
                         </Card>
@@ -133,4 +137,4 @@ const WatchlistDisplay = ({ display }: { display: "row" | "list" }) => {
     }
 };
 
-export default WatchlistDisplay;
+export default RatingListDisplay;

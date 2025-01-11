@@ -1,8 +1,9 @@
 import { currentUser } from "@clerk/nextjs/server";
 import type { Metadata } from "next";
 
-import Section from "@comp/section";
 import WatchlistDisplay from "@comp/watchlist-display";
+import RatingListDisplay from "@comp/rating-list-display";
+import FavoriteDisplay from "@comp/favorite-display";
 
 export const generateMetadata = async (): Promise<Metadata> => {
     const user = await currentUser();
@@ -18,36 +19,11 @@ export const generateMetadata = async (): Promise<Metadata> => {
 };
 
 const ProfilePage = async () => {
-    const favorites = [];
-    const ratings = [];
-
     return (
         <>
             <WatchlistDisplay display="row" />
-            <Section
-                id="favorites"
-                heading="Favorites"
-                href="/profile/favorites"
-                containerClassName="min-h-96"
-            >
-                {favorites.length !== 0 ? (
-                    <div>Feature being implemented</div>
-                ) : (
-                    <div>Your favorites is empty</div>
-                )}
-            </Section>
-            <Section
-                id="ratings"
-                heading="Ratings"
-                href="/profile/ratings"
-                containerClassName="min-h-96"
-            >
-                {ratings.length !== 0 ? (
-                    <div>Feature being implemented</div>
-                ) : (
-                    <div>Your favorites is empty</div>
-                )}
-            </Section>
+            <FavoriteDisplay display="row" />
+            <RatingListDisplay display="row" />
         </>
     );
 };

@@ -1,7 +1,7 @@
 import { currentUser } from "@clerk/nextjs/server";
 import type { Metadata } from "next";
 
-import Section from "@comp/section";
+import RatingListDisplay from "@comp/rating-list-display";
 
 export const generateMetadata = async (): Promise<Metadata> => {
     const user = await currentUser();
@@ -18,7 +18,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
 };
 
 const RatingsPage = async () => {
-    return <Section heading="Ratings">Your ratings</Section>;
+    return <RatingListDisplay display="list" />;
 };
 
 export default RatingsPage;

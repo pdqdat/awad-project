@@ -21,13 +21,13 @@ const MobileNav = () => {
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="text-base text-background hover:bg-transparent hover:text-background focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 lg:hidden"
+                    className="text-background hover:bg-transparent hover:text-background focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 lg:hidden"
                 >
-                    <Menu className="size-8" />
+                    <Menu />
                     <span className="sr-only">Toggle Menu</span>
                 </Button>
             </DrawerTrigger>
-            <DrawerContent className="max-h-[60svh] p-0 bg-foreground">
+            <DrawerContent className="max-h-[60svh] bg-foreground p-0">
                 <div className="overflow-auto p-6">
                     <div className="flex flex-col space-y-2">
                         {navigationItems.map((item, index) => (

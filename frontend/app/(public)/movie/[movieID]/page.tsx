@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Star, ChevronRight, Heart } from "lucide-react";
+import { Star, ChevronRight } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@ui/button";
@@ -12,6 +12,9 @@ import MoviesRow from "@comp/movies-row";
 import CastRow from "@comp/cast-row";
 import Section from "@comp/section";
 import WatchlistBtn from "@comp/watchlist-btn";
+import HttpStatusPage from "@comp/http-status-page";
+import FavBtn from "@comp/fav-btn";
+import RateBtn from "@comp/rate-btn";
 
 export const generateMetadata = async ({
     params,
@@ -27,8 +30,15 @@ export const generateMetadata = async ({
         };
     }
 
+    // Generate title with release year if the release year is available
+    const title = `${movieDetail.title}${
+        movieDetail.release_date &&
+        !isNaN(new Date(movieDetail.release_date).getFullYear()) &&
+        ` (${new Date(movieDetail.release_date).getFullYear()})`
+    }`;
+
     return {
-        title: `${movieDetail.title} (${new Date(movieDetail.release_date).getFullYear()})`,
+        title: title,
         description: movieDetail.overview,
     };
 };
@@ -42,7 +52,7 @@ const MovieDetailPage = async ({
     const movieDetail = await fetchMovieDetail(movieID);
 
     if (!movieDetail) {
-        return <div className="container">Error fetching movie detail</div>;
+        return <HttpStatusPage status={404}>Movie not found</HttpStatusPage>;
     }
 
     const similarMovies = await fetchSimilarMovies(movieID);
@@ -67,16 +77,23 @@ const MovieDetailPage = async ({
                         className="mb-6 rounded-xl shadow-md md:mb-0 md:mr-8"
                     />
                     <div className="flex-1">
-                        <h1 className="h2 mb-4">
+                        <h2 className="h2 mb-4">
                             {movieDetail.title}{" "}
-                            <span className="font-normal text-muted-foreground">
-                                (
-                                {new Date(
+                            {movieDetail.release_date &&
+                            !isNaN(
+                                new Date(
                                     movieDetail.release_date,
-                                ).getFullYear()}
-                                )
-                            </span>
-                        </h1>
+                                ).getFullYear(),
+                            ) ? (
+                                <span className="font-normal text-muted-foreground">
+                                    (
+                                    {new Date(
+                                        movieDetail.release_date,
+                                    ).getFullYear()}
+                                    )
+                                </span>
+                            ) : null}
+                        </h2>
                         <div className="mb-4 flex flex-wrap gap-2">
                             {movieDetail.genres.map((genre) => (
                                 <Badge
@@ -92,7 +109,7 @@ const MovieDetailPage = async ({
                             <Star className="mr-1 text-yellow-500 group-hover:animate-wiggle" />
                             <p className="mr-2 text-lg font-semibold">
                                 <span className="transition-colors group-hover:text-yellow-500">
-                                    {movieDetail.vote_average}
+                                    {movieDetail.vote_average.toFixed(1)}
                                 </span>{" "}
                                 / 10{" "}
                                 <span className="font-normal text-muted-foreground">
@@ -111,22 +128,18 @@ const MovieDetailPage = async ({
                                 <ChevronRight />
                             </Link>
                         </Button>
-                        <div className="mt-4 flex space-x-4">
-                            <Button
-                                variant="outline"
-                                className="group flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-black hover:bg-gray-400"
-                            >
-                                <Heart className="h-5 w-5" />
-                                <span className="absolute ml-2 mt-20 text-sm opacity-0 transition-opacity group-hover:opacity-100">
-                                    Mark as favorite
-                                </span>
-                            </Button>
-                        </div>
                         <div className="mt-12 flex w-1/5">
                             <WatchlistBtn
                                 movieID={movieDetail.id}
                                 className="flex-1"
                             />
+                        </div>
+                        <div className="mt-2 flex items-center gap-2">
+                            <span>Your rating: </span>
+                            <RateBtn movieID={movieDetail.id} />
+                        </div>
+                        <div className="mt-2 flex w-1/5">
+                            <FavBtn movieID={movieDetail.id} />
                         </div>
                     </div>
                 </div>
@@ -156,7 +169,11 @@ const MovieDetailPage = async ({
                 </Section>
             )}
             <Section id="similar" heading="Similar movies">
-                <MoviesRow movies={similarMovies.data} />
+                {similarMovies && similarMovies.data.length > 0 ? (
+                    <MoviesRow movies={similarMovies.data} />
+                ) : (
+                    <div>Error fetching similar movies</div>
+                )}
             </Section>
         </>
     );
