@@ -51,7 +51,7 @@ const ProfileSection = () => {
                 setRatingList(null);
             }
             setRatingList(fetchedRatingList);
-            
+
             setLoading(false);
         };
 
@@ -81,14 +81,17 @@ const ProfileSection = () => {
                 {isLoaded ? (
                     <div className="flex flex-col">
                         <div className="h2">{user?.fullName || "User"}</div>
-                        <div className="mt-2">
+                        <div className="text-muted-foreground">
                             Member since{" "}
                             {joinDate
-                                ? new Date(joinDate).toLocaleDateString("en-GB", {
-                                      year: "numeric",
-                                      month: "2-digit",
-                                      day: "2-digit",
-                                  })
+                                ? new Date(joinDate).toLocaleDateString(
+                                      "en-GB",
+                                      {
+                                          year: "numeric",
+                                          month: "2-digit",
+                                          day: "2-digit",
+                                      },
+                                  )
                                 : "Unknown"}
                         </div>
                         <Button
@@ -106,7 +109,6 @@ const ProfileSection = () => {
                     </div>
                 )}
             </div>
-
             <div className="grid grid-cols-2 gap-4 md:ml-auto md:gap-6 lg:grid-cols-4">
                 {/* Ratings */}
                 {loading ? (
@@ -149,15 +151,6 @@ const ProfileSection = () => {
                         </div>
                     </div>
                 )}
-
-                {/* More
-                <div className="flex flex-col items-center justify-center rounded-lg bg-foreground p-4 text-center">
-                    <div className="text-sm font-medium text-muted-foreground">
-                        More
-                    </div>
-                    <div className="text-2xl font-bold">•••</div>
-                </div> */}
-
             </div>
         </Section>
     );

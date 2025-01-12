@@ -174,7 +174,7 @@ const RateBtn = ({
                 <Button
                     variant="secondary"
                     size={small ? "sm" : "default"}
-                    className={cn(small && "text-sm",  "bg-gray-200", className)}
+                    className={cn(small && "text-sm", className)}
                     disabled={isLoading || disabled}
                 >
                     {isLoading ? (
@@ -222,7 +222,7 @@ const RateBtn = ({
                     {ratedValue && ratedValue === rating && (
                         <Button
                             variant="outline"
-                            className="w-full, bg-gray-200"
+                            className="w-full"
                             onClick={handleClick}
                         >
                             {isLoading ? (

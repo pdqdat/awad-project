@@ -17,10 +17,14 @@ const MoviesRowSimple = ({ movies }: { movies: MovieInList[] }) => {
                 >
                     <Link href={`/movie/${movie.id}`}>
                         <Image
-                            src={getTmdbImageUrl(
-                                tmdbPosterSizes.w342,
-                                movie.poster_path,
-                            )}
+                            src={
+                                movie.poster_path
+                                    ? getTmdbImageUrl(
+                                          tmdbPosterSizes.w342,
+                                          movie.poster_path,
+                                      )
+                                    : "/img-placeholder.webp"
+                            }
                             alt={movie.title}
                             width={342}
                             height={513}
@@ -41,11 +45,18 @@ const MoviesRowSimple = ({ movies }: { movies: MovieInList[] }) => {
                         <div className="font-medium">
                             <Link href={`/movie/${movie.id}`}>
                                 {movie.title}{" "}
-                                <span className="font-normal text-muted-foreground">
-                                    (
-                                    {new Date(movie.release_date).getFullYear()}
-                                    )
-                                </span>
+                                {movie.release_date &&
+                                !isNaN(
+                                    new Date(movie.release_date).getFullYear(),
+                                ) ? (
+                                    <span className="font-normal text-muted-foreground">
+                                        (
+                                        {new Date(
+                                            movie.release_date,
+                                        ).getFullYear()}
+                                        )
+                                    </span>
+                                ) : null}
                             </Link>
                         </div>
                     </div>

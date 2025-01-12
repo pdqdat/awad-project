@@ -6,6 +6,7 @@ import { Movie } from "@/types";
 import { tmdbPosterSizes } from "@/config/tmdb";
 import { getTmdbImageUrl } from "@lib/utils";
 import { Badge } from "@ui/badge";
+import { formatRuntime } from "@lib/utils";
 
 const MoviesList = ({ movies }: { movies: Movie[] }) => {
     return (
@@ -13,62 +14,81 @@ const MoviesList = ({ movies }: { movies: Movie[] }) => {
             {movies.map((movie) => (
                 <li
                     key={movie.id}
-                    className="overflow-hidden rounded-xl border"
+                    className="flex flex-col gap-2 rounded-xl border p-4"
                 >
-                    <Link href={`/movie/${movie.id}`} className="flex gap-2">
-                        <div className="aspect-[3/4] overflow-hidden">
-                            <Image
-                                src={getTmdbImageUrl(
-                                    tmdbPosterSizes.w154,
-                                    movie.poster_path,
-                                )}
-                                alt={movie.title}
-                                width={154}
-                                height={231}
-                                loading="lazy"
-                                className="aspect-[3/4] object-cover transition-all hover:scale-105"
-                            />
-                        </div>
-                        <div className="flex flex-1 flex-col gap-2 p-2">
-                            <div className="text-lg">
-                                <span className="text-wrap font-semibold">
-                                    {movie.title}
-                                </span>{" "}
-                                {movie.release_date &&
-                                !isNaN(
-                                    new Date(movie.release_date).getFullYear(),
-                                ) ? (
-                                    <>
-                                        (
-                                        {new Date(
-                                            movie.release_date,
-                                        ).getFullYear()}
-                                        )
-                                    </>
-                                ) : null}
-                            </div>
-                            <div className="group mb-4 flex items-center">
-                                <Star className="mr-1 size-5 text-yellow-500" />
-                                <p className="mr-2 font-semibold">
-                                    <span className="text-yellow-500">
-                                        {movie.vote_average.toFixed(1)}
+                    <div>
+                        <div className="flex gap-2">
+                            <Link href={`/movie/${movie.id}`}>
+                                <div className="aspect-[3/4] overflow-hidden rounded-xl">
+                                    <Image
+                                        src={
+                                            movie.poster_path
+                                                ? getTmdbImageUrl(
+                                                      tmdbPosterSizes.w342,
+                                                      movie.poster_path,
+                                                  )
+                                                : "/img-placeholder.webp"
+                                        }
+                                        alt={movie.title}
+                                        height={154}
+                                        width={(154 * 3) / 4}
+                                        loading="lazy"
+                                        className="aspect-[3/4] object-cover transition-all hover:brightness-90"
+                                    />
+                                </div>
+                            </Link>
+                            <div className="flex-1 space-y-1">
+                                <Link
+                                    href={`/movie/${movie.id}`}
+                                    className="text-lg hover:text-foreground/80"
+                                >
+                                    <span className="text-wrap font-semibold">
+                                        {movie.title}
                                     </span>{" "}
-                                    / 10
-                                </p>
-                            </div>
-                            <div className="flex flex-wrap gap-1">
-                                {movie.genres.map(({ id, name }) => (
-                                    <Badge
-                                        key={id}
-                                        variant="outline"
-                                        className="text-sm"
-                                    >
-                                        {name}
-                                    </Badge>
-                                ))}
+                                    {movie.release_date &&
+                                    !isNaN(
+                                        new Date(
+                                            movie.release_date,
+                                        ).getFullYear(),
+                                    ) ? (
+                                        <>
+                                            (
+                                            {new Date(
+                                                movie.release_date,
+                                            ).getFullYear()}
+                                            )
+                                        </>
+                                    ) : null}
+                                </Link>
+                                <div className="text-muted-foreground">
+                                    {formatRuntime(movie.runtime)}
+                                </div>
+                                <div className="flex items-center">
+                                    <Star className="mr-1 size-5 text-yellow-500" />
+                                    <p>
+                                        <span className="font-semibold text-yellow-500">
+                                            {movie.vote_average.toFixed(1)}
+                                        </span>{" "}
+                                        <span className="text-muted-foreground">
+                                            ({movie.vote_count})
+                                        </span>
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                    </Link>
+                    </div>
+                    <div>{movie.overview}</div>
+                    <div className="flex flex-wrap gap-1">
+                        {movie.genres.map(({ id, name }) => (
+                            <Badge
+                                key={id}
+                                variant="outline"
+                                className="text-sm"
+                            >
+                                {name}
+                            </Badge>
+                        ))}
+                    </div>
                 </li>
             ))}
         </ul>
