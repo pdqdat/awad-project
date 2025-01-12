@@ -25,9 +25,12 @@ git clone https://github.com/pdqdat/awad-project.git
 Configure the missing environment variables in the `backend/.env.development` file:
 
 ```backend/.env.development
-PORT=5000
 MONGO_URI=
+PORT=5000
+CLERK_WEBHOOK_SECRET_KEY=
 CLERK_SECRET_KEY=
+CLERK_PUBLISHABLE_KEY=
+GEMINI_API_KEY=
 ```
 
 Configure the missing environment variables in the `frontend/.env.development` file:
