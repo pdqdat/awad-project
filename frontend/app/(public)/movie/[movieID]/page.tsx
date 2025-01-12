@@ -12,7 +12,8 @@ import WatchlistBtn from "@comp/watchlist-btn";
 import HttpStatusPage from "@comp/http-status-page";
 import FavBtn from "@comp/fav-btn";
 import RateBtn from "@comp/rate-btn";
-import ReviewDisplayWithInput from "@comp/review-display-with-input";import SimilarMoviesDisplay from "@comp/similar-movies-display";
+import ReviewDisplayWithInput from "@comp/review-display-with-input";
+import SimilarMoviesDisplay from "@comp/similar-movies-display";
 
 export const generateMetadata = async ({
     params,

@@ -45,11 +45,18 @@ const MoviesRowSimple = ({ movies }: { movies: MovieInList[] }) => {
                         <div className="font-medium">
                             <Link href={`/movie/${movie.id}`}>
                                 {movie.title}{" "}
-                                <span className="font-normal text-muted-foreground">
-                                    (
-                                    {new Date(movie.release_date).getFullYear()}
-                                    )
-                                </span>
+                                {movie.release_date &&
+                                !isNaN(
+                                    new Date(movie.release_date).getFullYear(),
+                                ) ? (
+                                    <span className="font-normal text-muted-foreground">
+                                        (
+                                        {new Date(
+                                            movie.release_date,
+                                        ).getFullYear()}
+                                        )
+                                    </span>
+                                ) : null}
                             </Link>
                         </div>
                     </div>
