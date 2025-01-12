@@ -7,6 +7,7 @@ import PaginationControls from "@comp/pagination-controls";
 import MobileFilter from "@comp/mobile-filter";
 import MainFilter from "@comp/main-filter";
 import PageHeading from "@comp/page-heading";
+import HttpStatusPage from "@comp/http-status-page";
 
 export const generateMetadata = async ({
     searchParams,
@@ -49,7 +50,11 @@ const SearchPage = async ({
         to as string,
     );
     if (!response) {
-        return <div>Error fetching movies</div>;
+        return (
+            <HttpStatusPage status={500}>
+                Something went wrong. Please try again later.
+            </HttpStatusPage>
+        );
     }
     const { data: movies, totalPages, total } = response;
 

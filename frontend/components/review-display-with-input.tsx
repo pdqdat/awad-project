@@ -19,7 +19,7 @@ import {
     CardContent,
 } from "@ui/card";
 import { Textarea } from "@ui/textarea";
-import { dateFormatter } from "@lib/utils";
+import { formatDate } from "@lib/utils";
 import { Button } from "@ui/button";
 import { Review } from "@/types";
 import { Skeleton } from "@ui/skeleton";
@@ -43,7 +43,7 @@ const reviewSchema = z.object({
         }),
 });
 
-const ReviewInputDisplay = ({
+const ReviewDisplayWithInput = ({
     movieID,
     compact = false,
 }: {
@@ -143,12 +143,6 @@ const ReviewInputDisplay = ({
 
     return (
         <>
-            <div className="mb-4">
-                {isLoading && "Loading "}
-                {reviews.length > 0 && !isLoading
-                    ? `${reviews.length} review${reviews.length > 1 ? "s" : ""}`
-                    : "Review"}
-            </div>
             <div className="gap-4 lg:grid lg:grid-cols-12">
                 <div className="col-span-4 mb-4 gap-4 lg:mb-0 xl:col-span-3">
                     <Form {...form}>
@@ -176,7 +170,6 @@ const ReviewInputDisplay = ({
                                                         placeholder="Write your review here"
                                                         className="max-h-[calc(75dvh)] min-h-[24px] resize-none overflow-hidden rounded-xl bg-muted text-base"
                                                         rows={3}
-                                                        autoFocus
                                                         disabled={
                                                             reviewSubmitDisabled
                                                         }
@@ -243,7 +236,7 @@ const ReviewInputDisplay = ({
                                         )}
                                     </CardTitle>
                                     <CardDescription>
-                                        {dateFormatter(review.createdAt, true)}
+                                        {formatDate(review.createdAt, true)}
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent>{review.text}</CardContent>
@@ -255,4 +248,4 @@ const ReviewInputDisplay = ({
     );
 };
 
-export default ReviewInputDisplay;
+export default ReviewDisplayWithInput;

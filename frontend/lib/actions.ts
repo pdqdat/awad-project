@@ -229,10 +229,30 @@ export const fetchSimilarMovies = async (
 ): Promise<{
     data: Movie[];
 } | null> => {
+    const { userId, getToken } = await auth();
+
     try {
+        let options;
+        if (!userId) {
+            options = { method: "GET" };
+        } else {
+            const token = await getToken();
+            if (!token) {
+                console.error("Error fetching session token");
+                return null;
+            }
+            
+            options = {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            };
+        }
+
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/movies/${movieID}/similar`,
-            { method: "GET" },
+            options,
         );
         if (!res.ok) {
             if (res.status === 404) {

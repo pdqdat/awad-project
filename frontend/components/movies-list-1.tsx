@@ -29,15 +29,19 @@ const MoviesList1 = ({
                             <Link href={`/movie/${movie.id}`}>
                                 <div className="aspect-[3/4] overflow-hidden rounded-xl">
                                     <Image
-                                        src={getTmdbImageUrl(
-                                            tmdbPosterSizes.w154,
-                                            movie.poster_path,
-                                        )}
+                                        src={
+                                            movie.poster_path
+                                                ? getTmdbImageUrl(
+                                                      tmdbPosterSizes.w342,
+                                                      movie.poster_path,
+                                                  )
+                                                : "/img-placeholder.webp"
+                                        }
                                         alt={movie.title}
                                         height={154}
                                         width={(154 * 3) / 4}
                                         loading="lazy"
-                                        className="aspect-[3/4] object-cover transition-all hover:scale-105 hover:brightness-90"
+                                        className="aspect-[3/4] object-cover transition-all hover:brightness-90"
                                     />
                                 </div>
                             </Link>
