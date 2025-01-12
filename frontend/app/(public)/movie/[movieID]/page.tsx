@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Star, ChevronRight } from "lucide-react";
-import Link from "next/link";
+import { Star } from "lucide-react";
 
-import { Button } from "@ui/button";
 import { fetchMovieDetail, fetchSimilarMovies } from "@lib/actions";
 import { tmdbPosterSizes } from "@/config/tmdb";
 import { getTmdbImageUrl } from "@lib/utils";
@@ -119,29 +117,24 @@ const MovieDetailPage = async ({
                             </p>
                         </div>
                         <p>{movieDetail.overview}</p>
-                        <Button
-                            variant="secondary"
-                            asChild
-                            className="mt-4 bg-gray-200"
-                        >
-                            <Link href={`/movie/${movieID}/review`}>
-                                Go to review
-                                <ChevronRight />
-                            </Link>
-                        </Button>
-                        <div className="mt-12 flex w-1/5">
-                            <WatchlistBtn
-                                movieID={movieDetail.id}
-                                className="flex-1"
-                            />
+
+                        <div className="mt-6 flex items-center gap-2">
+                            <div className="mr-2">
+                                <FavBtn movieID={movieDetail.id} />
+                            </div>
+
+                            <div>
+                                <WatchlistBtn
+                                    movieID={movieDetail.id}
+                                    className="flex-1"
+                                />
+                            </div>
                         </div>
-                        <div className="mt-2 flex items-center gap-2">
+                        <div className="mt-6 flex items-center gap-2 ">
                             <span>Your rating: </span>
                             <RateBtn movieID={movieDetail.id} />
                         </div>
-                        <div className="mt-2 flex w-1/5">
-                            <FavBtn movieID={movieDetail.id} />
-                        </div>
+                      
                     </div>
                 </div>
             </Section>

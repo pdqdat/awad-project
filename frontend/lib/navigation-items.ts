@@ -36,7 +36,7 @@ export const navigationItems = [
         ],
     },
     {
-        title: "Search with AI",
+        title: "AI Search",
         href: "/ai-search",
     },
 ];
