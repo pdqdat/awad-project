@@ -1,14 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Star, X } from "lucide-react";
+import { X } from "lucide-react";
 
 import { MovieInList } from "@/types";
 import { Badge } from "@ui/badge";
 import { tmdbPosterSizes } from "@/config/tmdb";
 import { getTmdbImageUrl } from "@lib/utils";
 import { formatRuntime } from "@lib/utils";
-import RateBtn from "@comp/rate-btn";
+import RatingBtn from "@comp/rating-btn";
 import { Button } from "@ui/button";
+import RatingDisplay from "@comp/rating-display";
+import { RatingProvider } from "@/context/rating-context";
 
 const MoviesList1 = ({
     movies,
@@ -24,95 +26,86 @@ const MoviesList1 = ({
                     key={movie.id}
                     className="flex flex-col gap-2 rounded-xl border p-4"
                 >
-                    <div>
-                        <div className="flex gap-2">
-                            <Link href={`/movie/${movie.id}`}>
-                                <div className="aspect-[3/4] overflow-hidden rounded-xl">
-                                    <Image
-                                        src={
-                                            movie.poster_path
-                                                ? getTmdbImageUrl(
-                                                      tmdbPosterSizes.w342,
-                                                      movie.poster_path,
-                                                  )
-                                                : "/img-placeholder.webp"
-                                        }
-                                        alt={movie.title}
-                                        height={154}
-                                        width={(154 * 3) / 4}
-                                        loading="lazy"
-                                        className="aspect-[3/4] object-cover transition-all hover:brightness-90"
-                                    />
-                                </div>
-                            </Link>
-                            <div className="flex-1 space-y-1">
-                                <div className="flex items-center justify-between">
-                                    <Link
-                                        href={`/movie/${movie.id}`}
-                                        className="text-lg hover:text-foreground/80"
-                                    >
-                                        <span className="text-wrap font-semibold">
-                                            {index + 1}. {movie.title}
-                                        </span>{" "}
-                                        {movie.release_date &&
-                                        !isNaN(
-                                            new Date(
-                                                movie.release_date,
-                                            ).getFullYear(),
-                                        ) ? (
-                                            <>
-                                                (
-                                                {new Date(
-                                                    movie.release_date,
-                                                ).getFullYear()}
-                                                )
-                                            </>
-                                        ) : null}
-                                    </Link>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={() => onRemove(movie.id)}
-                                    >
-                                        <X />
-                                    </Button>
-                                </div>
-                                <div className="text-muted-foreground">
-                                    {formatRuntime(movie.runtime)}
-                                </div>
-                                <div className="flex gap-4">
-                                    <div className="flex items-center">
-                                        <Star className="mr-1 size-5 text-yellow-500" />
-                                        <p>
-                                            <span className="font-semibold text-yellow-500">
-                                                {movie.vote_average.toFixed(1)}
-                                            </span>{" "}
-                                            <span className="text-muted-foreground">
-                                                ({movie.vote_count})
-                                            </span>
-                                        </p>
+                    <RatingProvider
+                        initialVoteAverage={movie.vote_average}
+                        initialVoteCount={movie.vote_count}
+                    >
+                        <div>
+                            <div className="flex gap-2">
+                                <Link href={`/movie/${movie.id}`}>
+                                    <div className="aspect-[3/4] overflow-hidden rounded-xl">
+                                        <Image
+                                            src={
+                                                movie.poster_path
+                                                    ? getTmdbImageUrl(
+                                                          tmdbPosterSizes.w342,
+                                                          movie.poster_path,
+                                                      )
+                                                    : "/img-placeholder.webp"
+                                            }
+                                            alt={movie.title}
+                                            height={154}
+                                            width={(154 * 3) / 4}
+                                            loading="lazy"
+                                            className="aspect-[3/4] object-cover transition-all hover:brightness-90"
+                                        />
                                     </div>
-                                    <RateBtn
-                                        movieID={movie.id}
-                                        small
-                                        disabled
-                                    />
+                                </Link>
+                                <div className="flex-1 space-y-1">
+                                    <div className="flex items-center justify-between">
+                                        <Link
+                                            href={`/movie/${movie.id}`}
+                                            className="text-lg hover:text-foreground/80"
+                                        >
+                                            <span className="text-wrap font-semibold">
+                                                {index + 1}. {movie.title}
+                                            </span>{" "}
+                                            {movie.release_date &&
+                                            !isNaN(
+                                                new Date(
+                                                    movie.release_date,
+                                                ).getFullYear(),
+                                            ) ? (
+                                                <>
+                                                    (
+                                                    {new Date(
+                                                        movie.release_date,
+                                                    ).getFullYear()}
+                                                    )
+                                                </>
+                                            ) : null}
+                                        </Link>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            onClick={() => onRemove(movie.id)}
+                                        >
+                                            <X />
+                                        </Button>
+                                    </div>
+                                    <div className="text-muted-foreground">
+                                        {formatRuntime(movie.runtime)}
+                                    </div>
+                                    <div className="flex gap-4">
+                                        <RatingDisplay includeVoteCount small />
+                                        <RatingBtn movieID={movie.id} small />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div>{movie.overview}</div>
-                    <div className="flex flex-wrap gap-1">
-                        {movie.genres.map(({ id, name }) => (
-                            <Badge
-                                key={id}
-                                variant="outline"
-                                className="text-sm"
-                            >
-                                {name}
-                            </Badge>
-                        ))}
-                    </div>
+                        <div>{movie.overview}</div>
+                        <div className="flex flex-wrap gap-1">
+                            {movie.genres.map(({ id, name }) => (
+                                <Badge
+                                    key={id}
+                                    variant="outline"
+                                    className="text-sm"
+                                >
+                                    {name}
+                                </Badge>
+                            ))}
+                        </div>
+                    </RatingProvider>
                 </li>
             ))}
         </ul>

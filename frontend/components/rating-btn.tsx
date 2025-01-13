@@ -10,8 +10,9 @@ import { toast } from "sonner";
 import { Button } from "@ui/button";
 import { rateMovie, removeRating, fetchRatingList } from "@lib/actions";
 import { Popover, PopoverContent, PopoverTrigger } from "@ui/popover";
+import { useRating } from "@/context/rating-context";
 
-const RateBtn = ({
+const RatingBtn = ({
     movieID,
     small = false,
     className,
@@ -31,6 +32,8 @@ const RateBtn = ({
 
     const { isLoaded, isSignedIn } = useAuth();
     const router = useRouter();
+    // Destructure rating context
+    const { setVoteAverage, setVoteCount } = useRating();
 
     const checkIsRated = useCallback(async () => {
         setIsLoading(true);
@@ -86,6 +89,10 @@ const RateBtn = ({
             if (response?.status === 200) {
                 setRatedValue(null);
                 setRating(null);
+
+                setVoteAverage(response.movie.vote_average);
+                setVoteCount(response.movie.vote_count);
+
                 toast.dismiss(loadingToastID);
                 toast.success("Rating removed");
             } else {
@@ -105,6 +112,10 @@ const RateBtn = ({
 
             if (response?.status === 200) {
                 setRatedValue(rating);
+
+                setVoteAverage(response.movie.vote_average);
+                setVoteCount(response.movie.vote_count);
+
                 toast.dismiss(loadingToastID);
                 toast.success("Rating updated", {
                     action: {
@@ -131,6 +142,10 @@ const RateBtn = ({
 
             if (response?.status === 200) {
                 setRatedValue(rating);
+
+                setVoteAverage(response.movie.vote_average);
+                setVoteCount(response.movie.vote_count);
+
                 toast.dismiss(loadingToastID);
                 toast.success("Movie rated", {
                     action: {
@@ -150,6 +165,8 @@ const RateBtn = ({
             setIsLoading(false);
         }
     }, [
+        setVoteAverage,
+        setVoteCount,
         setIsLoading,
         router,
         isSignedIn,
@@ -238,4 +255,4 @@ const RateBtn = ({
     );
 };
 
-export default RateBtn;
+export default RatingBtn;
