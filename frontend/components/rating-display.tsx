@@ -19,12 +19,7 @@ const RatingDisplay = ({
     return (
         <div className="flex items-center">
             <Star className={cn(small && "size-5", "mr-1 text-yellow-500")} />
-            <p
-                className={cn(
-                    small ? "text-base" : "text-lg",
-                    "mr-2 font-semibold",
-                )}
-            >
+            <p className={cn(small ? "text-base" : "text-lg", "font-semibold")}>
                 <span className="text-yellow-500 transition-colors">
                     {voteAverage.toFixed(1)}
                 </span>
@@ -32,7 +27,8 @@ const RatingDisplay = ({
                 {includeVoteCount && (
                     <span className="font-normal text-muted-foreground">
                         {" "}
-                        ({voteCount}{!small && " votes"})
+                        ({voteCount}
+                        {!small && " votes"})
                     </span>
                 )}
             </p>

@@ -106,7 +106,7 @@ const MovieDetailPage = async ({
                             </h2>
                             <FavBtn movieID={movieDetail.id} />
                         </div>
-                        <div className="mb-4 flex items-center gap-2">
+                        <div className="mb-4 flex items-center gap-6">
                             <RatingDisplay includeVoteCount includeMaxRating />
                             <div className="flex w-20">
                                 <RatingBtn
@@ -153,7 +153,7 @@ const MovieDetailPage = async ({
                         heading="Trailer"
                         sectionClassName="bg-muted"
                     >
-                        <div className="relative mt-4 pb-[56.25%]">
+                        <div className="relative mx-auto mt-4 max-w-6xl pb-[56.25%]">
                             <iframe
                                 className="absolute left-0 top-0 h-full w-full"
                                 src={`https://www.youtube.com/embed/${videoKey}`}
@@ -168,11 +168,14 @@ const MovieDetailPage = async ({
                     id="review"
                     heading="User reviews"
                     href={`/movie/${movieID}/review`}
-                    sectionClassName="bg-muted"
                 >
                     <ReviewDisplayWithInput movieID={movieID} compact />
                 </Section>
-                <Section id="similar" heading="Similar movies">
+                <Section
+                    id="similar"
+                    heading="Similar movies"
+                    sectionClassName="bg-muted"
+                >
                     {similarMovies && similarMovies.data.length > 0 ? (
                         <SimilarMoviesDisplay movies={similarMovies.data} />
                     ) : (

@@ -61,7 +61,7 @@ const ProfileSection = () => {
     return (
         <Section
             sectionClassName="bg-secondary-foreground text-background"
-            containerClassName="flex flex-col md:flex-row items-center gap-4"
+            containerClassName="flex flex-col md:flex-row items-center gap-4 justify-between"
         >
             <div className="flex items-center gap-4">
                 {isLoaded ? (
@@ -109,47 +109,40 @@ const ProfileSection = () => {
                     </div>
                 )}
             </div>
-            <div className="grid grid-cols-2 gap-4 md:ml-auto md:gap-6 lg:grid-cols-4">
-                {/* Ratings */}
+            <div className="grid grid-cols-3 gap-4">
                 {loading ? (
-                    <Skeleton className="size-20"></Skeleton>
+                    <>
+                        <Skeleton className="size-20"></Skeleton>
+                        <Skeleton className="size-20"></Skeleton>
+                        <Skeleton className="size-20"></Skeleton>
+                    </>
                 ) : (
-                    <div className="flex flex-col items-center justify-center rounded-lg bg-foreground p-4 text-center">
-                        <div className="text-sm font-medium text-muted-foreground">
-                            Ratings
+                    <>
+                        <div className="flex flex-col items-center justify-center rounded-lg bg-foreground p-4 text-center">
+                            <div className="text-sm font-medium text-muted-foreground">
+                                Watchlist
+                            </div>
+                            <div className="text-xl font-bold">
+                                {loading ? "-" : watchlist?.length || 0}
+                            </div>
                         </div>
-                        <div className="text-xl font-bold">
-                            {loading ? "-" : ratingList?.length || 0}
+                        <div className="flex flex-col items-center justify-center rounded-lg bg-foreground p-4 text-center">
+                            <div className="text-sm font-medium text-muted-foreground">
+                                Favorites
+                            </div>
+                            <div className="text-xl font-bold">
+                                {loading ? "-" : favoriteList?.length || 0}
+                            </div>
                         </div>
-                    </div>
-                )}
-
-                {/* Watchlist */}
-                {loading ? (
-                    <Skeleton className="size-20"></Skeleton>
-                ) : (
-                    <div className="flex flex-col items-center justify-center rounded-lg bg-foreground p-4 text-center">
-                        <div className="text-sm font-medium text-muted-foreground">
-                            Watchlist
+                        <div className="flex flex-col items-center justify-center rounded-lg bg-foreground p-4 text-center">
+                            <div className="text-sm font-medium text-muted-foreground">
+                                Ratings
+                            </div>
+                            <div className="text-xl font-bold">
+                                {loading ? "-" : ratingList?.length || 0}
+                            </div>
                         </div>
-                        <div className="text-xl font-bold">
-                            {loading ? "-" : watchlist?.length || 0}
-                        </div>
-                    </div>
-                )}
-
-                {/* Favorites */}
-                {loading ? (
-                    <Skeleton className="size-20"></Skeleton>
-                ) : (
-                    <div className="flex flex-col items-center justify-center rounded-lg bg-foreground p-4 text-center">
-                        <div className="text-sm font-medium text-muted-foreground">
-                            Favorites
-                        </div>
-                        <div className="text-xl font-bold">
-                            {loading ? "-" : favoriteList?.length || 0}
-                        </div>
-                    </div>
+                    </>
                 )}
             </div>
         </Section>
