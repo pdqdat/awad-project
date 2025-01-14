@@ -9,7 +9,8 @@ const DailyTrendingSection = async () => {
         return <div>Error fetching daily trending movies</div>;
     }
 
-    return <CarouselBanner movies={dailyTrendingMovies.slice(10)} />;
+    // Display the first 20 trending movies
+    return <CarouselBanner movies={dailyTrendingMovies.slice(0, 20)} />;
 };
 
 export default DailyTrendingSection;

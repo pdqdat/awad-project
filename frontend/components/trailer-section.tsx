@@ -40,7 +40,7 @@ const TrailerSection = async () => {
                         <CarouselItem key={movie.trailers[0].id}>
                             <div className="text-center">
                                 <Card className="overflow-hidden">
-                                    <CardContent className="relative aspect-video">
+                                    <CardContent className="relative aspect-video min-h-fit">
                                         <iframe
                                             src={`https://www.youtube.com/embed/${movie.trailers[0].key}`}
                                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

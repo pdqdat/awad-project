@@ -18,3 +18,12 @@ export const tmdbBackdropSizes = {
     w1280: "w1280",
     original: "original",
 };
+
+// Request options for GET requests to the TMDB API
+export const tmdbGetRequestOptions = {
+    method: "GET",
+    headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
+    },
+};

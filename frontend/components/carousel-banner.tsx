@@ -53,7 +53,7 @@ const CarouselBanner = ({ movies }: { movies: Movie[] }) => {
                                 Today&apos;s trending
                             </FancyHeading>
                             <h2 className="h1">{movie.title}</h2>
-                            <p className="h5 line-clamp-3 hidden max-w-xl text-base md:block">
+                            <p className="h5 hidden max-w-xl text-base md:line-clamp-4 2xl:block">
                                 {movie.overview}
                             </p>
                             <div className="hidden items-center md:flex">
