@@ -72,7 +72,7 @@ export const fetchTrendingMovies = async (
     try {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/trending/${timeWindow}?page=${page}&limit=${LIMIT}`,
-            { method: "GET", cache: "no-store" },
+            { method: "GET" },
         );
         const data = await res.json();
 
