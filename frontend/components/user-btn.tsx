@@ -7,7 +7,6 @@ import {
     Star,
     LogOut,
     Pencil,
-    List,
     Heart,
     Film,
     UserRound,

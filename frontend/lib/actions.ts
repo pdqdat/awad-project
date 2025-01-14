@@ -12,15 +12,6 @@ import {
 } from "@/types";
 import { LIMIT, CACHE_DURATION } from "@/config/movie";
 
-// Request options for GET requests to the TMDB API
-const tmdbGetRequestOptions = {
-    method: "GET",
-    headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
-    },
-};
-
 const generateQueryParams = (
     query: string | undefined,
     page: number = 1,
