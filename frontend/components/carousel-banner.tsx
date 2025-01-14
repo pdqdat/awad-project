@@ -4,7 +4,6 @@ import useEmblaCarousel from "embla-carousel-react";
 import Autoplay, { AutoplayOptionsType } from "embla-carousel-autoplay";
 import Image from "next/image";
 import Link from "next/link";
-import { Star } from "lucide-react";
 
 import { cn, getTmdbImageUrl } from "@/lib/utils";
 import { tmdbBackdropSizes } from "@/config/tmdb";
@@ -56,15 +55,6 @@ const CarouselBanner = ({ movies }: { movies: Movie[] }) => {
                             <p className="h5 hidden max-w-xl text-base md:line-clamp-4 2xl:block">
                                 {movie.overview}
                             </p>
-                            <div className="hidden items-center md:flex">
-                                <Star className="mr-1 text-yellow-500" />
-                                <div className="text-lg font-semibold">
-                                    <span className="text-yellow-500 transition-colors">
-                                        {movie.vote_average.toFixed(1)}
-                                    </span>
-                                    <span> / 10</span>
-                                </div>
-                            </div>
                             <Button variant="ringHover" asChild>
                                 <Link href={`/movie/${movie.id}`}>
                                     Check this out
