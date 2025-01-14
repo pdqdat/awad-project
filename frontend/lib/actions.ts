@@ -81,7 +81,7 @@ export const fetchTrendingMovies = async (
     try {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/trending/${timeWindow}?page=${page}&limit=${LIMIT}`,
-            tmdbGetRequestOptions,
+            { method: "GET", cache: "no-store" },
         );
         const data = await res.json();
 
@@ -241,7 +241,7 @@ export const fetchSimilarMovies = async (
                 console.error("Error fetching session token");
                 return null;
             }
-            
+
             options = {
                 method: "GET",
                 headers: {

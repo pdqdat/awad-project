@@ -92,12 +92,6 @@ const UserBtn = () => {
                             Ratings
                         </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                        <Link href="/profile/lists">
-                            <List />
-                            Your lists
-                        </Link>
-                    </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => openUserProfile()}>
