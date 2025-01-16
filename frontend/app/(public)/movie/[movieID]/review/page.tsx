@@ -3,7 +3,7 @@ import { ChevronLeft } from "lucide-react";
 import type { Metadata } from "next";
 
 import { Button } from "@ui/button";
-import ReviewInputDisplay from "@comp/review-input-display";
+import ReviewDisplayWithInput from "@comp/review-display-with-input";
 import { fetchMovieDetail } from "@lib/actions";
 import Section from "@comp/section";
 
@@ -70,7 +70,7 @@ const MovieReviewPage = async ({
                 heading={sectionHeading}
                 sectionClassName="min-h-[calc(75vh)]"
             >
-                <ReviewInputDisplay movieID={movieID} />
+                <ReviewDisplayWithInput movieID={movieID} />
             </Section>
         </>
     );

@@ -3,6 +3,7 @@
 ## Tech stack
 
 - Next.js
+- React
 - Tailwind CSS
 - Radix UI
 - Shadcn UI

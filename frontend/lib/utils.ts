@@ -19,7 +19,7 @@ export const cn = (...inputs: ClassValue[]) => {
  * @param withHour - Whether to include the hour and minute in the formatted date string.
  * @returns The formatted date string in "dd/mm/yyyy" or "dd/mm/yyyy, hh:mm" format.
  */
-export const dateFormatter = (date: string, withHour: boolean = false) => {
+export const formatDate = (date: string, withHour: boolean = false) => {
     const options: Intl.DateTimeFormatOptions = {
         year: "numeric",
         month: "2-digit",

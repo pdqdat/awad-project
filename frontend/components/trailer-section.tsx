@@ -25,26 +25,22 @@ const TrailerSection = async () => {
 
     return (
         <Section
-            heading={
-                <span className="text-background">
-                    Latest trailers
-                </span>
-            }
-            sectionClassName="bg-secondary-foreground"
+            id="trailers"
+            heading="Latest trailers"
             containerClassName="flex justify-center"
         >
             <Carousel
                 opts={{
                     align: "start",
                 }}
-                className="w-full max-w-3xl"
+                className="w-full max-w-5xl"
             >
                 <CarouselContent>
                     {movies.map((movie) => (
                         <CarouselItem key={movie.trailers[0].id}>
-                            <div className="text-center text-background">
+                            <div className="text-center">
                                 <Card className="overflow-hidden">
-                                    <CardContent className="relative aspect-video">
+                                    <CardContent className="relative aspect-video min-h-fit">
                                         <iframe
                                             src={`https://www.youtube.com/embed/${movie.trailers[0].key}`}
                                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -64,8 +60,8 @@ const TrailerSection = async () => {
                         </CarouselItem>
                     ))}
                 </CarouselContent>
-                <CarouselPrevious />
-                <CarouselNext />
+                <CarouselPrevious className="left-0 top-full" />
+                <CarouselNext className="right-0 top-full" />
             </Carousel>
         </Section>
     );

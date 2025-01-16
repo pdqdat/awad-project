@@ -90,7 +90,7 @@ const FavBtn = ({
                     },
                 });
             } else {
-                toast.dismiss(loadingToastID); 
+                toast.dismiss(loadingToastID);
                 toast.error("Failed to add movie to favorites", {
                     description: "Please try again later",
                 });
@@ -116,11 +116,11 @@ const FavBtn = ({
 
     return (
         <Button
-            variant="secondary"
+            variant="ghost"
             size="icon"
             disabled={isLoading}
             onClick={handleClick}
-            className={cn("size-10", "bg-gray-200", className)}
+            className={cn("size-9", className)}
         >
             {isLoading ? <LoaderCircle className="animate-spin" /> : btnContent}
         </Button>

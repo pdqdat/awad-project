@@ -10,8 +10,9 @@ import { toast } from "sonner";
 import { Button } from "@ui/button";
 import { rateMovie, removeRating, fetchRatingList } from "@lib/actions";
 import { Popover, PopoverContent, PopoverTrigger } from "@ui/popover";
+import { useRating } from "@/context/rating-context";
 
-const RateBtn = ({
+const RatingBtn = ({
     movieID,
     small = false,
     className,
@@ -31,6 +32,8 @@ const RateBtn = ({
 
     const { isLoaded, isSignedIn } = useAuth();
     const router = useRouter();
+    // Destructure rating context
+    const { setVoteAverage, setVoteCount } = useRating();
 
     const checkIsRated = useCallback(async () => {
         setIsLoading(true);
@@ -86,6 +89,10 @@ const RateBtn = ({
             if (response?.status === 200) {
                 setRatedValue(null);
                 setRating(null);
+
+                setVoteAverage(response.movie.vote_average);
+                setVoteCount(response.movie.vote_count);
+
                 toast.dismiss(loadingToastID);
                 toast.success("Rating removed");
             } else {
@@ -105,6 +112,10 @@ const RateBtn = ({
 
             if (response?.status === 200) {
                 setRatedValue(rating);
+
+                setVoteAverage(response.movie.vote_average);
+                setVoteCount(response.movie.vote_count);
+
                 toast.dismiss(loadingToastID);
                 toast.success("Rating updated", {
                     action: {
@@ -131,6 +142,10 @@ const RateBtn = ({
 
             if (response?.status === 200) {
                 setRatedValue(rating);
+
+                setVoteAverage(response.movie.vote_average);
+                setVoteCount(response.movie.vote_count);
+
                 toast.dismiss(loadingToastID);
                 toast.success("Movie rated", {
                     action: {
@@ -150,6 +165,8 @@ const RateBtn = ({
             setIsLoading(false);
         }
     }, [
+        setVoteAverage,
+        setVoteCount,
         setIsLoading,
         router,
         isSignedIn,
@@ -174,7 +191,7 @@ const RateBtn = ({
                 <Button
                     variant="secondary"
                     size={small ? "sm" : "default"}
-                    className={cn(small && "text-sm",  "bg-gray-200", className)}
+                    className={cn(small && "text-sm", className)}
                     disabled={isLoading || disabled}
                 >
                     {isLoading ? (
@@ -222,7 +239,7 @@ const RateBtn = ({
                     {ratedValue && ratedValue === rating && (
                         <Button
                             variant="outline"
-                            className="w-full, bg-gray-200"
+                            className="w-full"
                             onClick={handleClick}
                         >
                             {isLoading ? (
@@ -238,4 +255,4 @@ const RateBtn = ({
     );
 };
 
-export default RateBtn;
+export default RatingBtn;

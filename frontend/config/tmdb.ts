@@ -13,8 +13,17 @@ export const tmdbPosterSizes = {
 };
 
 export const tmdbBackdropSizes = {
-    300: "w300",
-    780: "w780",
-    1280: "w1280",
+    w300: "w300",
+    w780: "w780",
+    w1280: "w1280",
     original: "original",
+};
+
+// Request options for GET requests to the TMDB API
+export const tmdbGetRequestOptions = {
+    method: "GET",
+    headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
+    },
 };

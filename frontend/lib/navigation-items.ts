@@ -5,7 +5,7 @@ export const navigationItems = [
         items: [
             {
                 title: "Trending",
-                href: "/trending",
+                href: "/trending/week",
             },
             {
                 title: "Popular",
@@ -36,7 +36,7 @@ export const navigationItems = [
         ],
     },
     {
-        title: "AI Search",
-        href: "/ai-search",
+        title: "AI",
+        href: "/ai",
     },
 ];

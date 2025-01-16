@@ -1,11 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Star } from "lucide-react";
 
 import { MovieInList } from "@/types";
 import { tmdbPosterSizes } from "@/config/tmdb";
 import { getTmdbImageUrl } from "@lib/utils";
-import RateBtn from "@comp/rate-btn";
+import RatingBtn from "@comp/rating-btn";
+import { RatingProvider } from "@/context/rating-context";
+import RatingDisplay from "@comp/rating-display";
 
 const MoviesRowSimple = ({ movies }: { movies: MovieInList[] }) => {
     return (
@@ -15,40 +16,53 @@ const MoviesRowSimple = ({ movies }: { movies: MovieInList[] }) => {
                     key={movie.id}
                     className="overflow-hidden rounded-xl shadow-lg"
                 >
-                    <Link href={`/movie/${movie.id}`}>
-                        <Image
-                            src={getTmdbImageUrl(
-                                tmdbPosterSizes.w342,
-                                movie.poster_path,
-                            )}
-                            alt={movie.title}
-                            width={342}
-                            height={513}
-                            loading="lazy"
-                            className="aspect-[3/4] h-auto w-auto object-cover transition-all hover:brightness-90"
-                        />
-                    </Link>
-                    <div className="space-y-2 p-4">
-                        <div className="flex items-center gap-4">
-                            <div className="flex items-center">
-                                <Star className="mr-1 size-5 text-yellow-500" />
-                                <span className="font-semibold text-yellow-500">
-                                    {movie.vote_average.toFixed(1)}
-                                </span>
+                    <RatingProvider
+                        initialVoteAverage={movie.vote_average}
+                        initialVoteCount={movie.vote_count}
+                    >
+                        <Link href={`/movie/${movie.id}`}>
+                            <Image
+                                src={
+                                    movie.poster_path
+                                        ? getTmdbImageUrl(
+                                              tmdbPosterSizes.w342,
+                                              movie.poster_path,
+                                          )
+                                        : "/img-placeholder.webp"
+                                }
+                                alt={movie.title}
+                                width={342}
+                                height={513}
+                                loading="lazy"
+                                className="aspect-[3/4] h-auto w-auto object-cover transition-all hover:brightness-90"
+                            />
+                        </Link>
+                        <div className="space-y-2 p-4">
+                            <div className="flex items-center gap-4">
+                                <RatingDisplay small />
+                                <RatingBtn movieID={movie.id} small />
                             </div>
-                            <RateBtn movieID={movie.id} small disabled />
+                            <div className="font-medium">
+                                <Link href={`/movie/${movie.id}`}>
+                                    {movie.title}{" "}
+                                    {movie.release_date &&
+                                    !isNaN(
+                                        new Date(
+                                            movie.release_date,
+                                        ).getFullYear(),
+                                    ) ? (
+                                        <span className="font-normal text-muted-foreground">
+                                            (
+                                            {new Date(
+                                                movie.release_date,
+                                            ).getFullYear()}
+                                            )
+                                        </span>
+                                    ) : null}
+                                </Link>
+                            </div>
                         </div>
-                        <div className="font-medium">
-                            <Link href={`/movie/${movie.id}`}>
-                                {movie.title}{" "}
-                                <span className="font-normal text-muted-foreground">
-                                    (
-                                    {new Date(movie.release_date).getFullYear()}
-                                    )
-                                </span>
-                            </Link>
-                        </div>
-                    </div>
+                    </RatingProvider>
                 </div>
             ))}
         </div>
