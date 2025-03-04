@@ -54,7 +54,7 @@ A comprehensive movie platform that allows users to search, rate, review, and ma
 
 Clone the repository:
 
-```bash
+```console
 git clone https://github.com/pdqdat/awad-project.git
 ```
 
@@ -71,7 +71,7 @@ GEMINI_API_KEY=
 
 Configure the missing environment variables in the `frontend/.env.development` file:
 
-```frontend/.env.development
+```frontend/.env
 CLERK_SECRET_KEY=
 TMDB_ACCESS_TOKEN=
 
@@ -83,7 +83,7 @@ NEXT_PUBLIC_BACKEND_URL=http://localhost:5000
 
 Install the dependencies, then run the Backend server:
 
-```bash
+```console
 cd backend
 npm install
 npm start
@@ -91,7 +91,7 @@ npm start
 
 In another terminal, install the dependencies, then run the Frontend server:
 
-```bash
+```console
 cd frontend
 npm install
 npm run dev
