@@ -16,7 +16,7 @@ const ListDetailPage = async ({
     const { userId } = await auth();
 
     if (listDetail.isPrivate && listDetail.owner !== userId) {
-        return <div className="container">this is a private list</div>;
+        return <div className="container">This is a private list</div>;
     }
 
     const editable = listDetail.owner === userId;

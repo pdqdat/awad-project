@@ -5,7 +5,7 @@ export const navigationItems = [
         items: [
             {
                 title: "Trending",
-                href: "/trending",
+                href: "/trending/week",
             },
             {
                 title: "Popular",

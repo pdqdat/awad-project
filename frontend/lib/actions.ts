@@ -12,15 +12,6 @@ import {
 } from "@/types";
 import { LIMIT, CACHE_DURATION } from "@/config/movie";
 
-// Request options for GET requests to the TMDB API
-const tmdbGetRequestOptions = {
-    method: "GET",
-    headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
-    },
-};
-
 const generateQueryParams = (
     query: string | undefined,
     page: number = 1,
@@ -81,7 +72,7 @@ export const fetchTrendingMovies = async (
     try {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/trending/${timeWindow}?page=${page}&limit=${LIMIT}`,
-            tmdbGetRequestOptions,
+            { method: "GET" },
         );
         const data = await res.json();
 
@@ -241,7 +232,7 @@ export const fetchSimilarMovies = async (
                 console.error("Error fetching session token");
                 return null;
             }
-            
+
             options = {
                 method: "GET",
                 headers: {

@@ -13,7 +13,7 @@
 
 Configure the environment variables:
 
-```.env.development
+```.env
 CLERK_SECRET_KEY=
 TMDB_ACCESS_TOKEN=
 

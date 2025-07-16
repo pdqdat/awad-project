@@ -10,7 +10,8 @@ const WeeklyTrendingSection = async () => {
         <Section
             id="week-trending"
             sectionClassName="bg-muted py-8"
-            heading="Trending this week"
+            heading="This week's trending"
+            href="/trending/week"
         >
             {weeklyTrendingMovies ? (
                 <MoviesRow movies={weeklyTrendingMovies.slice(0, 5)} />

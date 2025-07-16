@@ -7,7 +7,6 @@ import {
     Star,
     LogOut,
     Pencil,
-    List,
     Heart,
     Film,
     UserRound,
@@ -90,12 +89,6 @@ const UserBtn = () => {
                         <Link href="/profile/ratings">
                             <Star />
                             Ratings
-                        </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                        <Link href="/profile/lists">
-                            <List />
-                            Your lists
                         </Link>
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
